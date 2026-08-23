@@ -1,0 +1,22 @@
+{
+  "checks": {
+    "four_variant_audits": true,
+    "frozen_pre_sample_basket": true,
+    "holdout_not_tuned": true,
+    "no_fill": true,
+    "qqq_only_traded": true,
+    "raw_bar_count": true,
+    "sessions": true
+  },
+  "data": {
+    "common_raw_bars": 194490,
+    "first_timestamp": "2024-08-22T09:30:00-04:00",
+    "five_way_inner_intersection": true,
+    "last_timestamp": "2026-08-21T15:59:00-04:00",
+    "no_fill_resample_or_interpolation": true,
+    "ohlc_positive": true,
+    "sessions": 501,
+    "timestamps_unique": true
+  },
+  "status": "PASS"
+}

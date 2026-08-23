@@ -1,0 +1,15 @@
+{
+  "checks": {
+    "all_equity_csvs_exist": true,
+    "all_trade_csvs_exist": true,
+    "commission_plus_slippage_equal_costs": true,
+    "events_equal_trades": true,
+    "exit_reasons_equal_trades": true,
+    "final_equity_equal_capital_plus_net": true,
+    "gross_minus_costs_equal_net": true,
+    "split_net_equal_full": true,
+    "split_trades_equal_full": true
+  },
+  "status": "PASS",
+  "variant": "reverse_convergence"
+}

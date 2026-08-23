@@ -1,0 +1,77 @@
+{
+  "audit": {
+    "file": "audit.json",
+    "status": "PASS"
+  },
+  "basket": {
+    "combined_ndx_weight_pct": 30.1,
+    "normalized_reference_weights": {
+      "AAPL": 0.2790697674418605,
+      "AMZN": 0.1727574750830565,
+      "MSFT": 0.2857142857142857,
+      "NVDA": 0.2624584717607974
+    },
+    "official_ndx_weights_pct": {
+      "AAPL": 8.4,
+      "AMZN": 5.2,
+      "MSFT": 8.6,
+      "NVDA": 7.9
+    },
+    "snapshot_date": "2024-06-28",
+    "source": "https://indexes.nasdaq.com/docs/202407%20NDX%20Research.pdf",
+    "symbols": [
+      "MSFT",
+      "AAPL",
+      "NVDA",
+      "AMZN"
+    ]
+  },
+  "execution": {
+    "capital_usd": 100000.0,
+    "commission_per_share_side": 0.0035,
+    "notional_usd": 20000.0,
+    "slippage_fraction": 0.0002,
+    "traded": "QQQ"
+  },
+  "formula": {
+    "basket_dev": "sum(w*(close/VWAP-1))",
+    "beta": null,
+    "fair_qqq": "QQQ_VWAP*(1+basket_dev)",
+    "residual": "(QQQ-fair)/fair"
+  },
+  "period": {
+    "end": "2026-08-21",
+    "raw_bars": 194490,
+    "sessions": 501,
+    "start": "2024-08-22"
+  },
+  "schema_version": 1,
+  "signal_grid": {
+    "hook_delta": [
+      0.0,
+      0.15,
+      0.3
+    ],
+    "warmup": "full window",
+    "windows": [
+      30,
+      60,
+      90
+    ],
+    "z_entry": [
+      1.5,
+      2.0,
+      2.5,
+      3.0
+    ]
+  },
+  "status": "COMPLETE",
+  "study": "Frozen four-stock synthetic VWAP deviation; QQQ only traded",
+  "variants": [
+    "normal_convergence",
+    "reverse_convergence",
+    "normal_dollar_bracket",
+    "reverse_dollar_bracket"
+  ],
+  "warning": "Exploratory separately selected normal/reverse strategies; holdout is one historical diagnostic"
+}

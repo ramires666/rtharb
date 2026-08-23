@@ -13,6 +13,9 @@
   Z-score, точные сделки, trade-box'ы и mark-to-market equity;
 - `tradingview_synthetic/index.html` — QQQ против фиксированной mega-cap
   корзины MSFT/AAPL/NVDA/AMZN, схождение и отдельный RR-режим;
+- `tradingview_synthetic_vwap_absolute/index.html` — полный независимый
+  пересчёт QQQ против той же frozen-корзины через causal session VWAP:
+  normal/reverse, convergence/fixed-dollar bracket, точные входы, equity и DD;
 - `tradingview_vwap_absolute/index.html` — подробный самостоятельный raw
   event-driven VWAP-Z fixed-bracket: QQQ как lead, торгуется только NVDA,
   точные VWAP/fair/Z, stop/target-зоны, сделки, equity и drawdown.
@@ -70,6 +73,16 @@ equal allocation дал full `+$2,206.83` при MDD `$9,503.15 / 8.59%`, но
 holdout `-$6,016.03`; shared `$100k` cap — full `+$855.94`, holdout
 `-$7,503.75`; uncapped leverage-диагностика — full `+$3,947.65`, holdout
 `-$10,966.83`. Ни один объединённый вариант edge на holdout не подтвердил.
+
+Отдельная VWAP-проверка синтетического индекса торгует только QQQ; четыре
+акции MSFT/AAPL/NVDA/AMZN используются исключительно как reference и вместе
+дают frozen 30.1% официального snapshot Nasdaq-100 от 28.06.2024. На 501
+сессии и 194,490 общих raw SIP-минутах normal convergence дал full
+`-$5,044.54` / holdout `-$1,964.33`, reverse convergence `-$5,265.36` /
+`-$445.17`, normal fixed-dollar bracket (`$2.75/$10.50`) `-$489.29` /
+`-$671.01`, reverse bracket (`$11.00/$13.75`) `-$3,159.60` / `-$242.93`.
+Все четыре результата имеют отрицательный holdout; независимый raw-event
+replay сделок, минутной equity/DD и отчётных payload прошёл `PASS`.
 
 ## Что считается
 

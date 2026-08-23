@@ -1,0 +1,69 @@
+{
+  "rows": [
+    {
+      "development_net_pnl": -2503.62868149973,
+      "direction": "normal",
+      "exit_model": "convergence",
+      "full_mtm_mdd_pct": 5.550556074747394,
+      "full_net_pnl": -5044.537572039451,
+      "holdout_net_pnl": -1964.3303916198588,
+      "signal_hook_delta": 0.0,
+      "signal_warmup_bars": 60,
+      "signal_window": 60,
+      "signal_z_entry": 3.0,
+      "stop_usd": null,
+      "target_usd": null,
+      "validation_net_pnl": -576.5784989198619,
+      "variant": "normal_convergence"
+    },
+    {
+      "development_net_pnl": -3345.7788379197627,
+      "direction": "reverse",
+      "exit_model": "convergence",
+      "full_mtm_mdd_pct": 5.841193752069572,
+      "full_net_pnl": -5265.364778159432,
+      "holdout_net_pnl": -445.16566223983136,
+      "signal_hook_delta": 0.3,
+      "signal_warmup_bars": 30,
+      "signal_window": 30,
+      "signal_z_entry": 3.0,
+      "stop_usd": null,
+      "target_usd": null,
+      "validation_net_pnl": -1474.4202779998375,
+      "variant": "reverse_convergence"
+    },
+    {
+      "development_net_pnl": 1172.709537660163,
+      "direction": "normal",
+      "exit_model": "dollar_bracket",
+      "full_mtm_mdd_pct": 3.0154311015125597,
+      "full_net_pnl": -489.28633067963233,
+      "holdout_net_pnl": -671.0127207198851,
+      "signal_hook_delta": 0.0,
+      "signal_warmup_bars": 60,
+      "signal_window": 60,
+      "signal_z_entry": 3.0,
+      "stop_usd": 2.75,
+      "target_usd": 10.5,
+      "validation_net_pnl": -990.9831476199103,
+      "variant": "normal_dollar_bracket"
+    },
+    {
+      "development_net_pnl": -1504.2954075798013,
+      "direction": "reverse",
+      "exit_model": "dollar_bracket",
+      "full_mtm_mdd_pct": 4.363679947976757,
+      "full_net_pnl": -3159.6012798595493,
+      "holdout_net_pnl": -242.9289254998653,
+      "signal_hook_delta": 0.3,
+      "signal_warmup_bars": 30,
+      "signal_window": 30,
+      "signal_z_entry": 3.0,
+      "stop_usd": 11.0,
+      "target_usd": 13.75,
+      "validation_net_pnl": -1412.3769467798825,
+      "variant": "reverse_dollar_bracket"
+    }
+  ],
+  "schema_version": 1
+}
