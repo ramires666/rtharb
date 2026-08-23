@@ -38,7 +38,7 @@ class AlpacaClient:
         client = self._get_client()
         from alpaca.data.requests import StockBarsRequest
         from alpaca.data.timeframe import TimeFrame
-        from alpaca.data.enums import DataFeed
+        from alpaca.data.enums import Adjustment, DataFeed
 
         if end_date is None:
             end_date = datetime.now(pytz.UTC)
@@ -63,7 +63,8 @@ class AlpacaClient:
             timeframe=TimeFrame.Minute,
             start=start_date,
             end=end_date,
-            feed=DataFeed.SIP if feed_name == "sip" else DataFeed.IEX
+            feed=DataFeed.SIP if feed_name == "sip" else DataFeed.IEX,
+            adjustment=Adjustment.RAW,
         )
 
         bars = client.get_stock_bars(req)

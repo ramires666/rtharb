@@ -36,6 +36,12 @@
 - `launchers/` — однокнопочные Windows-запускатели;
 - `old/` — опровергнутые проверки и ранние прототипы, не рабочий пайплайн.
 
+Для multi-asset VWAP-bracket заранее зафиксирован исследовательский universe:
+`NVDA, MSFT, AAPL, AMZN, GOOGL, META, AVGO, TSLA, AMD`; QQQ используется
+только как ведущий reference. Raw Alpaca SIP-котировки и их SHA-256/coverage
+проверяются командой `launchers/download_mega_cap_data.bat` и manifest-файлом
+`data_cache/mega_cap_sip_manifest.json`.
+
 ## Что считается
 
 - только официальная сессия США в `America/New_York`;
