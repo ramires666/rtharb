@@ -16,13 +16,16 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
 from rtharb.config import AppConfig
 from rtharb.data.loader import DataLoader
 from research_risk_reward import CAPITAL, COMMISSION, SIZE, SLIP, _raw_target
 
 
-ROOT = Path(__file__).resolve().parent
-OUT = ROOT / "research_output" / "vwap_absolute_brackets"
+OUT = ROOT / "old" / "frozen_vwap_absolute" / "output" / "results"
 COHORT_PATH = ROOT / "research_output" / "risk_reward" / "vwap_z_entry_cohort.csv"
 START_DATE = pd.Timestamp("2025-08-22").date()
 END_DATE = pd.Timestamp("2026-08-21").date()

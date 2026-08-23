@@ -101,7 +101,7 @@ def test_synthetic_hook_can_confirm_after_reentering_threshold():
 
 def test_absolute_vwap_brackets_are_honest_and_reconciled():
     summary = json.loads(
-        (ROOT / "research_output" / "vwap_absolute_brackets" / "summary.json").read_text(encoding="utf-8")
+        (ROOT / "old" / "frozen_vwap_absolute" / "output" / "results" / "summary.json").read_text(encoding="utf-8")
     )
     assert summary["grid"]["combinations"] == 144
     assert summary["selected"] == {"stop_usd": 2.0, "target_usd": 1.25}

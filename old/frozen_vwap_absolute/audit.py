@@ -7,8 +7,8 @@ from pathlib import Path
 import pandas as pd
 
 
-ROOT = Path(__file__).resolve().parent
-OUT = ROOT / "research_output" / "vwap_absolute_brackets"
+ROOT = Path(__file__).resolve().parents[2]
+OUT = ROOT / "old" / "frozen_vwap_absolute" / "output" / "results"
 
 
 def main() -> None:

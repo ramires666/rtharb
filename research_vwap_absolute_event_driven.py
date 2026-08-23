@@ -1,6 +1,6 @@
 """Independent event-driven VWAP-Z backtest with absolute NVDA brackets.
 
-Unlike ``research_vwap_absolute_brackets.py``, this simulator does not reuse a
+Unlike the archived ``old/frozen_vwap_absolute/research.py``, this simulator does not reuse a
 convergence-strategy trade cohort.  It walks every synchronized raw SIP minute
 and generates a fresh causal VWAP-Z signal whenever it is flat.  Signals are
 observed at bar close and filled at the next bar open; while a bracket is open,
@@ -326,7 +326,7 @@ def main() -> None:
     split_trades = sum(selected_results[p]["trades"] for p in ("development", "validation", "holdout"))
     split_net = sum(selected_results[p]["net_pnl"] for p in ("development", "validation", "holdout"))
     full = selected_results["full"]
-    frozen_path = ROOT / "research_output" / "vwap_absolute_brackets" / "summary.json"
+    frozen_path = ROOT / "old" / "frozen_vwap_absolute" / "output" / "results" / "summary.json"
     frozen = json.loads(frozen_path.read_text(encoding="utf-8"))
     summary = {
         "study": "Independent raw event-driven VWAP-Z with absolute NVDA stop/target",
