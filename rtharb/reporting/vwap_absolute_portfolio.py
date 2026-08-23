@@ -311,6 +311,7 @@ def main() -> None:
     report_manifest = {"schema_version": 1, "source": _source(manifest_path), "lead": "QQQ",
                        "targets": list(SYMBOLS), "variants": variants, "default_variant": "equal_allocation",
                        "global_calendar": manifest.get("global_calendar", {}),
+                       "frozen_stop_target": manifest.get("frozen_stop_target", {}),
                        "assets": assets, "correlation_sources": correlation_sources,
                        "warning": "Exploratory portfolio combination across nine separately optimized strategies and three capital variants; multiple testing and survivorship bias remain."}
     compact = json.dumps(report_manifest, ensure_ascii=False, separators=(",", ":"), allow_nan=False)
