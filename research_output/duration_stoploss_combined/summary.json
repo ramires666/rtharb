@@ -1,0 +1,418 @@
+{
+  "base_results": {
+    "development": {
+      "avg_duration_bars": 34.481651376146786,
+      "avg_net_trade": 15.50017086871673,
+      "commissions": 230.37,
+      "costs": 1968.6810506197871,
+      "exit_reasons": {
+        "FORCED_EOD": 33,
+        "TAKE_PROFIT": 185
+      },
+      "final_equity": 103379.03724938032,
+      "gross_pnl": 5347.718300000034,
+      "max_drawdown_pct_mtm": 1.2363253204338933,
+      "max_drawdown_usd_mtm": 1239.6393981199653,
+      "net_pnl": 3379.037249380315,
+      "net_return_pct": 3.379037249380315,
+      "net_sharpe": 1.9223100502007089,
+      "net_sortino": 3.374724251906511,
+      "profit_factor": 1.538684787160062,
+      "raw_bars": 96960,
+      "sessions": 250,
+      "slippage": 1738.3110506197872,
+      "trades": 218,
+      "win_rate_pct": 60.550458715596335
+    },
+    "full": {
+      "avg_duration_bars": 35.36623376623377,
+      "avg_net_trade": 6.478072743741282,
+      "commissions": 352.366,
+      "costs": 3420.5914936596464,
+      "exit_reasons": {
+        "FORCED_EOD": 50,
+        "TAKE_PROFIT": 335
+      },
+      "final_equity": 102494.05800634045,
+      "gross_pnl": 5914.6495000000405,
+      "max_drawdown_pct_mtm": 1.3132703341339849,
+      "max_drawdown_usd_mtm": 1361.0290245799697,
+      "net_pnl": 2494.0580063404486,
+      "net_return_pct": 2.4940580063404485,
+      "net_sharpe": 0.8146492302135687,
+      "net_sortino": 1.271049698855806,
+      "profit_factor": 1.2070789908176789,
+      "raw_bars": 194490,
+      "sessions": 501,
+      "slippage": 3068.2254936596464,
+      "trades": 385,
+      "win_rate_pct": 57.66233766233766
+    },
+    "holdout": {
+      "avg_duration_bars": 35.75,
+      "avg_net_trade": -7.343445333749221,
+      "commissions": 55.965,
+      "costs": 692.654126699939,
+      "exit_reasons": {
+        "FORCED_EOD": 6,
+        "TAKE_PROFIT": 74
+      },
+      "final_equity": 99412.52437330005,
+      "gross_pnl": 105.17850000000095,
+      "max_drawdown_pct_mtm": 0.9959623750404321,
+      "max_drawdown_usd_mtm": 997.8739681199804,
+      "net_pnl": -587.4756266999466,
+      "net_return_pct": -0.5874756266999466,
+      "net_sharpe": -0.9551485366695003,
+      "net_sortino": -1.1986337937104814,
+      "profit_factor": 0.7856960583242387,
+      "raw_bars": 49140,
+      "sessions": 126,
+      "slippage": 636.6891266999389,
+      "trades": 80,
+      "win_rate_pct": 52.5
+    },
+    "validation": {
+      "avg_duration_bars": 37.229885057471265,
+      "avg_net_trade": -3.4195817970105145,
+      "commissions": 66.031,
+      "costs": 759.2563163399202,
+      "exit_reasons": {
+        "FORCED_EOD": 11,
+        "TAKE_PROFIT": 76
+      },
+      "final_equity": 99702.49638366008,
+      "gross_pnl": 461.75270000000563,
+      "max_drawdown_pct_mtm": 1.1262114465211248,
+      "max_drawdown_usd_mtm": 1127.7141986200295,
+      "net_pnl": -297.50361633992,
+      "net_return_pct": -0.29750361633992,
+      "net_sharpe": -0.41952112036010764,
+      "net_sortino": -0.5749754381901558,
+      "profit_factor": 0.9018113798187448,
+      "raw_bars": 48390,
+      "sessions": 125,
+      "slippage": 693.2253163399203,
+      "trades": 87,
+      "win_rate_pct": 55.172413793103445
+    }
+  },
+  "candidate_fit": {
+    "candidate_pairs": 15,
+    "development_base_winners": 132,
+    "eligibility": "100% exact entry matching and >=95% still net-profitable development winners",
+    "independently_fitted": {
+      "max_holding_bars": 61,
+      "stop_loss_pct": 0.00721284703320633
+    },
+    "method": "development net-profitable winners only; observed higher quantiles",
+    "winner_duration_quantiles_bars": {
+      "0.95": 61,
+      "0.975": 66,
+      "0.99": 118,
+      "1.0": 118
+    },
+    "winner_mae_pct_quantiles": {
+      "0.95": 0.007080038007873158,
+      "0.975": 0.007397959183673387,
+      "0.99": 0.012169668582943964,
+      "1.0": 0.015862358371800257
+    }
+  },
+  "data": {
+    "feed": "Alpaca SIP",
+    "first_timestamp": "2024-08-22T09:30:00-04:00",
+    "last_timestamp": "2026-08-21T15:59:00-04:00",
+    "lead": "QQQ",
+    "no_fill_resample_or_interpolation": true,
+    "raw_bars": 194490,
+    "sessions": 501,
+    "splits": {
+      "development": {
+        "bars": 96960,
+        "sessions": 250
+      },
+      "full": {
+        "bars": 194490,
+        "sessions": 501
+      },
+      "holdout": {
+        "bars": 49140,
+        "sessions": 126
+      },
+      "validation": {
+        "bars": 48390,
+        "sessions": 125
+      }
+    },
+    "traded": "NVDA"
+  },
+  "execution": {
+    "commission_usd_per_share_per_side": 0.0035,
+    "forced_eod": "unchanged frozen engine final raw RTH close fallback",
+    "lead": "QQQ",
+    "overlay_order": "stop-loss first, then time-stop",
+    "position_notional_usd": 20000.0,
+    "signal": "frozen close-generated classic signal; fill next raw open",
+    "slippage_fraction_per_execution": 0.0002,
+    "starting_capital_usd": 100000.0,
+    "stop_gap": "adverse raw open",
+    "traded": "NVDA"
+  },
+  "frozen_parameters": {
+    "beta_days": 5,
+    "beta_mode": "dynamic_rolling",
+    "direction": "both",
+    "exit_band": 0.0,
+    "hook_delta": 0.15,
+    "hook_timeout": 5,
+    "window": 60,
+    "z_entry": 3.0,
+    "z_lockout": 3.5
+  },
+  "holdout_warning": "Holdout is one untouched historical diagnostic and was not used for fitting or selection",
+  "raw_q95_q95_diagnostic": {
+    "development_winner_survival": {
+      "baseline_development_winners": 132,
+      "direction_match_pct": 100.0,
+      "matched_entry_events": 132,
+      "matched_entry_pct": 100.0,
+      "not_prematurely_closed_pct": 90.15151515151516,
+      "still_net_profitable_count": 124,
+      "still_net_profitable_pct": 93.93939393939394
+    },
+    "eligible": false,
+    "max_holding_bars": 61,
+    "results": {
+      "development": {
+        "avg_duration_bars": 27.720183486238533,
+        "avg_net_trade": 9.081355329154924,
+        "commissions": 230.37,
+        "costs": 1968.4056999819445,
+        "exit_reasons": {
+          "FORCED_EOD": 26,
+          "STOP_LOSS": 35,
+          "TAKE_PROFIT": 140,
+          "TIME_STOP": 17
+        },
+        "final_equity": 101979.73546175589,
+        "gross_pnl": 3948.1411617377184,
+        "max_drawdown_pct_mtm": 2.1983934004454206,
+        "max_drawdown_usd_mtm": 2206.8499923048075,
+        "net_pnl": 1979.7354617558885,
+        "net_return_pct": 1.9797354617558887,
+        "net_sharpe": 1.112433111026181,
+        "net_sortino": 2.011444758317739,
+        "profit_factor": 1.2620440234675356,
+        "raw_bars": 96960,
+        "sessions": 250,
+        "slippage": 1738.0356999819446,
+        "trades": 218,
+        "win_rate_pct": 58.71559633027523
+      },
+      "full": {
+        "avg_duration_bars": 28.16883116883117,
+        "avg_net_trade": 4.655140919455902,
+        "commissions": 352.366,
+        "costs": 3420.133560503089,
+        "exit_reasons": {
+          "FORCED_EOD": 42,
+          "STOP_LOSS": 51,
+          "TAKE_PROFIT": 256,
+          "TIME_STOP": 36
+        },
+        "final_equity": 101792.22925399063,
+        "gross_pnl": 5212.362814493611,
+        "max_drawdown_pct_mtm": 2.1983934004454206,
+        "max_drawdown_usd_mtm": 2206.8499923048075,
+        "net_pnl": 1792.2292539906339,
+        "net_return_pct": 1.7922292539906337,
+        "net_sharpe": 0.5996501313170187,
+        "net_sortino": 1.0477183014041487,
+        "profit_factor": 1.1407862143301226,
+        "raw_bars": 194490,
+        "sessions": 501,
+        "slippage": 3067.767560503089,
+        "trades": 385,
+        "win_rate_pct": 56.1038961038961
+      },
+      "holdout": {
+        "avg_duration_bars": 27.55,
+        "avg_net_trade": -5.743432098006593,
+        "commissions": 55.965,
+        "costs": 692.5852545456084,
+        "exit_reasons": {
+          "FORCED_EOD": 6,
+          "STOP_LOSS": 9,
+          "TAKE_PROFIT": 56,
+          "TIME_STOP": 9
+        },
+        "final_equity": 99540.52543215943,
+        "gross_pnl": 233.1106867050811,
+        "max_drawdown_pct_mtm": 0.8195732334262575,
+        "max_drawdown_usd_mtm": 819.9907338762423,
+        "net_pnl": -459.4745678405743,
+        "net_return_pct": -0.4594745678405743,
+        "net_sharpe": -0.8758822617724648,
+        "net_sortino": -1.2267679587499343,
+        "profit_factor": 0.8194805686605844,
+        "raw_bars": 49140,
+        "sessions": 126,
+        "slippage": 636.6202545456084,
+        "trades": 80,
+        "win_rate_pct": 50.0
+      },
+      "validation": {
+        "avg_duration_bars": 29.862068965517242,
+        "avg_net_trade": 3.1260731043135133,
+        "commissions": 66.031,
+        "costs": 759.1426059755361,
+        "exit_reasons": {
+          "FORCED_EOD": 10,
+          "STOP_LOSS": 7,
+          "TAKE_PROFIT": 60,
+          "TIME_STOP": 10
+        },
+        "final_equity": 100271.96836007532,
+        "gross_pnl": 1031.1109660508118,
+        "max_drawdown_pct_mtm": 0.6772917675311041,
+        "max_drawdown_usd_mtm": 678.1955069029354,
+        "net_pnl": 271.96836007531965,
+        "net_return_pct": 0.27196836007531966,
+        "net_sharpe": 0.4225521356448721,
+        "net_sortino": 0.778442863472626,
+        "profit_factor": 1.1034146186782154,
+        "raw_bars": 48390,
+        "sessions": 125,
+        "slippage": 693.1116059755361,
+        "trades": 87,
+        "win_rate_pct": 55.172413793103445
+      }
+    },
+    "selection_role": "diagnostic only; never used as holdout information",
+    "stop_loss_pct": 0.007080038007873158,
+    "variant": "raw_q95_q95_diagnostic"
+  },
+  "schema_version": 1,
+  "selected_results": {
+    "development": {
+      "avg_duration_bars": 28.426605504587155,
+      "avg_net_trade": 12.161585983398647,
+      "commissions": 230.37,
+      "costs": 1968.570466027321,
+      "exit_reasons": {
+        "FORCED_EOD": 27,
+        "STOP_LOSS": 28,
+        "TAKE_PROFIT": 146,
+        "TIME_STOP": 17
+      },
+      "final_equity": 102651.225744381,
+      "gross_pnl": 4619.796210408225,
+      "max_drawdown_pct_mtm": 1.5846780997839025,
+      "max_drawdown_usd_mtm": 1592.380560873993,
+      "net_pnl": 2651.225744380994,
+      "net_return_pct": 2.651225744380994,
+      "net_sharpe": 1.515892416034098,
+      "net_sortino": 2.855984714893225,
+      "profit_factor": 1.3756483299119378,
+      "raw_bars": 96960,
+      "sessions": 250,
+      "slippage": 1738.200466027321,
+      "trades": 218,
+      "win_rate_pct": 60.09174311926605
+    },
+    "full": {
+      "avg_duration_bars": 28.74025974025974,
+      "avg_net_trade": 6.5815837703406785,
+      "commissions": 352.366,
+      "costs": 3420.300850383217,
+      "exit_reasons": {
+        "FORCED_EOD": 43,
+        "STOP_LOSS": 41,
+        "TAKE_PROFIT": 265,
+        "TIME_STOP": 36
+      },
+      "final_equity": 102533.90975158126,
+      "gross_pnl": 5954.210601964379,
+      "max_drawdown_pct_mtm": 1.5846780997839025,
+      "max_drawdown_usd_mtm": 1592.380560873993,
+      "net_pnl": 2533.909751581261,
+      "net_return_pct": 2.5339097515812607,
+      "net_sharpe": 0.8572804199332302,
+      "net_sortino": 1.5422966717608362,
+      "profit_factor": 1.208334174208149,
+      "raw_bars": 194490,
+      "sessions": 501,
+      "slippage": 3067.934850383217,
+      "trades": 385,
+      "win_rate_pct": 56.88311688311688
+    },
+    "holdout": {
+      "avg_duration_bars": 28.1,
+      "avg_net_trade": -5.371392241384616,
+      "commissions": 55.965,
+      "costs": 692.5720947699684,
+      "exit_reasons": {
+        "FORCED_EOD": 6,
+        "STOP_LOSS": 7,
+        "TAKE_PROFIT": 58,
+        "TIME_STOP": 9
+      },
+      "final_equity": 99570.2886206892,
+      "gross_pnl": 262.86071545919924,
+      "max_drawdown_pct_mtm": 0.8385162929818862,
+      "max_drawdown_usd_mtm": 838.9434432539565,
+      "net_pnl": -429.7113793108001,
+      "net_return_pct": -0.4297113793108001,
+      "net_sharpe": -0.8234735781073278,
+      "net_sortino": -1.1599802957448848,
+      "profit_factor": 0.8291764861704096,
+      "raw_bars": 49140,
+      "sessions": 126,
+      "slippage": 636.6070947699684,
+      "trades": 80,
+      "win_rate_pct": 50.0
+    },
+    "validation": {
+      "avg_duration_bars": 30.114942528735632,
+      "avg_net_trade": 3.5907515690922542,
+      "commissions": 66.031,
+      "costs": 759.1582895859276,
+      "exit_reasons": {
+        "FORCED_EOD": 10,
+        "STOP_LOSS": 6,
+        "TAKE_PROFIT": 61,
+        "TIME_STOP": 10
+      },
+      "final_equity": 100312.39538651107,
+      "gross_pnl": 1071.5536760969535,
+      "max_drawdown_pct_mtm": 0.6899023088099812,
+      "max_drawdown_usd_mtm": 690.8228749663685,
+      "net_pnl": 312.39538651106704,
+      "net_return_pct": 0.3123953865110671,
+      "net_sharpe": 0.4860350673319035,
+      "net_sortino": 0.9030835652425793,
+      "profit_factor": 1.1206413143001528,
+      "raw_bars": 48390,
+      "sessions": 125,
+      "slippage": 693.1272895859277,
+      "trades": 87,
+      "win_rate_pct": 55.172413793103445
+    }
+  },
+  "selection": {
+    "development_net_sharpe": 1.515892416034098,
+    "development_winner_survival_pct": 96.21212121212122,
+    "eligible_candidate_count": 10,
+    "holdout_opened_once_after_selection": true,
+    "method": "top development daily net Sharpe/net PnL; maximize min(dev,val Sharpe), tie validation PnL",
+    "only_eligible_candidate_is_noop_max_max": false,
+    "robust_score": 0.4860350673319035,
+    "selected_max_holding_bars": 61,
+    "selected_stop_loss_pct": 0.007397959183673387,
+    "top_development_sent_to_validation": 10,
+    "validation_net_pnl": 312.39538651106704,
+    "validation_net_sharpe": 0.4860350673319035
+  },
+  "study": "combined q95 time-stop + stop-loss on frozen classic QQQ to NVDA"
+}

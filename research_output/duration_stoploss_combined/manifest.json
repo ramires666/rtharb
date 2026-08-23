@@ -1,0 +1,26 @@
+{
+  "audit": {
+    "file": "audit.json",
+    "status": "PASS"
+  },
+  "module": "rtharb.research.duration_stoploss_combined",
+  "outputs": {
+    "audit": "audit.json",
+    "development_grid": "development_grid.csv",
+    "raw_q95_diagnostic": "raw_q95_q95_summary.json",
+    "summary": "summary.json",
+    "validation_finalists": "validation_finalists.csv"
+  },
+  "schema_version": 1,
+  "splits": [
+    "development",
+    "validation",
+    "holdout",
+    "full"
+  ],
+  "status": "COMPLETE",
+  "variants": [
+    "raw_q95_q95",
+    "selected"
+  ]
+}

@@ -25,8 +25,12 @@
 - `tradingview_vwap_absolute_portfolio/index.html` — объединение девяти
   стратегий на общем капитале `$100,000`: combined minute-MTM equity/DD,
   корреляции, constituent-вклады и concurrent exposure для трёх моделей.
+- `tradingview_duration_stoploss_combined/index.html` — совместная проверка
+  q95 time-stop и процентного stop-loss для frozen QQQ→NVDA: raw q95/q95
+  diagnostic против прошедшего 95%-gate варианта, точные сделки, stop/time
+  зоны, minute-MTM equity и отдельный drawdown.
 
-Полный пересчёт последнего отчёта одним кликом:
+Полный пересчёт одиночного VWAP-Z отчёта NVDA одним кликом:
 `launchers/run_vwap_absolute_event_driven.bat`.
 
 Рабочая копия и независимый аудит проекта статистического арбитража. Оригинал
@@ -83,6 +87,16 @@ holdout `-$6,016.03`; shared `$100k` cap — full `+$855.94`, holdout
 `-$671.01`, reverse bracket (`$11.00/$13.75`) `-$3,159.60` / `-$242.93`.
 Все четыре результата имеют отрицательный holdout; независимый raw-event
 replay сделок, минутной equity/DD и отчётных payload прошёл `PASS`.
+
+Совместная проверка защитных ограничений показала, что буквальная пара q95/q95
+(`61` минута и stop `0.7080%`) сохраняет net-прибыльными лишь `124/132 =
+93.94%` development winners и потому заранее непригодна. Выбранная без
+holdout пара — `61` минута и stop `0.7398%` — сохраняет `96.21%`: full
+`+$2,533.91`, minute-MTM MDD `$1,592.38 / 1.58%`, но untouched holdout
+`-$429.71`. Значит, ограничители снижают полную просадку, однако независимый
+edge не подтверждают. Отчёт запускается через
+`launchers/open_duration_stoploss_combined_report.bat`, полный пересчёт —
+через `launchers/run_duration_stoploss_combined.bat`.
 
 ## Что считается
 
