@@ -1,0 +1,216 @@
+{
+  "frozen_parameters": {
+    "beta_mode": "dynamic_rolling",
+    "beta_days": 5,
+    "window": 60,
+    "z_entry": 3.0,
+    "hook_delta": 0.15,
+    "hook_timeout": 5,
+    "exit_band": 0.0,
+    "z_lockout": 3.5,
+    "direction": "both"
+  },
+  "splits": {
+    "development_sessions": 250,
+    "validation_sessions": 125,
+    "holdout_sessions": 126,
+    "development_end": "2025-08-22",
+    "validation_end": "2026-02-23"
+  },
+  "selected": {
+    "stop_pct": 0.0075,
+    "rr": 0.5
+  },
+  "selection": {
+    "method": "top10 development, robust_score=min(dev_net_sharpe, validation_net_sharpe), tie net_pnl",
+    "dev_net_sharpe": -0.05531270476864738,
+    "validation_net_sharpe": 0.5251996303800643,
+    "robust_score": -0.05531270476864738,
+    "no_confirmed_edge": true
+  },
+  "selected_results": {
+    "development": {
+      "candidate_entries": 218,
+      "skipped_overlaps": 9,
+      "trades": 209,
+      "gross_pnl": 1819.9538309999853,
+      "net_pnl": -68.65043684748423,
+      "costs": 1888.6042678474696,
+      "win_rate_pct": 67.46411483253588,
+      "profit_factor": 0.9921607400585869,
+      "net_sharpe": -0.05531270476864738,
+      "stops": 49,
+      "targets": 128,
+      "forced_eod": 32,
+      "avg_net_trade": -0.32847098970088145
+    },
+    "validation": {
+      "candidate_entries": 87,
+      "skipped_overlaps": 4,
+      "trades": 83,
+      "gross_pnl": 957.4740848750077,
+      "net_pnl": 233.40938438215971,
+      "costs": 724.0647004928481,
+      "win_rate_pct": 67.46987951807229,
+      "profit_factor": 1.07378930387183,
+      "net_sharpe": 0.5251996303800643,
+      "stops": 17,
+      "targets": 50,
+      "forced_eod": 16,
+      "avg_net_trade": 2.812161257616382
+    },
+    "holdout": {
+      "candidate_entries": 80,
+      "skipped_overlaps": 4,
+      "trades": 76,
+      "gross_pnl": 909.9052756250064,
+      "net_pnl": 251.97662161629574,
+      "costs": 657.9286540087107,
+      "win_rate_pct": 65.78947368421053,
+      "profit_factor": 1.0866114298358494,
+      "net_sharpe": 0.6113118403658139,
+      "stops": 14,
+      "targets": 47,
+      "forced_eod": 15,
+      "avg_net_trade": 3.3154818633723124
+    },
+    "full": {
+      "candidate_entries": 385,
+      "skipped_overlaps": 17,
+      "trades": 368,
+      "gross_pnl": 3687.3331914999994,
+      "net_pnl": 416.73556915097134,
+      "costs": 3270.5976223490284,
+      "win_rate_pct": 67.11956521739131,
+      "profit_factor": 1.028101370668575,
+      "net_sharpe": 0.22308100697182776,
+      "stops": 80,
+      "targets": 225,
+      "forced_eod": 63,
+      "avg_net_trade": 1.1324336118232916
+    }
+  },
+  "reconciliation": {
+    "base_cohort_trades": 385,
+    "grid_rows": 144,
+    "period_trade_counts": {
+      "development": 218,
+      "validation": 87,
+      "holdout": 80,
+      "full": 385
+    },
+    "selected_trade_counts": {
+      "development": 209,
+      "validation": 83,
+      "holdout": 76,
+      "full": 368
+    },
+    "cohort_accounted": true,
+    "overlapping_entries_skipped": true
+  },
+  "vwap_z": {
+    "frozen_parameters": {
+      "beta_days": 5,
+      "warmup_bars": 30,
+      "window": 60,
+      "z_entry": 2.5,
+      "hook_delta": 0.0,
+      "hook_timeout": 0,
+      "exit_band": 0.0,
+      "z_lockout": null,
+      "direction": "both"
+    },
+    "entry_source": "research_vwap_strategy.vwap_arrays + simulate(collect=True)",
+    "selected": {
+      "stop_pct": 0.01,
+      "rr": 0.5
+    },
+    "selection": {
+      "method": "top10 development, robust_score=min(dev_net_sharpe, validation_net_sharpe), tie net_pnl",
+      "dev_net_sharpe": -0.0051267477990785066,
+      "validation_net_sharpe": 0.06497066062260834,
+      "robust_score": -0.0051267477990785066,
+      "no_confirmed_edge": true
+    },
+    "selected_results": {
+      "development": {
+        "candidate_entries": 823,
+        "skipped_overlaps": 253,
+        "trades": 570,
+        "gross_pnl": 5100.755880499976,
+        "net_pnl": -61.38254382564446,
+        "costs": 5162.138424325621,
+        "win_rate_pct": 64.03508771929825,
+        "profit_factor": 0.9980002945198545,
+        "net_sharpe": -0.0051267477990785066,
+        "stops": 118,
+        "targets": 322,
+        "forced_eod": 130,
+        "avg_net_trade": -0.10768867337832362
+      },
+      "validation": {
+        "candidate_entries": 410,
+        "skipped_overlaps": 155,
+        "trades": 255,
+        "gross_pnl": 2294.048456999991,
+        "net_pnl": 70.79563205721269,
+        "costs": 2223.252824942778,
+        "win_rate_pct": 63.52941176470588,
+        "profit_factor": 1.0053207839851586,
+        "net_sharpe": 0.06497066062260834,
+        "stops": 51,
+        "targets": 138,
+        "forced_eod": 66,
+        "avg_net_trade": 0.2776299296361282
+      },
+      "holdout": {
+        "candidate_entries": 423,
+        "skipped_overlaps": 144,
+        "trades": 279,
+        "gross_pnl": 3777.6931065000035,
+        "net_pnl": 1363.1754736243504,
+        "costs": 2414.5176328756534,
+        "win_rate_pct": 64.51612903225806,
+        "profit_factor": 1.1004206463949342,
+        "net_sharpe": 0.9625220175353353,
+        "stops": 47,
+        "targets": 157,
+        "forced_eod": 75,
+        "avg_net_trade": 4.885933597219894
+      },
+      "full": {
+        "candidate_entries": 1656,
+        "skipped_overlaps": 552,
+        "trades": 1104,
+        "gross_pnl": 11172.49744399997,
+        "net_pnl": 1372.5885618559187,
+        "costs": 9799.908882144051,
+        "win_rate_pct": 64.03985507246377,
+        "profit_factor": 1.0238396228251865,
+        "net_sharpe": 0.2484194763648354,
+        "stops": 216,
+        "targets": 617,
+        "forced_eod": 271,
+        "avg_net_trade": 1.2432867408115205
+      }
+    },
+    "reconciliation": {
+      "candidate_entries": 1656,
+      "grid_rows": 144,
+      "period_candidate_counts": {
+        "development": 823,
+        "validation": 410,
+        "holdout": 423,
+        "full": 1656
+      },
+      "selected_trade_counts": {
+        "development": 570,
+        "validation": 255,
+        "holdout": 279,
+        "full": 1104
+      },
+      "cohort_accounted": true,
+      "overlapping_entries_skipped": true
+    }
+  }
+}

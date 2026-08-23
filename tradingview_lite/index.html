@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>RT Harb — TradingView Lite</title>
+  <style>
+    :root{--bg:#0b0e14;--panel:#111722;--panel2:#161d2a;--line:#293244;--text:#e8edf5;--muted:#91a0b6;--green:#33d17a;--greenFill:rgba(51,209,122,.16);--red:#ff647c;--redFill:rgba(255,100,124,.16);--blue:#4da3ff;--amber:#f5c451;--purple:#ad8cff;--cyan:#44d7e8}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.4 Inter,Segoe UI,Arial,sans-serif}button,select,input{font:inherit}.shell{max-width:1900px;margin:auto;padding:14px}.top{display:flex;gap:16px;align-items:flex-start;justify-content:space-between;margin-bottom:10px}.title h1{font-size:21px;margin:0 0 3px}.sub{color:var(--muted);font-size:12px}.stats{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.stat{background:var(--panel);border:1px solid var(--line);border-radius:7px;padding:7px 10px;min-width:104px}.stat b{display:block;font-size:15px}.stat span{color:var(--muted);font-size:11px}.toolbar{display:flex;gap:9px;align-items:end;flex-wrap:wrap;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:9px;margin-bottom:8px}.group{display:flex;gap:5px;align-items:center;flex-wrap:wrap}.group label{color:var(--muted);font-size:11px}.btn,select,input[type=number]{color:var(--text);background:var(--panel2);border:1px solid var(--line);border-radius:5px;padding:5px 8px}.btn{cursor:pointer}.btn:hover,.btn.active{border-color:var(--blue);color:#fff}.btn:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--blue);outline-offset:1px}.ema-check{display:inline-flex;gap:4px;align-items:center;color:var(--muted);cursor:pointer}.ema-check input{accent-color:var(--blue)}#customEma,#customHma{width:62px}.spacer{flex:1}.trade-nav select{max-width:430px}.research-note{background:#211b0f;border:1px solid #5b481b;border-radius:7px;color:#e6cb85;font-size:12px;padding:7px 10px;margin-bottom:8px}.research-note b{color:#ffe4a0}.readout{display:grid;grid-template-columns:1.25fr 1fr;gap:8px;margin-bottom:8px}.trade-card,.cursor-card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:9px 11px;min-height:68px}.trade-card.profit{border-left:3px solid var(--green)}.trade-card.loss{border-left:3px solid var(--red)}.trade-head{display:flex;justify-content:space-between;gap:12px;margin-bottom:5px}.trade-head b{font-size:15px}.trade-grid{display:grid;grid-template-columns:repeat(4,minmax(120px,1fr));gap:5px 12px}.kv span{display:block;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.04em}.kv b{font-weight:600}.positive{color:var(--green)}.negative{color:var(--red)}.chart-block{background:var(--panel);border:1px solid var(--line);border-radius:8px;margin-bottom:8px;overflow:hidden}.chart-head{height:32px;display:flex;align-items:center;justify-content:space-between;padding:0 10px;border-bottom:1px solid var(--line)}.chart-head b{font-size:13px}.legend{color:var(--muted);font-variant-numeric:tabular-nums;font-size:11px}.chart-host{position:relative;width:100%}.chart-host.main{height:470px}.chart-host.index{height:245px}.chart-host.zscore{height:250px}.chart-host.equity{height:250px}.chart-canvas{position:absolute;inset:0}.trade-layer{position:absolute;inset:0;pointer-events:none;z-index:4;overflow:hidden}.trade-box{position:absolute;border:1px solid;min-width:2px;min-height:5px}.trade-box.profit{border-color:var(--green);background:var(--greenFill)}.trade-box.loss{border-color:var(--red);background:var(--redFill)}.trade-box.selected{border-width:2px;filter:saturate(1.4)}.trade-box em{position:absolute;left:3px;top:2px;font-style:normal;font-size:10px;color:var(--text);white-space:nowrap;text-shadow:0 1px 2px #000}.error{display:none;background:#401c25;color:#ffd7df;border:1px solid var(--red);padding:12px;border-radius:7px;margin-bottom:8px}.foot{color:var(--muted);font-size:11px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:3px 2px 12px}.foot a{color:var(--blue)}
+    @media(max-width:900px){.top{display:block}.stats{justify-content:flex-start;margin-top:8px}.readout{grid-template-columns:1fr}.trade-grid{grid-template-columns:repeat(2,minmax(120px,1fr))}.chart-host.main{height:420px}.trade-nav select{max-width:280px}}
+    @media(max-width:560px){.shell{padding:7px}.trade-grid{grid-template-columns:1fr}.chart-host.main{height:380px}.chart-host.index,.chart-host.zscore{height:220px}.legend{display:none}.stat{min-width:92px}.spacer{display:none}}
+  </style>
+</head>
+<body>
+<div class="shell">
+  <div class="top">
+    <div class="title"><h1>QQQ → NVDA · внутридневной mean reversion</h1><div class="sub" id="periodLabel">Загрузка точных 1-минутных SIP-баров…</div></div>
+    <div class="stats">
+      <div class="stat"><b id="statTrades">—</b><span>сделок</span></div>
+      <div class="stat"><b id="statNet">—</b><span>net P&amp;L</span></div>
+      <div class="stat"><b id="statWin">—</b><span>win rate</span></div>
+      <div class="stat"><b id="statMdd">—</b><span>max drawdown</span></div>
+    </div>
+  </div>
+
+  <div id="loadError" class="error" role="alert">Не загрузилась библиотека TradingView Lightweight Charts. Проверьте интернет-соединение и перезапустите отчёт.</div>
+
+  <div class="toolbar">
+    <div class="group" aria-label="Диапазон"><label>Диапазон</label><button class="btn range" data-range="1d">1D</button><button class="btn range" data-range="5d">5D</button><button class="btn range" data-range="1m">1M</button><button class="btn range active" data-range="2m">2M</button></div>
+    <div class="group" id="emaControls" aria-label="EMA"><label>EMA (RTH-бары)</label><label class="ema-check"><input type="checkbox" data-ema="9">9</label><label class="ema-check"><input type="checkbox" data-ema="20" checked>20</label><label class="ema-check"><input type="checkbox" data-ema="50" checked>50</label><label class="ema-check"><input type="checkbox" data-ema="100">100</label><label class="ema-check"><input type="checkbox" data-ema="200">200</label><input id="customEma" type="number" min="2" max="500" value="30" aria-label="Свой период EMA"><button id="addEma" class="btn">Добавить</button></div>
+    <div class="group" id="hmaControls" aria-label="HMA"><label>HMA (RTH-бары)</label><label class="ema-check"><input type="checkbox" data-hma="9">9</label><label class="ema-check"><input type="checkbox" data-hma="20">20</label><label class="ema-check"><input type="checkbox" data-hma="50">50</label><label class="ema-check"><input type="checkbox" data-hma="100">100</label><label class="ema-check"><input type="checkbox" data-hma="200">200</label><input id="customHma" type="number" min="2" max="500" value="30" aria-label="Свой период HMA"><button id="addHma" class="btn">Добавить</button></div>
+    <div class="group" id="vwapControls" aria-label="Session VWAP"><label>Session VWAP (сброс RTH)</label><label class="ema-check"><input id="nvdaVwapToggle" type="checkbox">NVDA</label><label class="ema-check"><input id="qqqVwapToggle" type="checkbox">QQQ</label></div>
+    <label class="ema-check" title="Скрыть панель QQQ на маленьком экране"><input id="toggleQqq" type="checkbox" checked> QQQ виден</label>
+    <label class="ema-check" title="Допускать вход по крупному абсолютному отклонению от fair value"><input id="toggleAbsFilter" type="checkbox"> Абс. Δ ≥ $7.50</label>
+    <label class="ema-check" title="Выше цены 09:30 разрешать только SHORT, ниже — только LONG"><input id="toggleAnchorFilter" type="checkbox"> 09:30 anchor</label>
+    <label class="ema-check" title="Те же frozen сигналы и выходы, но LONG/SHORT поменяны местами"><input id="toggleInverse" type="checkbox"> Направление наоборот</label>
+    <label class="ema-check" title="Classic Z-входы; выход только stop, take-profit или конец RTH"><input id="toggleRr" type="checkbox"> RR без схождения</label>
+    <label class="ema-check" title="Использовать fair value и Z-score на cumulative session VWAP"><input id="toggleVwapZ" type="checkbox"> VWAP-Z стратегия</label>
+    <label class="ema-check" title="VWAP-Z входы; выход только stop, take-profit или конец RTH"><input id="toggleVwapRr" type="checkbox"> VWAP-Z RR</label>
+    <div class="spacer"></div>
+    <div class="group trade-nav"><button id="prevTrade" class="btn" aria-label="Предыдущая сделка">←</button><select id="tradeSelect" aria-label="Выбрать сделку"></select><button id="nextTrade" class="btn" aria-label="Следующая сделка">→</button></div>
+  </div>
+
+  <div id="researchNote" class="research-note" aria-live="polite"></div>
+
+  <div class="readout">
+    <section id="tradeCard" class="trade-card" aria-live="polite"></section>
+    <section id="cursorCard" class="cursor-card" aria-live="polite"><div class="trade-head"><b>Курсор</b><span class="sub">Наведите на свечу</span></div><div class="sub">Все три панели синхронизированы по времени.</div></section>
+  </div>
+
+  <section class="chart-block"><div class="chart-head"><b>NVDA · 1 минута · точные fills и trade-box’ы</b><span id="nvdaLegend" class="legend"></span></div><div id="nvdaHost" class="chart-host main"><div id="nvdaChart" class="chart-canvas"></div><div id="tradeLayer" class="trade-layer" aria-hidden="true"></div></div></section>
+  <section id="qqqBlock" class="chart-block"><div class="chart-head"><b>QQQ · ведущий индексный ETF · 1 минута</b><span id="qqqLegend" class="legend"></span></div><div id="qqqHost" class="chart-host index"><div id="qqqChart" class="chart-canvas"></div></div></section>
+  <section class="chart-block"><div class="chart-head"><b id="zTitle">Z-score расхождения · вход ±3σ · lockout ±3.5σ · выход 0σ</b><span id="zLegend" class="legend"></span></div><div id="zHost" class="chart-host zscore"><div id="zChart" class="chart-canvas"></div></div></section>
+  <section class="chart-block"><div class="chart-head"><b>Equity · $100,000 старт · mark-to-market по 1-минутным close</b><span id="equityLegend" class="legend"></span></div><div id="equityHost" class="chart-host equity"><div id="equityChart" class="chart-canvas"></div></div></section>
+
+  <div class="foot"><span id="sourceLabel"></span><span>Исполнение: сигнал на close → fill на open следующей минуты · комиссия $0.0035/акция/сторона · slippage 2 bps/исполнение</span><a href="https://www.tradingview.com/lightweight-charts/" target="_blank" rel="noopener">Charts by TradingView Lightweight Charts™</a></div>
+</div>
+
+<script src="data.js"></script>
+<script src="lightweight-charts.standalone.production.js"></script>
+<script>
+(() => {
+  'use strict';
+  const D = window.RT_HARB_DATA;
+  const LC = window.LightweightCharts;
+  if (!D || !LC) { document.getElementById('loadError').style.display = 'block'; return; }
+
+  const css = getComputedStyle(document.documentElement);
+  const C = n => css.getPropertyValue(n).trim();
+  const money = v => `${v >= 0 ? '+' : '−'}$${Math.abs(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}`;
+  const deltaMoney = (v,digits=4) => v == null ? '—' : `${v >= 0 ? '+' : '−'}$${Math.abs(Number(v)).toFixed(digits)}`;
+  const price = v => Number(v).toFixed(4);
+  const zfmt = v => v == null ? '—' : `${v >= 0 ? '+' : ''}${Number(v).toFixed(3)}σ`;
+  const dtf = new Intl.DateTimeFormat('ru-RU',{timeZone:'America/New_York',day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false});
+  const df = new Intl.DateTimeFormat('en-CA',{timeZone:'America/New_York',year:'numeric',month:'2-digit',day:'2-digit'});
+  const tf = new Intl.DateTimeFormat('ru-RU',{timeZone:'America/New_York',hour:'2-digit',minute:'2-digit',hour12:false});
+  const axisTf = new Intl.DateTimeFormat('ru-RU',{timeZone:'America/New_York',day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false});
+  const formatTime = t => dtf.format(new Date(t * 1000)).replace(',', '');
+  const dateKey = t => df.format(new Date(t * 1000));
+  const B = D.bars;
+  const nvdaData = B.t.map((t,i)=>({time:t,open:B.no[i],high:B.nh[i],low:B.nl[i],close:B.nc[i]}));
+  const qqqData = B.t.map((t,i)=>({time:t,open:B.qo[i],high:B.qh[i],low:B.ql[i],close:B.qc[i]}));
+  const makeZData = values => B.t.map((t,i)=>values[i] == null ? {time:t} : {time:t,value:values[i]});
+  let currentZArray=B.z;
+  const zData = makeZData(currentZArray);
+  const byTime = new Map(B.t.map((t,i)=>[t,i]));
+  let currentVariant=D.variants?.base||{label:'Base Z',trades:D.trades,trades_count:D.meta.trades,net_pnl:D.meta.net_pnl,win_rate_pct:D.meta.win_rate_pct,anchor_filter:false,entry_mode:'z_only',inverse:false};
+  let currentTrades=currentVariant.trades||[];
+  let tradesById=new Map(currentTrades.map(t=>[t.id,t]));
+
+  document.getElementById('periodLabel').textContent = `${formatTime(B.t[0])} — ${formatTime(B.t[B.t.length-1])} ET · ${D.meta.sessions} сессий · ${D.meta.bars.toLocaleString('ru-RU')} настоящих минутных баров`;
+  function updateStats(){
+    document.getElementById('statTrades').textContent=currentVariant.trades_count;
+    const netEl=document.getElementById('statNet');netEl.textContent=money(currentVariant.net_pnl);netEl.className=currentVariant.net_pnl>=0?'positive':'negative';
+    document.getElementById('statWin').textContent=`${Number(currentVariant.win_rate_pct).toFixed(1)}%`;
+  }
+  updateStats();
+  document.getElementById('sourceLabel').textContent = D.meta.source;
+
+  function chartOptions(container, showTime) {
+    return {
+      width: container.clientWidth, height: container.clientHeight,
+      layout:{background:{type:'solid',color:C('--panel')},textColor:C('--muted'),fontFamily:'Inter,Segoe UI,Arial,sans-serif',fontSize:11},
+      grid:{vertLines:{color:C('--line')},horzLines:{color:C('--line')}},
+      crosshair:{mode:LC.CrosshairMode.Normal,vertLine:{color:C('--muted'),width:1,labelBackgroundColor:C('--panel2')},horzLine:{color:C('--muted'),width:1,labelBackgroundColor:C('--panel2')}},
+      rightPriceScale:{borderColor:C('--line'),scaleMargins:{top:.08,bottom:.08}},
+      timeScale:{visible:showTime,borderColor:C('--line'),timeVisible:true,secondsVisible:false,rightOffset:4,barSpacing:5,minBarSpacing:.02,tickMarkFormatter:t=>axisTf.format(new Date(t*1000)).replace(',','')},
+      localization:{timeFormatter:formatTime,priceFormatter:v=>Number(v).toFixed(2)},
+      handleScroll:{mouseWheel:true,pressedMouseMove:true,horzTouchDrag:true,vertTouchDrag:false},
+      handleScale:{axisPressedMouseMove:true,mouseWheel:true,pinch:true}
+    };
+  }
+
+  const nvdaEl=document.getElementById('nvdaChart'), qqqEl=document.getElementById('qqqChart'), zEl=document.getElementById('zChart'),equityEl=document.getElementById('equityChart');
+  const nvdaChart=LC.createChart(nvdaEl,chartOptions(document.getElementById('nvdaHost'),false));
+  const qqqChart=LC.createChart(qqqEl,chartOptions(document.getElementById('qqqHost'),false));
+  const zChart=LC.createChart(zEl,chartOptions(document.getElementById('zHost'),true));
+  const equityChart=LC.createChart(equityEl,chartOptions(document.getElementById('equityHost'),true));
+  window.__RT_HARB_CHARTS={nvdaChart,qqqChart,zChart,equityChart};
+  const candleOpts={upColor:C('--green'),downColor:C('--red'),wickUpColor:C('--green'),wickDownColor:C('--red'),borderVisible:false,priceFormat:{type:'price',precision:4,minMove:.0001}};
+  const nvdaSeries=nvdaChart.addSeries(LC.CandlestickSeries,candleOpts); nvdaSeries.setData(nvdaData);
+  const qqqSeries=qqqChart.addSeries(LC.CandlestickSeries,candleOpts); qqqSeries.setData(qqqData);
+  const zSeries=zChart.addSeries(LC.LineSeries,{color:C('--cyan'),lineWidth:2,priceFormat:{type:'price',precision:3,minMove:.001},lastValueVisible:true,priceLineVisible:false}); zSeries.setData(zData);
+  const equitySeries=equityChart.addSeries(LC.LineSeries,{color:C('--green'),lineWidth:2,priceFormat:{type:'price',precision:2,minMove:.01},lastValueVisible:true,priceLineVisible:true,title:'Equity'});
+  let currentEquityValues=new Array(B.t.length).fill(100000);
+  const nvdaVwapSeries=nvdaChart.addSeries(LC.LineSeries,{color:C('--amber'),lineWidth:2,priceLineVisible:false,lastValueVisible:false,visible:false,title:'NVDA Session VWAP'});
+  const qqqVwapSeries=qqqChart.addSeries(LC.LineSeries,{color:C('--amber'),lineWidth:2,priceLineVisible:false,lastValueVisible:false,visible:false,title:'QQQ Session VWAP'});
+  const vwapData=(values)=>Array.isArray(values)?B.t.map((t,i)=>values[i]==null?null:{time:t,value:Number(values[i])}).filter(Boolean):[];
+  nvdaVwapSeries.setData(vwapData(B.nvwap)); qqqVwapSeries.setData(vwapData(B.qvwap));
+  const nvdaVwapToggle=document.getElementById('nvdaVwapToggle'),qqqVwapToggle=document.getElementById('qqqVwapToggle');
+  nvdaVwapToggle.addEventListener('change',()=>nvdaVwapSeries.applyOptions({visible:nvdaVwapToggle.checked}));
+  qqqVwapToggle.addEventListener('change',()=>qqqVwapSeries.applyOptions({visible:qqqVwapToggle.checked}));
+  const zPriceLines=[[0,'EXIT',C('--blue'),LC.LineStyle.Solid],[3,'ENTRY +',C('--amber'),LC.LineStyle.Dashed],[-3,'ENTRY −',C('--amber'),LC.LineStyle.Dashed],[3.5,'LOCKOUT +',C('--red'),LC.LineStyle.Dotted],[-3.5,'LOCKOUT −',C('--red'),LC.LineStyle.Dotted]].map(([p,title,color,style])=>zSeries.createPriceLine({price:p,color,lineWidth:1,lineStyle:style,axisLabelVisible:true,title:`${title}${Math.abs(p)}σ`}));
+
+  const markerColor = t => t.net_pnl >= 0 ? C('--green') : C('--red');
+  function nvdaMarkers(trades){const markers=[];trades.forEach(t=>{markers.push({time:t.entry_time,position:t.direction===1?'belowBar':'aboveBar',color:t.direction===1?C('--blue'):C('--amber'),shape:t.direction===1?'arrowUp':'arrowDown',text:`${t.side} #${t.id} · Z ${Number(t.signal_z).toFixed(2)}`,id:`entry-${t.id}`});markers.push({time:t.exit_time,position:t.direction===1?'aboveBar':'belowBar',color:markerColor(t),shape:'circle',text:`EXIT #${t.id} · ${money(t.net_pnl)}`,id:`exit-${t.id}`});});return markers.sort((a,b)=>a.time-b.time);}
+  function scoreMarkers(trades){return trades.map(t=>({time:t.entry_signal_time,position:t.signal_z>=0?'aboveBar':'belowBar',color:t.direction===1?C('--blue'):C('--amber'),shape:t.direction===1?'arrowUp':'arrowDown',text:`#${t.id} ${Number(t.signal_z).toFixed(2)}`,id:`z-${t.id}`})).sort((a,b)=>a.time-b.time);}
+  const nvdaMarkersApi=LC.createSeriesMarkers(nvdaSeries,nvdaMarkers(currentTrades),{autoScale:true});
+  const zMarkersApi=LC.createSeriesMarkers(zSeries,scoreMarkers(currentTrades),{autoScale:true});
+
+  const emaColors=[C('--blue'),C('--amber'),C('--purple'),C('--cyan'),C('--green'),C('--red')];
+  const emaSeries=new Map();
+  const hmaSeries=new Map();
+  function ema(values,period){const out=[];const k=2/(period+1);let e=null;for(let i=0;i<values.length;i++){e=e==null?values[i]:values[i]*k+e*(1-k);out.push({time:B.t[i],value:e});}return out;}
+  function wma(values,period){const out=new Array(values.length).fill(null), weight=period*(period+1)/2;for(let i=period-1;i<values.length;i++){let s=0;for(let j=0;j<period;j++)s+=values[i-j]*(period-j);out[i]=s/weight;}return out;}
+  function hma(values,period){const half=Math.max(1,Math.floor(period/2)), root=Math.max(1,Math.round(Math.sqrt(period))), a=wma(values,half), b=wma(values,period), diff=values.map((_,i)=>a[i]==null||b[i]==null?null:2*a[i]-b[i]), out=new Array(values.length).fill(null), weight=root*(root+1)/2;for(let i=root-1;i<values.length;i++){let s=0,ok=true;for(let j=0;j<root;j++){if(diff[i-j]==null){ok=false;break;}s+=diff[i-j]*(root-j);}if(ok)out[i]=s/weight;}return out.map((v,i)=>v==null?null:{time:B.t[i],value:v}).filter(Boolean);}
+  function ensureEma(period){
+    if(emaSeries.has(period)) return emaSeries.get(period);
+    const color=emaColors[emaSeries.size%emaColors.length];
+    const opts={color,lineWidth:1,priceLineVisible:false,lastValueVisible:false,title:`EMA ${period}`,visible:false};
+    const n=nvdaChart.addSeries(LC.LineSeries,opts),q=qqqChart.addSeries(LC.LineSeries,opts);
+    n.setData(ema(B.nc,period));q.setData(ema(B.qc,period));const pair={n,q,color};emaSeries.set(period,pair);return pair;
+  }
+  function setEma(period,visible){const p=ensureEma(period);p.n.applyOptions({visible});p.q.applyOptions({visible});}
+  document.querySelectorAll('[data-ema]').forEach(el=>{setEma(+el.dataset.ema,el.checked);el.addEventListener('change',()=>setEma(+el.dataset.ema,el.checked));});
+  document.getElementById('addEma').addEventListener('click',()=>{const input=document.getElementById('customEma');const p=Math.max(2,Math.min(500,Math.round(+input.value||20)));if(document.querySelector(`[data-ema="${p}"]`)){const e=document.querySelector(`[data-ema="${p}"]`);e.checked=true;setEma(p,true);return;}const lab=document.createElement('label');lab.className='ema-check';lab.innerHTML=`<input type="checkbox" data-ema="${p}" checked>${p}`;document.getElementById('emaControls').insertBefore(lab,input);lab.querySelector('input').addEventListener('change',e=>setEma(p,e.target.checked));setEma(p,true);});
+  function ensureHma(period){if(hmaSeries.has(period))return hmaSeries.get(period);const color=emaColors[(emaSeries.size+hmaSeries.size)%emaColors.length],opts={color,lineWidth:2,priceLineVisible:false,lastValueVisible:false,title:`HMA ${period}`,visible:false};const n=nvdaChart.addSeries(LC.LineSeries,opts),q=qqqChart.addSeries(LC.LineSeries,opts);n.setData(hma(B.nc,period));q.setData(hma(B.qc,period));const pair={n,q};hmaSeries.set(period,pair);return pair;}
+  function setHma(period,visible){const p=ensureHma(period);p.n.applyOptions({visible});p.q.applyOptions({visible});}
+  document.querySelectorAll('[data-hma]').forEach(el=>{setHma(+el.dataset.hma,el.checked);el.addEventListener('change',()=>setHma(+el.dataset.hma,el.checked));});
+  document.getElementById('addHma').addEventListener('click',()=>{const input=document.getElementById('customHma');const p=Math.max(2,Math.min(500,Math.round(+input.value||20)));const e=document.querySelector(`[data-hma="${p}"]`);if(e){e.checked=true;setHma(p,true);return;}const lab=document.createElement('label');lab.className='ema-check';lab.innerHTML=`<input type="checkbox" data-hma="${p}" checked>${p}`;document.getElementById('hmaControls').insertBefore(lab,input);lab.querySelector('input').addEventListener('change',e=>setHma(p,e.target.checked));setHma(p,true);});
+  const qqqBlock=document.getElementById('qqqBlock'),toggleQqq=document.getElementById('toggleQqq');
+  toggleQqq.addEventListener('change',()=>{qqqBlock.hidden=!toggleQqq.checked;toggleQqq.parentElement.lastChild.textContent=toggleQqq.checked?' QQQ виден':' QQQ скрыт';requestAnimationFrame(()=>{qqqChart.resize(qqqEl.clientWidth,qqqEl.clientHeight);});});
+
+  let syncingRange=false;
+  const chartList=[nvdaChart,qqqChart,zChart,equityChart];
+  chartList.forEach(source=>source.timeScale().subscribeVisibleLogicalRangeChange(range=>{if(!range||syncingRange)return;syncingRange=true;chartList.forEach(c=>{if(c!==source)c.timeScale().setVisibleLogicalRange(range)});syncingRange=false;requestAnimationFrame(renderTradeBoxes);}));
+
+  let syncingCrosshair=false;
+  function syncCrosshair(source,param){
+    updateCursor(param.time);
+    if(syncingCrosshair)return;syncingCrosshair=true;
+    if(param.time && byTime.has(param.time)){const i=byTime.get(param.time);[[nvdaChart,nvdaSeries,B.nc[i]],[qqqChart,qqqSeries,B.qc[i]],[zChart,zSeries,currentZArray[i]],[equityChart,equitySeries,currentEquityValues[i]]].forEach(([chart,series,value])=>{if(chart!==source&&value!=null)chart.setCrosshairPosition(value,param.time,series);});}
+    else chartList.forEach(c=>{if(c!==source)c.clearCrosshairPosition();});
+    syncingCrosshair=false;
+  }
+  nvdaChart.subscribeCrosshairMove(p=>syncCrosshair(nvdaChart,p));qqqChart.subscribeCrosshairMove(p=>syncCrosshair(qqqChart,p));zChart.subscribeCrosshairMove(p=>syncCrosshair(zChart,p));equityChart.subscribeCrosshairMove(p=>syncCrosshair(equityChart,p));
+
+  function updateCursor(time){
+    if(!time||!byTime.has(time))return;const i=byTime.get(time);
+    document.getElementById('nvdaLegend').textContent=`O ${price(B.no[i])} · H ${price(B.nh[i])} · L ${price(B.nl[i])} · C ${price(B.nc[i])}`;
+    document.getElementById('qqqLegend').textContent=`O ${price(B.qo[i])} · H ${price(B.qh[i])} · L ${price(B.ql[i])} · C ${price(B.qc[i])}`;
+    const fair=currentVariant.z_basis==='vwap'?B.vfair[i]:B.fair[i];
+    document.getElementById('zLegend').textContent=`${formatTime(time)} ET · Z ${zfmt(currentZArray[i])} · Δ ${deltaMoney(B.nc[i]-fair)} · fair NVDA ${price(fair)}`;
+    document.getElementById('equityLegend').textContent=`${formatTime(time)} ET · ${money(currentEquityValues[i]-100000)} · equity $${Number(currentEquityValues[i]).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}`;
+    const active=currentTrades.find(t=>time>=t.entry_time&&time<=t.exit_time);
+    document.getElementById('cursorCard').innerHTML=`<div class="trade-head"><b>${formatTime(time)} ET</b><span class="sub">${active?`в позиции #${active.id} ${active.side}`:'вне позиции'}</span></div><div class="trade-grid"><div class="kv"><span>NVDA close</span><b>${price(B.nc[i])}</b></div><div class="kv"><span>QQQ close</span><b>${price(B.qc[i])}</b></div><div class="kv"><span>Z-score</span><b>${zfmt(currentZArray[i])}</b></div><div class="kv"><span>Отклонение Δ$</span><b>${deltaMoney(B.nc[i]-fair)}</b></div><div class="kv"><span>Fair NVDA</span><b>${price(fair)}</b></div></div>`;
+  }
+
+  const tradeSelect=document.getElementById('tradeSelect');
+  let selectedTrade=currentTrades.length?currentTrades[currentTrades.length-1]:null;
+  function rebuildTradeSelect(){tradeSelect.replaceChildren();currentTrades.forEach(t=>{const o=document.createElement('option');o.value=t.id;o.textContent=`#${t.id} · ${formatTime(t.entry_time)} · ${t.side} · ${money(t.net_pnl)} · Z ${Number(t.signal_z).toFixed(2)} · Δ ${deltaMoney(t.signal_abs_deviation_usd,2)}`;tradeSelect.appendChild(o);});}
+  function reasonText(t){
+    const strategy=currentVariant.strategy||D.meta.strategy;
+    const sourceDirection=t.source_signal_direction??t.direction;
+    const direction=sourceDirection===1?'вверх':'вниз';
+    const trigger=String(t.entry_trigger||'Z');
+    const armedAbs=deltaMoney(t.armed_abs_deviation_usd);
+    const basis=trigger.includes('ABS')?`Абсолютное отклонение ${armedAbs} достигло порога $${Number(currentVariant.abs_threshold_usd).toFixed(2)}${trigger.includes('Z+')?' одновременно с Z-порогом':''}`:`Z достиг порога ${sourceDirection===1?'−':'+'}${strategy.z_entry}σ`;
+    const anchor=currentVariant.anchor_filter?` Anchor ${price(t.signal_anchor_price)}: цена ${price(t.signal_target_price)}, направление к anchor разрешено.`:'';
+    const inverse=currentVariant.inverse?` Исходный ${sourceDirection===1?'LONG':'SHORT'}-сигнал исполнен наоборот как ${t.side}.`:'';
+    const bracket=currentVariant.rr_only?` После входа схождение игнорируется: stop ${price(t.stop_price)}, target ${price(t.target_price)} (${Number(t.rr).toFixed(2)}R), либо конец RTH.`:'';
+    return `${basis}; затем разворот ${direction} на ${Number(t.hook_delta).toFixed(3)}σ за ${t.hook_bars} мин (нужно ≥${strategy.hook_delta}σ, ≤${strategy.hook_timeout} мин).${anchor}${inverse}${bracket}`;
+  }
+  function renderTrade(t,zoom){
+    if(!t)return;selectedTrade=t;tradeSelect.value=String(t.id);const card=document.getElementById('tradeCard');card.className=`trade-card ${t.net_pnl>=0?'profit':'loss'}`;
+    card.innerHTML=`<div class="trade-head"><b>#${t.id} · ${t.side} · <span class="${t.net_pnl>=0?'positive':'negative'}">${money(t.net_pnl)}</span></b><span class="sub">${currentVariant.label} · ${t.duration_minutes} мин · ${t.shares} акций</span></div><div class="trade-grid"><div class="kv"><span>Причина входа</span><b>${t.entry_reason}</b></div><div class="kv"><span>Сигнал → fill</span><b>${formatTime(t.entry_signal_time)} → ${formatTime(t.entry_time)}</b></div><div class="kv"><span>Z: armed / extreme / signal</span><b>${zfmt(t.armed_z)} / ${zfmt(t.extreme_z)} / ${zfmt(t.signal_z)}</b></div><div class="kv"><span>Δ$: armed / signal</span><b>${deltaMoney(t.armed_abs_deviation_usd)} / ${deltaMoney(t.signal_abs_deviation_usd)}</b></div><div class="kv"><span>Fill вход → выход</span><b>${price(t.entry_price)} → ${price(t.exit_price)}</b></div><div class="kv"><span>Почему закрыта</span><b>${t.exit_reason}</b></div><div class="kv"><span>Exit signal Z</span><b>${zfmt(t.exit_signal_z)}</b></div><div class="kv"><span>Gross / costs</span><b>${money(t.gross_pnl)} / $${(t.commission+t.slippage).toFixed(2)}</b></div><div class="kv"><span>Hook / фильтры</span><b>${reasonText(t)}</b></div></div>`;
+    if(zoom){document.querySelectorAll('.range').forEach(b=>b.classList.remove('active'));const pad=45*60;nvdaChart.timeScale().setVisibleRange({from:t.entry_time-pad,to:t.exit_time+pad});}
+    requestAnimationFrame(renderTradeBoxes);
+  }
+  rebuildTradeSelect();
+  tradeSelect.addEventListener('change',()=>renderTrade(tradesById.get(+tradeSelect.value),true));
+  document.getElementById('prevTrade').addEventListener('click',()=>{if(!selectedTrade)return;const i=currentTrades.findIndex(t=>t.id===selectedTrade.id);renderTrade(currentTrades[Math.max(0,i-1)],true);});
+  document.getElementById('nextTrade').addEventListener('click',()=>{if(!selectedTrade)return;const i=currentTrades.findIndex(t=>t.id===selectedTrade.id);renderTrade(currentTrades[Math.min(currentTrades.length-1,i+1)],true);});
+  nvdaChart.subscribeClick(p=>{const id=String(p.hoveredObjectId||'').match(/(?:entry|exit)-(\d+)/);if(id)renderTrade(tradesById.get(+id[1]),true);else if(p.time){const hit=currentTrades.find(t=>t.entry_time===p.time||t.exit_time===p.time);if(hit)renderTrade(hit,false);}});
+
+  const tradeLayer=document.getElementById('tradeLayer');
+  function renderTradeBoxes(){
+    tradeLayer.replaceChildren();let projected=0;
+    currentTrades.forEach(t=>{const x1=nvdaChart.timeScale().timeToCoordinate(t.entry_time),x2=nvdaChart.timeScale().timeToCoordinate(t.exit_time),y1=nvdaSeries.priceToCoordinate(t.entry_price),y2=nvdaSeries.priceToCoordinate(t.exit_price);if([x1,x2,y1,y2].some(v=>v==null))return;const left=Math.min(x1,x2),width=Math.max(3,Math.abs(x2-x1)),top=Math.min(y1,y2)-3,height=Math.max(7,Math.abs(y2-y1)+6);if(left>tradeLayer.clientWidth||left+width<0)return;projected++;const box=document.createElement('div');box.className=`trade-box ${t.net_pnl>=0?'profit':'loss'} ${selectedTrade&&selectedTrade.id===t.id?'selected':''}`;box.style.cssText=`left:${left}px;top:${top}px;width:${width}px;height:${height}px`;if(width>55){const label=document.createElement('em');label.textContent=`#${t.id} ${t.side} ${money(t.net_pnl)}`;box.appendChild(label);}tradeLayer.appendChild(box);});
+    const vr=nvdaChart.timeScale().getVisibleRange();tradeLayer.dataset.projected=String(projected);tradeLayer.dataset.visibleFrom=vr?String(vr.from):'';tradeLayer.dataset.visibleTo=vr?String(vr.to):'';
+  }
+
+  function updateEquity(){
+    const entries=new Map(),exits=new Map();
+    currentTrades.forEach(t=>{if(!entries.has(t.entry_time))entries.set(t.entry_time,[]);entries.get(t.entry_time).push(t);if(!exits.has(t.exit_time))exits.set(t.exit_time,[]);exits.get(t.exit_time).push(t);});
+    let cash=100000,active=null,peak=100000,maxDrawdownPct=0;const values=[];
+    for(let i=0;i<B.t.length;i++){
+      const time=B.t[i];
+      if(active&&time===active.exit_time){cash+=active.net_pnl+active.commission/2;active=null;}
+      const entering=entries.get(time);if(entering&&entering.length){active=entering[0];cash-=active.commission/2;}
+      if(active&&time===active.exit_time){cash+=active.net_pnl+active.commission/2;active=null;}
+      const equity=cash+(active?active.direction*(B.nc[i]-active.entry_price)*active.shares:0);
+      currentEquityValues[i]=equity;values.push({time,value:equity});peak=Math.max(peak,equity);maxDrawdownPct=Math.max(maxDrawdownPct,peak>0?(peak-equity)/peak*100:0);
+    }
+    equitySeries.setData(values);currentVariant.max_drawdown_pct=maxDrawdownPct;
+    const mdd=document.getElementById('statMdd');mdd.textContent=`−${maxDrawdownPct.toFixed(2)}%`;mdd.className=maxDrawdownPct>1?'negative':'';
+  }
+
+  function updateZBasis(){
+    const strategy=currentVariant.strategy||D.meta.strategy,entry=Number(strategy.z_entry),exit=Number(strategy.exit_band||0),lockout=strategy.z_lockout==null?null:Number(strategy.z_lockout);
+    currentZArray=currentVariant.z_basis==='vwap'?B.vz:B.z;zSeries.setData(makeZData(currentZArray));
+    zPriceLines[0].applyOptions({price:exit,title:`EXIT ${exit}σ`});
+    zPriceLines[1].applyOptions({price:entry,title:`ENTRY +${entry}σ`});zPriceLines[2].applyOptions({price:-entry,title:`ENTRY −${entry}σ`});
+    zPriceLines[3].applyOptions({price:lockout??entry+1,title:lockout==null?'LOCKOUT OFF':`LOCKOUT +${lockout}σ`,lineVisible:lockout!=null,axisLabelVisible:lockout!=null});
+    zPriceLines[4].applyOptions({price:-(lockout??entry+1),title:lockout==null?'LOCKOUT OFF':`LOCKOUT −${lockout}σ`,lineVisible:lockout!=null,axisLabelVisible:lockout!=null});
+    document.getElementById('zTitle').textContent=`${currentVariant.z_basis==='vwap'?'VWAP-Z':'Классический Z-score'} · вход ±${entry}σ · ${lockout==null?'lockout выключен':`lockout ±${lockout}σ`} · выход ${exit}σ`;
+  }
+
+  function applyVariant(){
+    const useAbs=document.getElementById('toggleAbsFilter').checked,useAnchor=document.getElementById('toggleAnchorFilter').checked,useInverse=document.getElementById('toggleInverse').checked,useRr=document.getElementById('toggleRr').checked,useVwap=document.getElementById('toggleVwapZ').checked,useVwapRr=document.getElementById('toggleVwapRr').checked;
+    const key=useVwapRr?'rr_vwap':useVwap?'vwap_z':useRr?'rr_classic':useInverse?'base_inverse':useAbs?(useAnchor?'hybrid_abs_anchor':'hybrid_abs'):(useAnchor?'base_anchor':'base');
+    currentVariant=D.variants[key];currentTrades=currentVariant.trades;tradesById=new Map(currentTrades.map(t=>[t.id,t]));selectedTrade=currentTrades.length?currentTrades[currentTrades.length-1]:null;
+    updateStats();updateZBasis();updateEquity();nvdaMarkersApi.setMarkers(nvdaMarkers(currentTrades));zMarkersApi.setMarkers(scoreMarkers(currentTrades));rebuildTradeSelect();
+    const r=D.meta.absolute_filter_research,b=r.baseline_holdout,c=r.chosen_holdout,rev=D.meta.reverse_research,rr=D.meta.risk_reward_research,vw=D.meta.vwap_z_research;
+    document.getElementById('researchNote').innerHTML=`<b>Текущий вариант: ${currentVariant.label}.</b> Absolute+anchor holdout ${money(c.net_pnl)} против базы ${money(b.net_pnl)}. Reverse: 2M ${money(rev.last_two_months.inverse.net_pnl)}, holdout ${money(rev.holdout.inverse.net_pnl)}. Classic RR ${rr.selected.stop_pct*100}%/${rr.selected.rr}R: holdout ${money(rr.selected_results.holdout.net_pnl)}, robust ${Number(rr.selection.robust_score).toFixed(2)}. VWAP-Z convergence holdout ${money(vw.holdout.net_pnl)}. VWAP-Z RR ${rr.vwap_z.selected.stop_pct*100}%/${rr.vwap_z.selected.rr}R: holdout ${money(rr.vwap_z.selected_results.holdout.net_pnl)}, robust ${Number(rr.vwap_z.selection.robust_score).toFixed(2)}. Подтверждённого edge нет.`;
+    if(selectedTrade)renderTrade(selectedTrade,false);else document.getElementById('tradeCard').innerHTML='<div class="sub">В выбранном варианте нет сделок на этом периоде.</div>';
+    updateCursor(B.t[B.t.length-1]);requestAnimationFrame(renderTradeBoxes);
+  }
+  function clearExclusive(except){['toggleAbsFilter','toggleAnchorFilter','toggleInverse','toggleRr','toggleVwapZ','toggleVwapRr'].forEach(id=>{if(id!==except)document.getElementById(id).checked=false;});}
+  document.getElementById('toggleAbsFilter').addEventListener('change',e=>{if(e.target.checked){document.getElementById('toggleInverse').checked=false;document.getElementById('toggleRr').checked=false;document.getElementById('toggleVwapZ').checked=false;document.getElementById('toggleVwapRr').checked=false;}applyVariant();});
+  document.getElementById('toggleAnchorFilter').addEventListener('change',e=>{if(e.target.checked){document.getElementById('toggleInverse').checked=false;document.getElementById('toggleRr').checked=false;document.getElementById('toggleVwapZ').checked=false;document.getElementById('toggleVwapRr').checked=false;}applyVariant();});
+  document.getElementById('toggleInverse').addEventListener('change',e=>{if(e.target.checked)clearExclusive('toggleInverse');applyVariant();});
+  document.getElementById('toggleRr').addEventListener('change',e=>{if(e.target.checked)clearExclusive('toggleRr');applyVariant();});
+  document.getElementById('toggleVwapZ').addEventListener('change',e=>{if(e.target.checked)clearExclusive('toggleVwapZ');applyVariant();});
+  document.getElementById('toggleVwapRr').addEventListener('change',e=>{if(e.target.checked)clearExclusive('toggleVwapRr');applyVariant();});
+
+  function setRange(code){document.querySelectorAll('.range').forEach(b=>b.classList.toggle('active',b.dataset.range===code));const end=B.t[B.t.length-1];if(code==='2m'){nvdaChart.timeScale().setVisibleRange({from:B.t[0],to:end});return;}if(code==='1m'){nvdaChart.timeScale().setVisibleRange({from:end-31*86400,to:end});return;}const dates=[];for(const t of B.t){const k=dateKey(t);if(!dates.length||dates[dates.length-1].key!==k)dates.push({key:k,time:t});}const days=code==='1d'?1:5;const from=dates[Math.max(0,dates.length-days)].time;nvdaChart.timeScale().setVisibleRange({from,to:end});}
+  document.querySelectorAll('.range').forEach(b=>b.addEventListener('click',()=>setRange(b.dataset.range)));
+
+  const ro=new ResizeObserver(()=>{nvdaChart.resize(nvdaEl.clientWidth,nvdaEl.clientHeight);qqqChart.resize(qqqEl.clientWidth,qqqEl.clientHeight);zChart.resize(zEl.clientWidth,zEl.clientHeight);equityChart.resize(equityEl.clientWidth,equityEl.clientHeight);requestAnimationFrame(renderTradeBoxes);});
+  ro.observe(document.querySelector('.shell'));
+  applyVariant();setRange('2m');setTimeout(()=>{setRange('2m');renderTradeBoxes();},150);
+})();
+</script>
+</body>
+</html>

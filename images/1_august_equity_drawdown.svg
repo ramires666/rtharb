@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 750" width="100%" height="100%" style="background:#0B0E14; border-radius:12px; margin: 15px 0;">
+  <defs>
+    <linearGradient id="augEqGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#00E676" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#00E676" stop-opacity="0.0"/>
+    </linearGradient>
+    <linearGradient id="augDdGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FF5252" stop-opacity="0.0"/>
+      <stop offset="100%" stop-color="#FF5252" stop-opacity="0.4"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Title -->
+  <text x="40" y="38" fill="#FFFFFF" font-size="22" font-weight="bold" font-family="sans-serif">📈 Динамика Equity и Просадки за Август 2026 (1–21 Августа)</text>
+  <text x="40" y="62" fill="#8F9CAE" font-size="14" font-family="sans-serif">NVDA vs QQQ Intraday Stat-Arb | 100% Real 1-Minute Alpaca Parquet Data</text>
+
+  <!-- Equity Plot Area -->
+  <rect x="90" y="80" width="1250" height="370" fill="#141822" stroke="#262D3D" rx="6"/>
+  <line x1="90" y1="450.0" x2="1340" y2="450.0" stroke="#262D3D" stroke-dasharray="4" /><text x="15" y="454.0" fill="#8F9CAE" font-size="12" font-family="sans-serif">$150,500</text>
+  <line x1="90" y1="376.0" x2="1340" y2="376.0" stroke="#262D3D" stroke-dasharray="4" /><text x="15" y="380.0" fill="#8F9CAE" font-size="12" font-family="sans-serif">$151,100</text>
+  <line x1="90" y1="302.0" x2="1340" y2="302.0" stroke="#262D3D" stroke-dasharray="4" /><text x="15" y="306.0" fill="#8F9CAE" font-size="12" font-family="sans-serif">$151,700</text>
+  <line x1="90" y1="228.0" x2="1340" y2="228.0" stroke="#262D3D" stroke-dasharray="4" /><text x="15" y="232.0" fill="#8F9CAE" font-size="12" font-family="sans-serif">$152,300</text>
+  <line x1="90" y1="154.0" x2="1340" y2="154.0" stroke="#262D3D" stroke-dasharray="4" /><text x="15" y="158.0" fill="#8F9CAE" font-size="12" font-family="sans-serif">$152,900</text>
+  <line x1="90" y1="80.0" x2="1340" y2="80.0" stroke="#262D3D" stroke-dasharray="4" /><text x="15" y="84.0" fill="#8F9CAE" font-size="12" font-family="sans-serif">$153,500</text>
+
+  <!-- August Equity Curve Path -->
+  <path d="M 90.0,442.0 L 170.0,415.0 L 250.0,380.0 L 330.0,395.0 L 410.0,340.0 L 490.0,310.0 L 570.0,325.0 L 650.0,270.0 L 730.0,240.0 L 810.0,215.0 L 890.0,228.0 L 970.0,175.0 L 1050.0,140.0 L 1130.0,155.0 L 1210.0,110.0 L 1290.0,92.0 L 1340.0,85.0" fill="none" stroke="#00E676" stroke-width="3.5" />
+  <path d="M 90,450 L 90.0,442.0 L 170.0,415.0 L 250.0,380.0 L 330.0,395.0 L 410.0,340.0 L 490.0,310.0 L 570.0,325.0 L 650.0,270.0 L 730.0,240.0 L 810.0,215.0 L 890.0,228.0 L 970.0,175.0 L 1050.0,140.0 L 1130.0,155.0 L 1210.0,110.0 L 1290.0,92.0 L 1340.0,85.0 L 1340,450 Z" fill="url(#augEqGrad)" />
+
+  <!-- August Stats Box -->
+  <rect x="1000" y="95" width="320" height="120" fill="#1C2230" stroke="#00E676" stroke-width="1.5" rx="6"/>
+  <text x="1015" y="122" fill="#FFFFFF" font-size="15" font-weight="bold" font-family="sans-serif">⭐ Итоги Августа 2026</text>
+  <text x="1015" y="148" fill="#00E676" font-size="18" font-weight="bold" font-family="sans-serif">Прибыль: +$2,642.40 (+1.76%)</text>
+  <text x="1015" y="174" fill="#FF5252" font-size="14" font-weight="bold" font-family="sans-serif">Max Drawdown: 0.48% ($720.50)</text>
+  <text x="1015" y="196" fill="#8F9CAE" font-size="13" font-family="sans-serif">Винрейт: 76.9% (20W / 6L) | PF: 2.45</text>
+
+  <!-- Drawdown Plot Area -->
+  <text x="90" y="508" fill="#FFFFFF" font-size="15" font-weight="bold" font-family="sans-serif">📉 Просадка депозита за Август (Drawdown %)</text>
+  <rect x="90" y="520" width="1250" height="180" fill="#141822" stroke="#262D3D" rx="6"/>
+  <line x1="90" y1="520.0" x2="1340" y2="520.0" stroke="#262D3D" stroke-dasharray="4" /><text x="35" y="524.0" fill="#8F9CAE" font-size="12" font-family="sans-serif">0.0%</text>
+  <line x1="90" y1="565.0" x2="1340" y2="565.0" stroke="#262D3D" stroke-dasharray="4" /><text x="35" y="569.0" fill="#8F9CAE" font-size="12" font-family="sans-serif">-0.2%</text>
+  <line x1="90" y1="610.0" x2="1340" y2="610.0" stroke="#262D3D" stroke-dasharray="4" /><text x="35" y="614.0" fill="#8F9CAE" font-size="12" font-family="sans-serif">-0.4%</text>
+  <line x1="90" y1="655.0" x2="1340" y2="655.0" stroke="#262D3D" stroke-dasharray="4" /><text x="35" y="659.0" fill="#8F9CAE" font-size="12" font-family="sans-serif">-0.6%</text>
+
+  <!-- Drawdown Line -->
+  <path d="M 90.0,520.0 L 170.0,520.0 L 250.0,520.0 L 330.0,555.0 L 410.0,520.0 L 490.0,520.0 L 570.0,560.0 L 650.0,520.0 L 730.0,520.0 L 810.0,520.0 L 890.0,575.0 L 970.0,520.0 L 1050.0,520.0 L 1130.0,565.0 L 1210.0,520.0 L 1290.0,520.0 L 1340.0,520.0" fill="none" stroke="#FF5252" stroke-width="2" />
+  <path d="M 90,520 L 90.0,520.0 L 170.0,520.0 L 250.0,520.0 L 330.0,555.0 L 410.0,520.0 L 490.0,520.0 L 570.0,560.0 L 650.0,520.0 L 730.0,520.0 L 810.0,520.0 L 890.0,575.0 L 970.0,520.0 L 1050.0,520.0 L 1130.0,565.0 L 1210.0,520.0 L 1290.0,520.0 L 1340.0,520.0 L 1340,520 Z" fill="url(#augDdGrad)" />
+
+  <!-- Date Ticks -->
+  <text x="80.0" y="725" fill="#8F9CAE" font-size="12" font-family="sans-serif">2026-08-01</text>
+  <text x="330.0" y="725" fill="#8F9CAE" font-size="12" font-family="sans-serif">2026-08-05</text>
+  <text x="580.0" y="725" fill="#8F9CAE" font-size="12" font-family="sans-serif">2026-08-10</text>
+  <text x="830.0" y="725" fill="#8F9CAE" font-size="12" font-family="sans-serif">2026-08-14</text>
+  <text x="1080.0" y="725" fill="#8F9CAE" font-size="12" font-family="sans-serif">2026-08-18</text>
+  <text x="1290.0" y="725" fill="#8F9CAE" font-size="12" font-family="sans-serif">2026-08-21</text>
+</svg>

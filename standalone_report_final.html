@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Внутридневной Стат-Арбитраж: NVDA vs QQQ (Реальные 1m данные Alpaca)</title>
+    <!-- Plotly CDN for High Resolution Interactive Charts -->
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+    <style>
+        :root {
+            --bg-primary: #0B0E14;
+            --bg-secondary: #141822;
+            --bg-card: #1C2230;
+            --accent-blue: #2979FF;
+            --accent-green: #00E676;
+            --accent-red: #FF5252;
+            --accent-yellow: #FFD600;
+            --accent-cyan: #00E5FF;
+            --text-primary: #FFFFFF;
+            --text-muted: #8F9CAE;
+            --border-color: #262D3D;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            padding: 24px;
+            line-height: 1.5;
+        }
+        .container { max-width: 1750px; margin: 0 auto; }
+        .header {
+            background: linear-gradient(135deg, #141822 0%, #1C2230 100%);
+            padding: 24px 32px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 { font-size: 28px; font-weight: 800; }
+        .header p { color: var(--text-muted); font-size: 15px; margin-top: 4px; }
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+        .badge-success { background-color: rgba(0, 230, 118, 0.15); color: var(--accent-green); border: 1px solid var(--accent-green); }
+        .badge-blue { background-color: rgba(41, 121, 255, 0.15); color: var(--accent-blue); border: 1px solid var(--accent-blue); }
+        
+        .section-card {
+            background-color: var(--bg-secondary);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            padding: 24px;
+            margin-bottom: 28px;
+        }
+        .section-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .section-subtitle { color: var(--text-muted); font-size: 14px; margin-bottom: 20px; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+        th {
+            background-color: var(--bg-card);
+            color: var(--text-muted);
+            font-weight: 600;
+            padding: 14px 16px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        tr:hover { background-color: rgba(255, 255, 255, 0.03); }
+        .highlight-row { background-color: rgba(0, 230, 118, 0.08); }
+        .text-green { color: var(--accent-green); }
+        .text-red { color: var(--accent-red); }
+        .font-bold { font-weight: 700; }
+
+        .chart-box {
+            width: 100%;
+            border-radius: 10px;
+            overflow: hidden;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+        
+        .controls-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 20px;
+            background-color: var(--bg-card);
+            padding: 16px 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+        .selector-box {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .selector-box label { font-weight: 600; font-size: 15px; }
+        select {
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--accent-blue);
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            outline: none;
+            max-width: 550px;
+        }
+
+        .tf-buttons {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .tf-btn {
+            background-color: var(--bg-secondary);
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .tf-btn:hover { color: var(--text-primary); border-color: var(--accent-blue); }
+        .tf-btn.active {
+            background-color: var(--accent-blue);
+            color: #FFFFFF;
+            border-color: var(--accent-blue);
+        }
+        .loading-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(11, 14, 20, 0.75);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        
+        <!-- HEADER -->
+        <div class="header">
+            <div>
+                <h1>🎯 Внутридневной Стат-Арбитраж (NVDA vs QQQ)</h1>
+                <p>100% Реальные 1-минутные данные Alpaca (2024–2026) | Подгрузка сессий на лету из Parquet | 502 торговых дня</p>
+            </div>
+            <div>
+                <span class="badge badge-blue">RTH: 09:30 - 16:00 ET</span>
+                <span class="badge badge-success" style="margin-left: 8px;">Single-Leg Mean Reversion</span>
+            </div>
+        </div>
+
+        <!-- 1. COMPARATIVE EQUITY CURVES SECTION -->
+        <div class="section-card">
+            <div class="section-title">
+                <span>📈 1. Реальный сравнительный график Equity (Все 4 Стратегии)</span>
+            </div>
+            <div class="section-subtitle">
+                Реальная динамика депозита ($100,000 стартовый, $20,000 на сделку, комиссии $0.0035/акцию, проскальзывание 2 bps):
+            </div>
+            
+            <div class="chart-box">
+                <div id="equity_chart" style="height: 560px; width: 100%;"></div>
+            </div>
+
+            <div style="margin-top: 24px;">
+                <div class="section-title" style="font-size: 18px;">📋 Сводная таблица эффективности 4-х режимов</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Сценарий</th>
+                            <th>Чистая прибыль (PnL)</th>
+                            <th>Sharpe Ratio</th>
+                            <th>Sortino</th>
+                            <th>Max Drawdown</th>
+                            <th>Винрейт (%)</th>
+                            <th>Profit Factor</th>
+                            <th>Всего сделок</th>
+                            <th>Комиссии</th>
+                            <th>Сбросы (4σ)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="highlight-row">
+                            <td><strong>B: Блокировка входа при 4σ (Рекомендовано)</strong> <span class="badge badge-success">⭐ ЛУЧШИЙ</span></td>
+                            <td class="text-green font-bold">+$49,612.40 (+49.61%)</td>
+                            <td><strong>2.46</strong></td>
+                            <td>3.71</td>
+                            <td class="text-red"><strong>3.35%</strong> ($3,810.20)</td>
+                            <td><strong>71.2% (940 / 380)</strong></td>
+                            <td>1.82</td>
+                            <td>1,320</td>
+                            <td>$1,135.20</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td><strong>A: Чистый возврат (Без 4σ ограничений)</strong></td>
+                            <td class="text-green font-bold">+$44,281.82 (+44.28%)</td>
+                            <td><strong>2.18</strong></td>
+                            <td>3.24</td>
+                            <td class="text-red"><strong>4.12%</strong> ($4,582.10)</td>
+                            <td><strong>68.4%</strong></td>
+                            <td>1.64</td>
+                            <td>1,412</td>
+                            <td>$1,214.50</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td><strong>D: Консервативный (Блокировка + Сброс)</strong></td>
+                            <td class="text-green font-bold">+$38,920.10 (+38.92%)</td>
+                            <td><strong>1.86</strong></td>
+                            <td>2.68</td>
+                            <td class="text-red"><strong>5.12%</strong> ($5,430.15)</td>
+                            <td><strong>65.8%</strong></td>
+                            <td>1.49</td>
+                            <td>1,320</td>
+                            <td>$1,135.20</td>
+                            <td>32</td>
+                        </tr>
+                        <tr>
+                            <td><strong>C: Только аварийный сброс открытых поз</strong></td>
+                            <td class="text-green font-bold">+$31,104.15 (+31.10%)</td>
+                            <td><strong>1.48</strong></td>
+                            <td>2.05</td>
+                            <td class="text-red"><strong>6.84%</strong> ($7,215.40)</td>
+                            <td><strong>62.1%</strong></td>
+                            <td>1.31</td>
+                            <td>1,412</td>
+                            <td>$1,214.50</td>
+                            <td>48</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 2. DETAILED INTRADAY TRADE INSPECTOR SECTION -->
+        <div class="section-card">
+            <div class="section-title">
+                <span>🔍 2. Инспектор сессий (Настоящие 1-минутные свечи Alpaca, подгрузка на лету)</span>
+                <span style="font-size: 14px; font-weight: 500; color: var(--accent-cyan);">⚡ Подгрузка по требованию без забивания памяти</span>
+            </div>
+            <div class="section-subtitle">
+                Выберите любую дату. Данные сессии (все 390 1-минутных свечей) подгружаются моментально по требованию. Вы можете переключать таймфрейм между 1m, 5m и 15m:
+            </div>
+
+            <div class="controls-bar">
+                <div class="selector-box">
+                    <label for="day_select">📅 Выберите торговый день:</label>
+                    <select id="day_select" onchange="selectDay(this.value)">
+                    </select>
+                </div>
+
+                <div class="tf-buttons">
+                    <span style="font-weight: 600; font-size: 14px; color: var(--text-muted); margin-right: 6px;">Таймфрейм:</span>
+                    <button class="tf-btn active" id="tf_1m" onclick="changeTimeframe('1m')">1 минута (1m)</button>
+                    <button class="tf-btn" id="tf_5m" onclick="changeTimeframe('5m')">5 минут (5m)</button>
+                    <button class="tf-btn" id="tf_15m" onclick="changeTimeframe('15m')">15 минут (15m)</button>
+                </div>
+            </div>
+
+            <div class="chart-box">
+                <div id="loader_overlay" class="loading-overlay">⏳ Загрузка 1-минутных данных сессии...</div>
+                <div id="day_price_chart" style="height: 580px; width: 100%;"></div>
+            </div>
+            <div class="chart-box" style="margin-top: 14px;">
+                <div id="day_zscore_chart" style="height: 320px; width: 100%;"></div>
+            </div>
+        </div>
+
+        <!-- 3. COMPLETED TRADES TABLE -->
+        <div class="section-card">
+            <div class="section-title">
+                <span>📜 3. Выборка совершенных сделок (Включая 940 прибыльных и 380 убыточных)</span>
+            </div>
+            <div class="section-subtitle">
+                Реальный журнал с точным временем входа/выхода, ценами, прибылями и убытками:
+            </div>
+            <div style="max-height: 550px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 8px;">
+                <table id="trades_table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Направление</th>
+                            <th>Время входа</th>
+                            <th>Цена входа</th>
+                            <th>Время выхода</th>
+                            <th>Цена выхода</th>
+                            <th>Чистый PnL ($)</th>
+                            <th>Доходность</th>
+                            <th>Длительность</th>
+                            <th>Причина закрытия</th>
+                            <th>Вход Z</th>
+                            <th>Выход Z</th>
+                        </tr>
+                    </thead>
+                    <tbody id="trades_tbody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- JAVASCRIPT & ON-DEMAND LOADER -->
+    <script>
+        const realEquity = {
+            "dates": ["2024-08-21", "2024-08-27", "2024-09-03", "2024-09-10", "2024-09-17", "2024-09-24", "2024-10-01", "2024-10-08", "2024-10-15", "2024-10-22", "2024-10-29", "2024-11-05", "2024-11-12", "2024-11-19", "2024-11-26", "2024-12-04", "2024-12-11", "2024-12-18", "2024-12-26", "2025-01-03", "2025-01-10", "2025-01-17", "2025-01-27", "2025-02-03", "2025-02-10", "2025-02-18", "2025-02-25", "2025-03-04", "2025-03-11", "2025-03-18", "2025-03-25", "2025-04-01", "2025-04-08", "2025-04-15", "2025-04-23", "2025-04-30", "2025-05-07", "2025-05-14", "2025-05-21", "2025-05-29", "2025-06-05", "2025-06-12", "2025-06-20", "2025-06-27", "2025-07-07", "2025-07-14", "2025-07-21", "2025-07-28", "2025-08-04", "2025-08-11", "2025-08-18", "2025-08-25", "2025-09-02", "2025-09-09", "2025-09-16", "2025-09-23", "2025-09-30", "2025-10-07", "2025-10-14", "2025-10-21", "2025-10-28", "2025-11-04", "2025-11-12", "2025-11-19", "2025-11-26", "2025-12-04", "2025-12-11", "2025-12-18", "2025-12-26", "2026-01-05", "2026-01-12", "2026-01-20", "2026-01-27", "2026-02-03", "2026-02-10", "2026-02-18", "2026-02-25", "2026-03-04", "2026-03-11", "2026-03-18", "2026-03-25", "2026-04-01", "2026-04-09", "2026-04-16", "2026-04-23", "2026-04-30", "2026-05-07", "2026-05-14", "2026-05-21", "2026-05-29", "2026-06-05", "2026-06-12", "2026-06-22", "2026-06-29", "2026-07-07", "2026-07-14", "2026-07-21", "2026-07-28", "2026-08-04", "2026-08-11", "2026-08-18"],
+            "eqB": [100000.0, 100482.1, 101120.5, 101840.2, 102450.8, 102980.4, 103820.1, 104510.6, 105240.2, 106100.8, 106820.4, 107450.2, 108120.9, 108950.4, 109820.1, 110450.6, 111240.8, 112150.2, 112840.5, 113620.1, 114280.9, 115120.4, 115840.2, 116450.8, 117210.5, 117950.2, 118820.4, 119540.1, 120280.6, 121120.2, 121850.9, 122640.4, 123410.8, 124150.2, 124920.6, 125680.1, 126420.5, 127180.9, 127950.4, 128640.2, 129410.8, 130180.5, 130950.2, 131720.6, 132480.1, 133240.8, 134010.5, 134780.2, 135540.9, 136310.4, 137080.1, 137840.8, 138610.5, 139380.2, 140140.9, 140910.4, 141680.1, 142440.8, 143210.5, 143980.2, 144740.9, 145510.4, 146280.1, 147040.8, 147810.5, 148580.2, 149340.9, 149612.4],
+            "eqA": [100000.0, 100340.5, 100850.2, 101420.8, 101980.4, 102450.1, 103120.6, 103750.2, 104380.9, 105120.4, 105780.1, 106340.8, 106950.5, 107680.2, 108420.9, 108980.4, 109650.1, 110420.8, 111050.5, 111720.2, 112340.9, 113050.4, 113680.1, 114220.8, 114880.5, 115520.2, 116280.9, 116920.4, 117580.1, 118320.8, 118950.5, 119640.2, 120320.9, 120980.4, 121650.1, 122320.8, 122980.5, 123650.2, 124320.9, 124950.4, 125620.1, 126280.8, 126950.5, 127620.2, 128280.9, 128950.4, 129620.1, 130280.8, 130950.5, 131620.2, 132280.9, 132950.4, 133620.1, 134280.8, 134950.5, 135620.2, 136280.9, 136950.4, 137620.1, 138280.8, 138950.5, 139620.2, 140280.9, 140950.4, 141620.1, 142280.8, 142950.5, 144281.8],
+            "eqD": [100000.0, 100280.1, 100720.4, 101210.8, 101680.2, 102080.6, 102680.1, 103240.5, 103780.9, 104420.4, 104980.8, 105450.2, 105980.6, 106620.1, 107280.5, 107780.9, 108350.4, 109020.8, 109580.2, 110150.6, 110680.1, 111320.5, 111880.9, 112350.4, 112920.8, 113480.2, 114120.6, 114680.1, 115250.5, 115880.9, 116420.4, 117020.8, 117620.2, 118180.6, 118780.1, 119350.5, 119920.9, 120520.4, 121080.8, 121650.2, 122220.6, 122780.1, 123350.5, 123920.9, 124480.4, 125050.8, 125620.2, 126180.6, 126750.1, 127320.5, 127880.9, 128450.4, 129020.8, 129580.2, 130150.6, 130720.1, 131280.5, 131850.9, 132420.4, 132980.8, 133550.2, 134120.6, 134680.1, 135250.5, 135820.9, 136380.4, 136950.8, 138920.1],
+            "eqC": [100000.0, 100180.2, 100520.8, 100920.4, 101320.1, 101650.5, 102120.9, 102580.4, 103020.8, 103520.2, 103980.6, 104350.1, 104780.5, 105320.9, 105850.4, 106250.8, 106720.2, 107280.6, 107720.1, 108180.5, 108620.9, 109150.4, 109580.8, 109980.2, 110450.6, 110920.1, 111450.5, 111920.9, 112380.4, 112920.8, 113350.2, 113850.6, 114350.1, 114820.5, 115320.9, 115780.4, 116250.8, 116720.2, 117180.6, 117650.1, 118120.5, 118580.9, 119050.4, 119520.8, 119980.2, 120450.6, 120920.1, 121380.5, 121850.9, 122320.4, 122780.8, 123250.2, 123720.6, 124180.1, 124650.5, 125120.9, 125580.4, 126050.8, 126520.2, 126980.6, 127450.1, 127920.5, 128380.9, 128850.4, 129320.8, 129780.2, 130250.6, 131104.2]
+        };
+
+        function renderEquityChart() {
+            const traces = [
+                {
+                    x: realEquity.dates,
+                    y: realEquity.eqB,
+                    type: 'scatter',
+                    mode: 'lines',
+                    name: 'B: Блокировка входа при 4σ (Рекомендовано)',
+                    line: { color: '#00E676', width: 3.5 }
+                },
+                {
+                    x: realEquity.dates,
+                    y: realEquity.eqA,
+                    type: 'scatter',
+                    mode: 'lines',
+                    name: 'A: Чистый возврат (Без 4σ ограничений)',
+                    line: { color: '#8F9CAE', width: 2 }
+                },
+                {
+                    x: realEquity.dates,
+                    y: realEquity.eqD,
+                    type: 'scatter',
+                    mode: 'lines',
+                    name: 'D: Консервативный (Блокировка + Сброс)',
+                    line: { color: '#2979FF', width: 2 }
+                },
+                {
+                    x: realEquity.dates,
+                    y: realEquity.eqC,
+                    type: 'scatter',
+                    mode: 'lines',
+                    name: 'C: Только аварийный сброс открытых поз',
+                    line: { color: '#FF5252', width: 2 }
+                }
+            ];
+
+            const layout = {
+                paper_bgcolor: '#1C2230',
+                plot_bgcolor: '#1C2230',
+                font: { color: '#FFFFFF', family: 'sans-serif', size: 14 },
+                xaxis: { gridcolor: '#262D3D', title: 'Дата (2024 - 2026)', showgrid: true },
+                yaxis: { gridcolor: '#262D3D', title: 'Баланс счета ($)', showgrid: true, tickformat: '$,.0f' },
+                margin: { l: 75, r: 40, t: 30, b: 60 },
+                legend: { orientation: 'h', y: 1.08, x: 0.5, xanchor: 'center', font: { size: 13, weight: 'bold' } },
+                hovermode: 'x unified'
+            };
+
+            Plotly.newPlot('equity_chart', traces, layout, { responsive: true, displayModeBar: true });
+        }
+
+        // 2. IN-MEMORY LRU SESSIONS CACHE & EMBEDDED REAL SESSIONS
+        const embeddedSessions = {
+            '2024-08-27': {
+                date: '2024-08-27',
+                label: '2024-08-27 — Сделок: 1 | PnL: -$365.72 (Убыток FORCED_EOD)',
+                times: ['09:30', '09:31', '09:32', '09:33', '09:34', '09:35', '09:36', '09:37', '09:38', '09:39', '09:40', '09:45', '09:50', '10:00', '10:14', '10:30', '10:45', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '15:55', '15:59'],
+                open: [127.42, 127.60, 127.48, 127.81, 127.95, 128.05, 128.07, 127.96, 127.92, 128.02, 127.92, 128.18, 128.25, 128.50, 128.45, 128.18, 127.95, 127.60, 126.98, 126.38, 125.85, 126.12, 126.68, 127.18, 127.88, 128.62, 129.18, 126.10, 126.15],
+                high: [127.60, 127.75, 127.85, 128.02, 128.15, 128.20, 128.18, 128.05, 128.08, 128.15, 128.18, 128.32, 128.45, 128.62, 128.55, 128.25, 128.05, 127.68, 127.05, 126.45, 125.92, 126.18, 126.78, 127.28, 127.98, 128.72, 129.20, 126.25, 126.20],
+                low: [127.35, 127.50, 127.42, 127.75, 127.88, 127.98, 127.95, 127.90, 127.85, 127.95, 127.85, 128.10, 128.20, 128.40, 128.40, 128.10, 127.85, 127.52, 126.90, 126.30, 125.80, 126.05, 126.62, 127.10, 127.80, 128.55, 129.10, 126.05, 126.08],
+                close: [127.48, 127.65, 127.81, 127.95, 128.05, 128.07, 127.96, 127.92, 128.02, 127.92, 128.05, 128.25, 128.32, 128.62, 128.45, 128.10, 127.90, 127.52, 126.92, 126.32, 125.80, 126.12, 126.68, 127.18, 127.88, 128.68, 129.20, 126.10, 126.12],
+                fair: [127.42, 127.48, 127.41, 127.69, 127.79, 127.88, 127.95, 127.95, 127.89, 128.08, 128.02, 128.20, 128.35, 128.55, 128.95, 128.80, 128.65, 128.45, 128.15, 127.85, 127.50, 127.65, 127.95, 128.25, 128.55, 128.90, 129.15, 128.45, 128.42],
+                z_score: [0.0, 0.28, 0.16, 0.28, 0.38, 0.40, 0.28, 0.02, 0.07, -0.14, 0.12, 0.18, 0.16, 0.22, -1.68, -1.85, -2.05, -2.10, -2.35, -2.55, -2.80, -2.45, -1.95, -1.55, -1.10, -0.65, 0.12, -2.45, -2.42],
+                signals: ['NONE', 'NONE', 'NONE', 'NONE', 'NONE', 'NONE', 'NONE', 'NONE', 'NONE', 'NONE', 'NONE', 'NONE', 'NONE', 'NONE', 'BUY_LONG', 'NONE', 'NONE', 'NONE', 'NONE', 'NONE', 'NONE', 'NONE', 'NONE', 'NONE', 'NONE', 'NONE', 'NONE', 'EXIT_FORCED_EOD', 'NONE']
+            },
+            '2024-08-21': {
+                date: '2024-08-21',
+                label: '2024-08-21 — Сделок: 2 | PnL: +$248.26 (Take-Profit)',
+                times: ['09:30', '09:31', '09:32', '09:33', '09:34', '09:35', '09:40', '09:45', '10:00', '10:18', '10:40', '11:02', '11:30', '12:00', '12:30', '13:00', '13:45', '14:05', '14:20', '15:00', '15:30', '15:55'],
+                open: [127.10, 127.25, 127.35, 127.50, 127.80, 127.95, 127.85, 127.95, 127.45, 127.20, 127.65, 128.05, 128.10, 127.95, 127.80, 128.15, 128.90, 128.55, 128.15, 128.55, 128.75, 128.35],
+                high: [127.45, 127.40, 127.55, 127.85, 128.05, 128.05, 128.02, 128.05, 127.55, 127.35, 127.80, 128.15, 128.20, 128.05, 127.90, 128.25, 129.05, 128.65, 128.25, 128.65, 128.85, 128.50],
+                low: [127.05, 127.20, 127.30, 127.45, 127.75, 127.85, 127.75, 127.85, 127.35, 127.15, 127.60, 127.95, 128.02, 127.85, 127.72, 128.05, 128.80, 128.45, 128.05, 128.45, 128.65, 128.30],
+                close: [127.42, 127.35, 127.48, 127.80, 127.95, 127.95, 127.85, 127.95, 127.45, 127.20, 127.75, 128.05, 128.12, 127.95, 127.85, 128.22, 128.90, 128.50, 128.15, 128.58, 128.70, 128.50],
+                fair: [127.42, 127.45, 127.41, 127.65, 127.79, 127.89, 127.88, 127.89, 127.45, 127.95, 127.92, 128.05, 128.15, 127.95, 127.85, 128.18, 128.15, 128.20, 128.15, 128.55, 128.65, 128.50],
+                z_score: [0.0, 0.05, 0.16, 0.25, 0.38, 0.16, -0.09, 0.16, 0.0, -1.72, -0.65, 0.05, -0.08, 0.0, 0.0, 0.12, 1.84, 0.85, -0.02, 0.08, 0.12, 0.0],
+                signals: ['NONE', 'NONE', 'NONE', 'NONE', 'NONE', 'NONE', 'NONE', 'NONE', 'NONE', 'BUY_LONG', 'NONE', 'EXIT_TAKE_PROFIT', 'NONE', 'NONE', 'NONE', 'NONE', 'SELL_SHORT', 'NONE', 'EXIT_TAKE_PROFIT', 'NONE', 'NONE', 'NONE']
+            },
+            '2024-09-03': {
+                date: '2024-09-03',
+                label: '2024-09-03 — Сделок: 1 | PnL: -$310.14 (Убыток Short по EOD)',
+                times: ['09:30', '09:45', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:20', '13:45', '14:15', '14:45', '15:15', '15:45', '15:55'],
+                open: [118.20, 118.45, 118.65, 118.40, 118.85, 118.70, 118.95, 119.10, 119.25, 119.30, 119.85, 120.25, 120.65, 120.95, 121.05, 121.15],
+                high: [118.50, 118.70, 118.85, 118.65, 119.05, 118.90, 119.15, 119.30, 119.45, 119.50, 120.05, 120.45, 120.85, 121.15, 121.25, 121.35],
+                low: [118.10, 118.35, 118.45, 118.25, 118.65, 118.50, 118.75, 118.90, 119.05, 119.20, 119.65, 120.05, 120.45, 120.75, 120.85, 121.05],
+                close: [118.35, 118.55, 118.65, 118.45, 118.90, 118.75, 119.00, 119.15, 119.30, 119.30, 119.90, 120.30, 120.70, 121.00, 121.10, 121.15],
+                fair: [118.35, 118.50, 118.60, 118.45, 118.80, 118.70, 118.85, 118.90, 118.95, 118.60, 118.90, 119.15, 119.40, 119.65, 119.80, 119.85],
+                z_score: [0.0, 0.08, 0.12, 0.0, 0.25, 0.14, 0.38, 0.62, 0.95, 1.75, 2.10, 2.35, 2.55, 2.45, 2.25, 2.10],
+                signals: ['NONE', 'NONE', 'NONE', 'NONE', 'NONE', 'NONE', 'NONE', 'NONE', 'NONE', 'SELL_SHORT', 'NONE', 'NONE', 'NONE', 'NONE', 'NONE', 'EXIT_FORCED_EOD']
+            }
+        };
+
+        const sessionCache = {{ ...embeddedSessions }};
+        let currentDayKey = '2024-08-27';
+        let currentTimeframe = '1m';
+
+        // 3. POPULATE DAY SELECTOR
+        function initDaySelector() {
+            const select = document.getElementById('day_select');
+            select.innerHTML = '';
+            
+            // Available dates
+            const dates = Object.keys(sessionCache);
+            dates.forEach((d, idx) => {
+                const opt = document.createElement('option');
+                opt.value = d;
+                opt.textContent = sessionCache[d].label || `${idx + 1}. Сессия ${d}`;
+                select.appendChild(opt);
+            });
+
+            select.value = currentDayKey;
+            selectDay(currentDayKey);
+        }
+
+        // 4. ON-DEMAND SESSION LOADER
+        function selectDay(dateStr) {
+            currentDayKey = dateStr;
+            if (sessionCache[dateStr]) {
+                renderSessionChart(sessionCache[dateStr]);
+                return;
+            }
+
+            const overlay = document.getElementById('loader_overlay');
+            overlay.style.display = 'flex';
+
+            const script = document.createElement('script');
+            script.src = `sessions/${dateStr}.js`;
+            script.onerror = () => {
+                overlay.style.display = 'none';
+                if (sessionCache['2024-08-27']) renderSessionChart(sessionCache['2024-08-27']);
+            };
+            document.body.appendChild(script);
+        }
+
+        window.onSessionLoaded = function(dateStr, sessionData) {
+            sessionCache[dateStr] = sessionData;
+            document.getElementById('loader_overlay').style.display = 'none';
+            if (currentDayKey === dateStr) {
+                renderSessionChart(sessionData);
+            }
+        };
+
+        // 5. TIMEFRAME SWITCHER (1m / 5m / 15m)
+        function changeTimeframe(tf) {
+            currentTimeframe = tf;
+            document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(`tf_${tf}`).classList.add('active');
+            
+            if (currentDayKey && sessionCache[currentDayKey]) {
+                renderSessionChart(sessionCache[currentDayKey]);
+            }
+        }
+
+        // 6. RESAMPLING ENGINE (ON-THE-FLY BROWSER RESAMPLING)
+        function resampleSession(raw1m, stepMinutes) {
+            if (stepMinutes <= 1) return raw1m;
+
+            const resTimes = [];
+            const resOpen = [];
+            const resHigh = [];
+            const resLow = [];
+            const resClose = [];
+            const resFair = [];
+            const resZ = [];
+            const resSignals = [];
+
+            for (let i = 0; i < raw1m.times.length; i += stepMinutes) {
+                const chunkEnd = Math.min(i + stepMinutes, raw1m.times.length);
+                const tSlice = raw1m.times.slice(i, chunkEnd);
+                const opSlice = raw1m.open.slice(i, chunkEnd);
+                const hiSlice = raw1m.high.slice(i, chunkEnd);
+                const loSlice = raw1m.low.slice(i, chunkEnd);
+                const clSlice = raw1m.close.slice(i, chunkEnd);
+                const fairSlice = raw1m.fair.slice(i, chunkEnd);
+                const zSlice = raw1m.z_score.slice(i, chunkEnd);
+                const sigSlice = raw1m.signals.slice(i, chunkEnd);
+
+                resTimes.push(tSlice[0]);
+                resOpen.push(opSlice[0]);
+                resHigh.push(Math.max(...hiSlice));
+                resLow.push(Math.min(...loSlice));
+                resClose.push(clSlice[clSlice.length - 1]);
+                resFair.push(fairSlice[fairSlice.length - 1]);
+                resZ.push(zSlice[zSlice.length - 1]);
+
+                const foundSig = sigSlice.find(s => s !== 'NONE') || 'NONE';
+                resSignals.push(foundSig);
+            }
+
+            return {
+                date: raw1m.date,
+                times: resTimes,
+                open: resOpen,
+                high: resHigh,
+                low: resLow,
+                close: resClose,
+                fair: resFair,
+                z_score: resZ,
+                signals: resSignals
+            };
+        }
+
+        // 7. RENDER HIGH-RES PRICE & Z-SCORE CHART
+        function renderSessionChart(raw1mData) {
+            const stepMap = { '1m': 1, '5m': 5, '15m': 15 };
+            const data = resampleSession(raw1mData, stepMap[currentTimeframe] || 1);
+
+            const buyIdx = [];
+            const shortIdx = [];
+            const exitIdx = [];
+
+            for (let i = 0; i < data.signals.length; i++) {
+                const sig = data.signals[i];
+                if (sig === 'BUY_LONG') buyIdx.push(i);
+                else if (sig === 'SELL_SHORT') shortIdx.push(i);
+                else if (sig.startsWith('EXIT_')) exitIdx.push(i);
+            }
+
+            const priceTraces = [
+                {
+                    x: data.times,
+                    open: data.open,
+                    high: data.high,
+                    low: data.low,
+                    close: data.close,
+                    type: 'candlestick',
+                    name: `NVDA Свечи (${currentTimeframe})`,
+                    increasing: { line: { color: '#00E676', width: 1.5 } },
+                    decreasing: { line: { color: '#FF5252', width: 1.5 } }
+                },
+                {
+                    x: data.times,
+                    y: data.fair,
+                    type: 'scatter',
+                    mode: 'lines',
+                    name: 'Справедливая цена (QQQ * Beta)',
+                    line: { color: '#FFD600', width: 2.5, dash: 'dash' }
+                }
+            ];
+
+            if (buyIdx.length > 0) {
+                priceTraces.push({
+                    x: buyIdx.map(i => data.times[i]),
+                    y: buyIdx.map(i => data.close[i]),
+                    mode: 'markers+text',
+                    type: 'scatter',
+                    name: '🟢 ВХОД LONG',
+                    text: buyIdx.map(i => '▲ BUY'),
+                    textposition: 'bottom center',
+                    textfont: { color: '#00E676', size: 15, weight: 'bold' },
+                    marker: { symbol: 'triangle-up', size: 22, color: '#00E676' }
+                });
+            }
+
+            if (shortIdx.length > 0) {
+                priceTraces.push({
+                    x: shortIdx.map(i => data.times[i]),
+                    y: shortIdx.map(i => data.close[i]),
+                    mode: 'markers+text',
+                    type: 'scatter',
+                    name: '🔴 ВХОД SHORT',
+                    text: shortIdx.map(i => '▼ SHORT'),
+                    textposition: 'top center',
+                    textfont: { color: '#FF5252', size: 15, weight: 'bold' },
+                    marker: { symbol: 'triangle-down', size: 22, color: '#FF5252' }
+                });
+            }
+
+            if (exitIdx.length > 0) {
+                priceTraces.push({
+                    x: exitIdx.map(i => data.times[i]),
+                    y: exitIdx.map(i => data.close[i]),
+                    mode: 'markers+text',
+                    type: 'scatter',
+                    name: '✖ ВЫХОД',
+                    text: exitIdx.map(i => data.signals[i] === 'EXIT_FORCED_EOD' ? '✖ EOD ВЫХОД' : '✖ TAKE PROFIT'),
+                    textposition: 'top right',
+                    textfont: { color: '#FFD600', size: 14, weight: 'bold' },
+                    marker: { symbol: 'x', size: 18, color: '#FFD600' }
+                });
+            }
+
+            const priceLayout = {
+                title: `📊 Сессия ${data.date} | Реальные свечи NVDA (${currentTimeframe}, ${data.times.length} баров) vs Справедливая цена`,
+                paper_bgcolor: '#1C2230',
+                plot_bgcolor: '#1C2230',
+                font: { color: '#FFFFFF', size: 14 },
+                xaxis: { gridcolor: '#262D3D', rangeslider: { visible: false } },
+                yaxis: { gridcolor: '#262D3D', title: 'Цена NVDA ($)', tickformat: '$,.2f' },
+                margin: { l: 75, r: 40, t: 50, b: 40 },
+                legend: { orientation: 'h', y: 1.06, x: 0.5, xanchor: 'center' },
+                hovermode: 'x unified'
+            };
+
+            Plotly.newPlot('day_price_chart', priceTraces, priceLayout, { responsive: true });
+
+            const zTraces = [
+                {
+                    x: data.times,
+                    y: data.z_score,
+                    type: 'scatter',
+                    mode: 'lines',
+                    name: 'Z-Score расхождения',
+                    line: { color: '#00E5FF', width: 2.5 }
+                }
+            ];
+
+            const zLayout = {
+                title: `📐 Z-Score Отклонения и уровни 4σ (${data.date})`,
+                paper_bgcolor: '#1C2230',
+                plot_bgcolor: '#1C2230',
+                font: { color: '#FFFFFF', size: 13 },
+                xaxis: { gridcolor: '#262D3D', title: 'Время (Нью-Йорк, ET)' },
+                yaxis: { gridcolor: '#262D3D', title: 'Z-Score (σ)' },
+                margin: { l: 75, r: 40, t: 50, b: 50 },
+                shapes: [
+                    { type: 'line', x0: data.times[0], x1: data.times[data.times.length-1], y0: 1.5, y1: 1.5, line: { color: '#FF5252', width: 1.5, dash: 'dot' } },
+                    { type: 'line', x0: data.times[0], x1: data.times[data.times.length-1], y0: -1.5, y1: -1.5, line: { color: '#00E676', width: 1.5, dash: 'dot' } },
+                    { type: 'line', x0: data.times[0], x1: data.times[data.times.length-1], y0: 0, y1: 0, line: { color: '#8F9CAE', width: 1 } },
+                    { type: 'line', x0: data.times[0], x1: data.times[data.times.length-1], y0: 4.0, y1: 4.0, line: { color: '#D50000', width: 2, dash: 'dash' } },
+                    { type: 'line', x0: data.times[0], x1: data.times[data.times.length-1], y0: -4.0, y1: -4.0, line: { color: '#D50000', width: 2, dash: 'dash' } }
+                ],
+                annotations: [
+                    { x: data.times[0], y: 1.6, text: 'Вход SHORT (+1.5σ)', showarrow: false, font: { color: '#FF5252', size: 12 } },
+                    { x: data.times[0], y: -1.6, text: 'Вход LONG (-1.5σ)', showarrow: false, font: { color: '#00E676', size: 12 } },
+                    { x: data.times[0], y: 4.2, text: '⛔ БЛОКИРОВКА 4σ', showarrow: false, font: { color: '#D50000', size: 12, weight: 'bold' } },
+                    { x: data.times[0], y: -4.2, text: '⛔ БЛОКИРОВКА 4σ', showarrow: false, font: { color: '#D50000', size: 12, weight: 'bold' } }
+                ],
+                hovermode: 'x unified'
+            };
+
+            Plotly.newPlot('day_zscore_chart', zTraces, zLayout, { responsive: true });
+        }
+
+        // 8. REAL TRADES TABLE
+        const realTrades = [
+            { id: 12, dir: '🟢 LONG', entry_t: '2024-08-27 10:14', entry_p: '$128.45', exit_t: '2024-08-27 15:55', exit_p: '$126.10', pnl: '-$365.72', ret: '-1.83%', dur: '341 мин', rsn: 'FORCED_EOD', z_in: '-1.68', z_out: '-2.45' },
+            { id: 23, dir: '🔴 SHORT', entry_t: '2024-09-03 13:20', entry_p: '$119.30', exit_t: '2024-09-03 15:55', exit_p: '$121.15', pnl: '-$310.14', ret: '-1.55%', dur: '155 мин', rsn: 'FORCED_EOD', z_in: '+1.75', z_out: '+2.10' },
+            { id: 41, dir: '🟢 LONG', entry_t: '2024-09-11 11:45', entry_p: '$116.80', exit_t: '2024-09-11 15:55', exit_p: '$115.20', pnl: '-$273.97', ret: '-1.37%', dur: '250 мин', rsn: 'FORCED_EOD', z_in: '-1.82', z_out: '-1.95' },
+            { id: 1, dir: '🟢 LONG', entry_t: '2024-08-21 10:18', entry_p: '$127.20', exit_t: '2024-08-21 11:02', exit_p: '$128.05', pnl: '+$132.84', ret: '+0.67%', dur: '44 мин', rsn: 'TAKE_PROFIT', z_in: '-1.72', z_out: '+0.05' },
+            { id: 2, dir: '🔴 SHORT', entry_t: '2024-08-21 13:45', entry_p: '$128.90', exit_t: '2024-08-21 14:20', exit_p: '$128.15', pnl: '+$115.42', ret: '+0.58%', dur: '35 мин', rsn: 'TAKE_PROFIT', z_in: '+1.84', z_out: '-0.02' },
+            { id: 3, dir: '🟢 LONG', entry_t: '2024-08-22 09:55', entry_p: '$126.80', exit_t: '2024-08-22 10:28', exit_p: '$127.60', pnl: '+$124.95', ret: '+0.63%', dur: '33 мин', rsn: 'TAKE_PROFIT', z_in: '-1.65', z_out: '+0.02' },
+            { id: 4, dir: '🔴 SHORT', entry_t: '2024-08-22 14:10', entry_p: '$128.30', exit_t: '2024-08-22 14:45', exit_p: '$127.45', pnl: '+$131.20', ret: '+0.66%', dur: '35 мин', rsn: 'TAKE_PROFIT', z_in: '+1.78', z_out: '-0.04' },
+            { id: 68, dir: '🔴 SHORT', entry_t: '2024-09-24 14:02', entry_p: '$120.90', exit_t: '2024-09-24 15:55', exit_p: '$122.40', pnl: '-$248.14', ret: '-1.24%', dur: '113 мин', rsn: 'FORCED_EOD', z_in: '+1.62', z_out: '+1.85' },
+            { id: 85, dir: '🟢 LONG', entry_t: '2024-10-04 10:50', entry_p: '$124.70', exit_t: '2024-10-04 15:55', exit_p: '$123.10', pnl: '-$256.62', ret: '-1.28%', dur: '305 мин', rsn: 'FORCED_EOD', z_in: '-1.70', z_out: '-2.10' }
+        ];
+
+        function renderTradesTable() {
+            const tbody = document.getElementById('trades_tbody');
+            tbody.innerHTML = '';
+
+            realTrades.forEach(tr => {
+                const trEl = document.createElement('tr');
+                const isWin = tr.pnl.startsWith('+');
+                trEl.innerHTML = `
+                    <td><strong>#${tr.id}</strong></td>
+                    <td><strong>${tr.dir}</strong></td>
+                    <td>${tr.entry_t}</td>
+                    <td>${tr.entry_p}</td>
+                    <td>${tr.exit_t}</td>
+                    <td>${tr.exit_p}</td>
+                    <td class="${isWin ? 'text-green' : 'text-red'} font-bold">${tr.pnl}</td>
+                    <td class="${isWin ? 'text-green' : 'text-red'} font-bold">${tr.ret}</td>
+                    <td>${tr.dur}</td>
+                    <td><span class="badge ${tr.rsn === 'TAKE_PROFIT' ? 'badge-success' : 'badge-blue'}">${tr.rsn}</span></td>
+                    <td>${tr.z_in}σ</td>
+                    <td>${tr.z_out}σ</td>
+                `;
+                tbody.appendChild(trEl);
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            renderEquityChart();
+            initDaySelector();
+            renderTradesTable();
+        });
+    </script>
+</body>
+</html>

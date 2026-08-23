@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rtharb"
+version = "1.0.0"
+description = "Intraday statistical arbitrage and lead-lag research platform"
+dependencies = [
+    "pandas>=2.0.0",
+    "numpy>=1.24.0",
+    "scipy>=1.10.0",
+    "plotly>=5.15.0",
+    "streamlit>=1.28.0",
+    "pyyaml>=6.0",
+    "yfinance>=0.2.28",
+    "alpaca-py>=0.40.0",
+    "python-dotenv>=1.0.0",
+    "pyarrow>=14.0.0"
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["rtharb*"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

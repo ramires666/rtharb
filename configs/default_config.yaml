@@ -1,0 +1,40 @@
+strategy:
+  ticker_lead: "QQQ"
+  ticker_target: "NVDA"
+  data_source: "alpaca" # "alpaca", "yfinance", "csv"
+  data_feed: "sip" # consolidated tape; do not use sparse IEX bars for the report
+  
+  # Session timing (New York Time: America/New_York)
+  session_start: "09:30"
+  session_end: "16:00"
+  forced_close_time: "15:55"
+  
+  # Fair value & Beta settings
+  beta_mode: "dynamic_rolling" # "dynamic_rolling", "fixed_1.0", "historical_daily"
+  beta_rolling_days: 10
+  rolling_window_w: 30 # intraday rolling spread mean/std in minutes
+  min_sigma_history_days: 10
+  min_session_warmup_bars: 15 # wait 15 mins after open before arming signals
+  
+  # Signal Entry Parameters
+  z_entry: 2.0
+  reversal_type: "z_score_hook" # "z_score_hook" or "price_pct_rebound"
+  reversal_delta: 0.15 # delta in Z-score or price % to confirm convergence
+  reversal_timeout_bars: 10 # max bars to wait for reversal confirmation
+  
+  # 4-Sigma Extreme Dislocation Filters (Independently testable)
+  enable_extreme_entry_lockout: true
+  enable_extreme_emergency_exit: false
+  z_max_allowed: 4.0
+  lockout_mode: "day_lockout" # "day_lockout" (lock out rest of day) or "window_lockout"
+  
+  # Exit Parameters
+  z_exit: 0.0 # mean reversion target
+  stop_loss_pct: 0.015 # optional price stop loss (1.5%) if not using emergency exit
+
+backtest:
+  initial_capital: 100000.0 # $100,000 USD
+  position_size_usd: 20000.0 # $20,000 USD per trade
+  commission_per_share: 0.0035 # Interactive Brokers standard rate ($0.0035/share)
+  slippage_pct: 0.0002 # 2 bps (0.02%) slippage
+  allow_short: true

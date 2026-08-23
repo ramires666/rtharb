@@ -1,0 +1,2 @@
+entry_mode,abs_threshold_usd,anchor_filter,trades,net_pnl,gross_pnl,costs,net_return_pct,net_sharpe,net_sortino,max_drawdown_pct,win_rate_pct,profit_factor,avg_net_trade,median_net_trade,avg_duration,long_net_pnl,short_net_pnl
+z_or_abs,7.5,True,78,-844.4620282599479,-168.84689999999324,675.6151282599546,-0.844462028259948,-1.5010891187911866,-1.84948262299404,1.305154239459982,44.871794871794876,0.6406322811567502,-10.826436259742922,-3.8095650000008243,29.833333333333332,-182.74356041996938,-661.7184678399783
