@@ -5,6 +5,7 @@
 - Ensure 0 background tasks in `manage_task: list` unless explicitly instructed to keep a service running.
 - Prevent CPU/memory hogging by terminating completed processes.
 - Use sub-agents aggressively when independent work can run in parallel or reduce total cost/latency. Cheap agents are preferred for bounded routine work, but any reasoning level is allowed when it improves speed or reliability. Avoid delegation only when tasks would contend on the same files or delegation overhead exceeds the expected gain.
+- For this project, finish work as sequential audited stages. After every completed stage, update the interactive HTML (including equity), commit with a descriptive Russian commit message, push to `origin/main`, and immediately continue to the next unfinished stage without stopping.
 
 ## 2. Deliverable Verification & Pre-Flight Gatekeeper
 - Always verify file content and size using `view_file` or direct inspection before informing the user of completion.

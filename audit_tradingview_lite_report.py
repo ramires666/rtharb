@@ -36,7 +36,7 @@ def main() -> None:
     assert np.allclose(np.asarray(bars["nvwap"])[session_first], n_typical[session_first], atol=1e-4)
 
     timestamp_set = set(bars["t"])
-    assert set(payload["variants"]) == {"base", "base_anchor", "hybrid_abs", "hybrid_abs_anchor", "base_inverse", "rr_classic", "vwap_z", "rr_vwap"}
+    assert set(payload["variants"]) == {"base", "base_anchor", "hybrid_abs", "hybrid_abs_anchor", "base_inverse", "rr_classic", "vwap_z", "rr_vwap", "time_stop_q95", "stop_loss_q95"}
     for variant_name, variant in payload["variants"].items():
         strategy = variant.get("strategy", payload["meta"]["strategy"])
         threshold = strategy["z_entry"]
@@ -77,7 +77,7 @@ def main() -> None:
     assert abs(sum(t["net_pnl"] for t in trades) - payload["meta"]["net_pnl"]) < 0.02
 
     html = (OUT / "index.html").read_text(encoding="utf-8")
-    for token in ("CandlestickSeries", "createSeriesMarkers", "trade-box", "Z-score", "Equity", "updateEquity", "statMdd", "data-ema", "data-hma", "nvdaVwapToggle", "qqqVwapToggle", "toggleQqq", "toggleAbsFilter", "toggleAnchorFilter", "toggleInverse", "toggleRr", "toggleVwapZ", "toggleVwapRr", "researchNote", "QQQ", "NVDA"):
+    for token in ("CandlestickSeries", "createSeriesMarkers", "trade-box", "Z-score", "Equity", "updateEquity", "statMdd", "data-ema", "data-hma", "nvdaVwapToggle", "qqqVwapToggle", "toggleQqq", "toggleAbsFilter", "toggleAnchorFilter", "toggleInverse", "toggleRr", "toggleVwapZ", "toggleVwapRr", "toggleTimeStop", "toggleStopLoss", "researchNote", "QQQ", "NVDA"):
         assert token in html, f"Missing report feature: {token}"
     assert (OUT / "data.js").stat().st_size > 500_000
     assert (OUT / "lightweight-charts.standalone.production.js").stat().st_size > 100_000

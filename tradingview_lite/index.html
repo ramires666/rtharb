@@ -37,6 +37,8 @@
     <label class="ema-check" title="Classic Z-входы; выход только stop, take-profit или конец RTH"><input id="toggleRr" type="checkbox"> RR без схождения</label>
     <label class="ema-check" title="Использовать fair value и Z-score на cumulative session VWAP"><input id="toggleVwapZ" type="checkbox"> VWAP-Z стратегия</label>
     <label class="ema-check" title="VWAP-Z входы; выход только stop, take-profit или конец RTH"><input id="toggleVwapRr" type="checkbox"> VWAP-Z RR</label>
+    <label class="ema-check" title="Отдельный 95%-ный лимит времени; обычное схождение и конец RTH сохранены"><input id="toggleTimeStop" type="checkbox"> Time-stop 95%</label>
+    <label class="ema-check" title="Отдельный 95%-ный ценовой stop; обычное схождение и конец RTH сохранены"><input id="toggleStopLoss" type="checkbox"> Stop-loss 95%</label>
     <div class="spacer"></div>
     <div class="group trade-nav"><button id="prevTrade" class="btn" aria-label="Предыдущая сделка">←</button><select id="tradeSelect" aria-label="Выбрать сделку"></select><button id="nextTrade" class="btn" aria-label="Следующая сделка">→</button></div>
   </div>
@@ -199,7 +201,8 @@
     const anchor=currentVariant.anchor_filter?` Anchor ${price(t.signal_anchor_price)}: цена ${price(t.signal_target_price)}, направление к anchor разрешено.`:'';
     const inverse=currentVariant.inverse?` Исходный ${sourceDirection===1?'LONG':'SHORT'}-сигнал исполнен наоборот как ${t.side}.`:'';
     const bracket=currentVariant.rr_only?` После входа схождение игнорируется: stop ${price(t.stop_price)}, target ${price(t.target_price)} (${Number(t.rr).toFixed(2)}R), либо конец RTH.`:'';
-    return `${basis}; затем разворот ${direction} на ${Number(t.hook_delta).toFixed(3)}σ за ${t.hook_bars} мин (нужно ≥${strategy.hook_delta}σ, ≤${strategy.hook_timeout} мин).${anchor}${inverse}${bracket}`;
+    const overlay=currentVariant.risk_overlay==='time_stop_q95'?` Обычный выход по схождению сохранён; дополнительно позиция закрывается через ${currentVariant.max_holding_bars} мин.`:currentVariant.risk_overlay==='stop_loss_q95'?` Обычный выход по схождению сохранён; дополнительно stop ${(currentVariant.stop_loss_pct*100).toFixed(3)}%.`:'';
+    return `${basis}; затем разворот ${direction} на ${Number(t.hook_delta).toFixed(3)}σ за ${t.hook_bars} мин (нужно ≥${strategy.hook_delta}σ, ≤${strategy.hook_timeout} мин).${anchor}${inverse}${bracket}${overlay}`;
   }
   function renderTrade(t,zoom){
     if(!t)return;selectedTrade=t;tradeSelect.value=String(t.id);const card=document.getElementById('tradeCard');card.className=`trade-card ${t.net_pnl>=0?'profit':'loss'}`;
@@ -247,22 +250,24 @@
   }
 
   function applyVariant(){
-    const useAbs=document.getElementById('toggleAbsFilter').checked,useAnchor=document.getElementById('toggleAnchorFilter').checked,useInverse=document.getElementById('toggleInverse').checked,useRr=document.getElementById('toggleRr').checked,useVwap=document.getElementById('toggleVwapZ').checked,useVwapRr=document.getElementById('toggleVwapRr').checked;
-    const key=useVwapRr?'rr_vwap':useVwap?'vwap_z':useRr?'rr_classic':useInverse?'base_inverse':useAbs?(useAnchor?'hybrid_abs_anchor':'hybrid_abs'):(useAnchor?'base_anchor':'base');
+    const useAbs=document.getElementById('toggleAbsFilter').checked,useAnchor=document.getElementById('toggleAnchorFilter').checked,useInverse=document.getElementById('toggleInverse').checked,useRr=document.getElementById('toggleRr').checked,useVwap=document.getElementById('toggleVwapZ').checked,useVwapRr=document.getElementById('toggleVwapRr').checked,useTimeStop=document.getElementById('toggleTimeStop').checked,useStopLoss=document.getElementById('toggleStopLoss').checked;
+    const key=useStopLoss?'stop_loss_q95':useTimeStop?'time_stop_q95':useVwapRr?'rr_vwap':useVwap?'vwap_z':useRr?'rr_classic':useInverse?'base_inverse':useAbs?(useAnchor?'hybrid_abs_anchor':'hybrid_abs'):(useAnchor?'base_anchor':'base');
     currentVariant=D.variants[key];currentTrades=currentVariant.trades;tradesById=new Map(currentTrades.map(t=>[t.id,t]));selectedTrade=currentTrades.length?currentTrades[currentTrades.length-1]:null;
     updateStats();updateZBasis();updateEquity();nvdaMarkersApi.setMarkers(nvdaMarkers(currentTrades));zMarkersApi.setMarkers(scoreMarkers(currentTrades));rebuildTradeSelect();
-    const r=D.meta.absolute_filter_research,b=r.baseline_holdout,c=r.chosen_holdout,rev=D.meta.reverse_research,rr=D.meta.risk_reward_research,vw=D.meta.vwap_z_research;
-    document.getElementById('researchNote').innerHTML=`<b>Текущий вариант: ${currentVariant.label}.</b> Absolute+anchor holdout ${money(c.net_pnl)} против базы ${money(b.net_pnl)}. Reverse: 2M ${money(rev.last_two_months.inverse.net_pnl)}, holdout ${money(rev.holdout.inverse.net_pnl)}. Classic RR ${rr.selected.stop_pct*100}%/${rr.selected.rr}R: holdout ${money(rr.selected_results.holdout.net_pnl)}, robust ${Number(rr.selection.robust_score).toFixed(2)}. VWAP-Z convergence holdout ${money(vw.holdout.net_pnl)}. VWAP-Z RR ${rr.vwap_z.selected.stop_pct*100}%/${rr.vwap_z.selected.rr}R: holdout ${money(rr.vwap_z.selected_results.holdout.net_pnl)}, robust ${Number(rr.vwap_z.selection.robust_score).toFixed(2)}. Подтверждённого edge нет.`;
+    const r=D.meta.absolute_filter_research,b=r.baseline_holdout,c=r.chosen_holdout,rev=D.meta.reverse_research,rr=D.meta.risk_reward_research,vw=D.meta.vwap_z_research,ds=D.meta.duration_stoploss_research,ts=ds.selected_q95_overlays.time_stop.results,ss=ds.selected_q95_overlays.stop_loss,sl=ss.results,sv=ds.development_q95_survival;
+    document.getElementById('researchNote').innerHTML=`<b>Текущий вариант: ${currentVariant.label}.</b> 95% time-stop ${ts.development.threshold_bars} мин: holdout ${money(ts.holdout.net_pnl)}, сохранено прибыльными ${Number(sv.time_stop.still_net_profitable_pct).toFixed(1)}%. Stop ≥95% ${(ss.selected_threshold_pct*100).toFixed(3)}%: holdout ${money(sl.holdout.net_pnl)}, сохранено прибыльными ${Number(sv.stop_loss.still_net_profitable_pct).toFixed(1)}%. Absolute+anchor holdout ${money(c.net_pnl)} против базы ${money(b.net_pnl)}. Reverse holdout ${money(rev.holdout.inverse.net_pnl)}. Classic RR holdout ${money(rr.selected_results.holdout.net_pnl)}. VWAP-Z convergence ${money(vw.holdout.net_pnl)}, VWAP-Z RR ${money(rr.vwap_z.selected_results.holdout.net_pnl)}. Подтверждённого edge нет.`;
     if(selectedTrade)renderTrade(selectedTrade,false);else document.getElementById('tradeCard').innerHTML='<div class="sub">В выбранном варианте нет сделок на этом периоде.</div>';
     updateCursor(B.t[B.t.length-1]);requestAnimationFrame(renderTradeBoxes);
   }
-  function clearExclusive(except){['toggleAbsFilter','toggleAnchorFilter','toggleInverse','toggleRr','toggleVwapZ','toggleVwapRr'].forEach(id=>{if(id!==except)document.getElementById(id).checked=false;});}
-  document.getElementById('toggleAbsFilter').addEventListener('change',e=>{if(e.target.checked){document.getElementById('toggleInverse').checked=false;document.getElementById('toggleRr').checked=false;document.getElementById('toggleVwapZ').checked=false;document.getElementById('toggleVwapRr').checked=false;}applyVariant();});
-  document.getElementById('toggleAnchorFilter').addEventListener('change',e=>{if(e.target.checked){document.getElementById('toggleInverse').checked=false;document.getElementById('toggleRr').checked=false;document.getElementById('toggleVwapZ').checked=false;document.getElementById('toggleVwapRr').checked=false;}applyVariant();});
+  function clearExclusive(except){['toggleAbsFilter','toggleAnchorFilter','toggleInverse','toggleRr','toggleVwapZ','toggleVwapRr','toggleTimeStop','toggleStopLoss'].forEach(id=>{if(id!==except)document.getElementById(id).checked=false;});}
+  document.getElementById('toggleAbsFilter').addEventListener('change',e=>{if(e.target.checked){['toggleInverse','toggleRr','toggleVwapZ','toggleVwapRr','toggleTimeStop','toggleStopLoss'].forEach(id=>document.getElementById(id).checked=false);}applyVariant();});
+  document.getElementById('toggleAnchorFilter').addEventListener('change',e=>{if(e.target.checked){['toggleInverse','toggleRr','toggleVwapZ','toggleVwapRr','toggleTimeStop','toggleStopLoss'].forEach(id=>document.getElementById(id).checked=false);}applyVariant();});
   document.getElementById('toggleInverse').addEventListener('change',e=>{if(e.target.checked)clearExclusive('toggleInverse');applyVariant();});
   document.getElementById('toggleRr').addEventListener('change',e=>{if(e.target.checked)clearExclusive('toggleRr');applyVariant();});
   document.getElementById('toggleVwapZ').addEventListener('change',e=>{if(e.target.checked)clearExclusive('toggleVwapZ');applyVariant();});
   document.getElementById('toggleVwapRr').addEventListener('change',e=>{if(e.target.checked)clearExclusive('toggleVwapRr');applyVariant();});
+  document.getElementById('toggleTimeStop').addEventListener('change',e=>{if(e.target.checked)clearExclusive('toggleTimeStop');applyVariant();});
+  document.getElementById('toggleStopLoss').addEventListener('change',e=>{if(e.target.checked)clearExclusive('toggleStopLoss');applyVariant();});
 
   function setRange(code){document.querySelectorAll('.range').forEach(b=>b.classList.toggle('active',b.dataset.range===code));const end=B.t[B.t.length-1];if(code==='2m'){nvdaChart.timeScale().setVisibleRange({from:B.t[0],to:end});return;}if(code==='1m'){nvdaChart.timeScale().setVisibleRange({from:end-31*86400,to:end});return;}const dates=[];for(const t of B.t){const k=dateKey(t);if(!dates.length||dates[dates.length-1].key!==k)dates.push({key:k,time:t});}const days=code==='1d'?1:5;const from=dates[Math.max(0,dates.length-days)].time;nvdaChart.timeScale().setVisibleRange({from,to:end});}
   document.querySelectorAll('.range').forEach(b=>b.addEventListener('click',()=>setRange(b.dataset.range)));

@@ -30,3 +30,24 @@ def test_trade_accounting_reconciles():
     assert error.abs().max() < 1e-7
     summary = json.loads((OUT / "summary.json").read_text(encoding="utf-8"))
     assert summary["data"]["feed"] == "Alpaca SIP"
+
+
+def test_verified_q95_overlays_preserve_winners_and_splits():
+    summary = json.loads(
+        (ROOT / "research_output" / "duration_stoploss_verified" / "summary.json").read_text(encoding="utf-8")
+    )
+    assert summary["data"] == {
+        "sessions": 501, "development": 250, "validation": 125, "holdout": 126,
+    }
+    assert set(summary["winner_duration_quantiles_bars"]) == {"0.9", "0.95", "0.975", "0.99"}
+    assert set(summary["winner_mae_pct_quantiles"]) == {"0.9", "0.95", "0.975", "0.99"}
+    survival = summary["development_q95_survival"]
+    assert survival["time_stop"]["still_net_profitable_pct"] >= 95.0
+    assert survival["stop_loss"]["still_net_profitable_pct"] >= 95.0
+    for family in ("base",):
+        for split in ("development", "validation", "holdout", "full"):
+            assert abs(summary[family][split]["reconciliation_error"]) < 1e-6
+    for family in ("time_stop_only", "stop_loss_only"):
+        for quantile in ("0.9", "0.95", "0.975", "0.99"):
+            for split in ("development", "validation", "holdout", "full"):
+                assert abs(summary[family][quantile][split]["reconciliation_error"]) < 1e-6

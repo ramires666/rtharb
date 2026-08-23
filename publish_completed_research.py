@@ -14,6 +14,7 @@ from research_vwap_strategy import vwap_arrays
 from rtharb.backtest.engine import BacktestEngine
 from rtharb.config import AppConfig
 from rtharb.data.loader import DataLoader
+from rtharb.models.fair_value import FairValueModel
 from rtharb.models.signals import SignalGenerator
 
 
@@ -190,11 +191,80 @@ def publish_vwap_rr(payload: dict) -> None:
     }
 
 
+def publish_duration_stoploss(payload: dict) -> None:
+    """Publish the independently evaluated q95 time and price-risk overlays."""
+    folder = ROOT / "research_output" / "duration_stoploss_verified"
+    summary = json.loads((folder / "summary.json").read_text(encoding="utf-8"))
+    selected = summary["frozen_parameters"]
+    cfg = AppConfig.load(str(ROOT / "configs" / "default_config.yaml"))
+    lead, target = DataLoader(cfg.cache_dir, "alpaca", "sip").get_synchronized_pair("QQQ", "NVDA")
+    metrics = FairValueModel(
+        selected["beta_mode"], int(selected["beta_days"]), int(selected["window"]), 15,
+    ).compute_intraday_metrics(lead, target)
+    signals = SignalGenerator(
+        z_entry=float(selected["z_entry"]), reversal_delta=float(selected["hook_delta"]),
+        reversal_timeout_bars=int(selected["hook_timeout"]),
+        enable_extreme_entry_lockout=True, enable_extreme_emergency_exit=False,
+        z_max_allowed=float(selected["z_lockout"]), lockout_mode="day_lockout",
+        z_exit=float(selected["exit_band"]), forced_close_time="15:55",
+        min_session_warmup_bars=15,
+    ).generate_signals(metrics)
+    actual_start = pd.Timestamp(payload["bars"]["t"][0], unit="s", tz="UTC").tz_convert("America/New_York")
+    qkey = "0.95"
+    selected_stop = float(summary["selected_q95_overlays"]["stop_loss"]["selected_threshold_pct"])
+    definitions = {
+        "time_stop_q95": {
+            "label": f"Base Z · time-stop {summary['winner_duration_quantiles_bars'][qkey]} мин (95%)",
+            "max_holding_bars": int(summary["winner_duration_quantiles_bars"][qkey]),
+            "stop_loss_pct": None,
+        },
+        "stop_loss_q95": {
+            "label": f"Base Z · stop {selected_stop * 100:.3f}% (≥95% winners)",
+            "max_holding_bars": None,
+            "stop_loss_pct": selected_stop,
+        },
+    }
+    for key, definition in definitions.items():
+        exact = BacktestEngine(
+            cfg.backtest.initial_capital, cfg.backtest.position_size_usd,
+            cfg.backtest.commission_per_share, cfg.backtest.slippage_pct, True,
+            max_holding_bars=definition["max_holding_bars"],
+            stop_loss_pct=definition["stop_loss_pct"],
+        ).run(signals, "NVDA")["trades_df"]
+        items, filtered = build_trade_items(signals, exact, actual_start, target)
+        for item in items:
+            if item["exit_reason"] in {"TIME_STOP", "STOP_LOSS"}:
+                item["exit_signal_time"] = item["exit_time"]
+                item["exit_signal_z"] = item["exit_execution_z"]
+                if item["exit_reason"] == "STOP_LOSS":
+                    slip = payload["meta"]["slippage_bps_per_execution"] / 10_000
+                    item["exit_reference_price"] = finite(
+                        item["exit_price"] / (1 - slip) if item["direction"] == 1
+                        else item["exit_price"] / (1 + slip)
+                    )
+        net = float(filtered["net_pnl"].sum()) if not filtered.empty else 0.0
+        gross = float(filtered["gross_pnl"].sum()) if not filtered.empty else 0.0
+        wins = int((filtered["net_pnl"] > 0).sum()) if not filtered.empty else 0
+        payload["variants"][key] = {
+            "label": definition["label"], "entry_mode": "z_only",
+            "abs_threshold_usd": None, "anchor_filter": False, "inverse": False,
+            "rr_only": False, "risk_overlay": key,
+            "max_holding_bars": definition["max_holding_bars"],
+            "stop_loss_pct": definition["stop_loss_pct"],
+            "strategy": selected, "trades_count": len(items),
+            "gross_pnl": round(gross, 4), "net_pnl": round(net, 4),
+            "win_rate_pct": round(100 * wins / len(items), 3) if items else 0,
+            "trades": items,
+        }
+    payload["meta"]["duration_stoploss_research"] = summary
+
+
 def main() -> None:
     payload = json.loads((OUT / "report_data.json").read_text(encoding="utf-8"))
     publish_classic_rr(payload)
     publish_vwap_z(payload)
     publish_vwap_rr(payload)
+    publish_duration_stoploss(payload)
     compact = json.dumps(payload, ensure_ascii=False, separators=(",", ":"), allow_nan=False)
     (OUT / "data.js").write_text("window.RT_HARB_DATA=" + compact + ";\n", encoding="utf-8")
     (OUT / "report_data.json").write_text(
@@ -203,7 +273,7 @@ def main() -> None:
     print(json.dumps({
         "published": {
             name: {"trades": payload["variants"][name]["trades_count"], "net_pnl": payload["variants"][name]["net_pnl"]}
-            for name in ("rr_classic", "vwap_z", "rr_vwap")
+            for name in ("rr_classic", "vwap_z", "rr_vwap", "time_stop_q95", "stop_loss_q95")
         }
     }, ensure_ascii=False))
 
