@@ -2,6 +2,9 @@ import json
 import re
 from pathlib import Path
 import pandas as pd
+import numpy as np
+
+from research_synthetic_index import entry_events
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -66,3 +69,31 @@ def test_vwap_rr_ratio_variants_reconcile_to_frozen_cohort():
         assert reconciliation["split_trade_rows_equal_full"]
         assert reconciliation["split_net_pnl_equal_full"]
         assert reconciliation["csv_net_pnl_equal_metrics"]
+
+
+def test_synthetic_index_uses_causal_basket_and_exact_sip_data():
+    summary = json.loads(
+        (ROOT / "research_output" / "synthetic_index" / "summary.json").read_text(encoding="utf-8")
+    )
+    assert summary["basket"]["official_snapshot_date"] == "2024-06-28"
+    assert summary["basket"]["symbols"] == ["MSFT", "AAPL", "NVDA", "AMZN"]
+    assert abs(summary["basket"]["combined_ndx_weight_pct"] - 30.1) < 1e-9
+    assert summary["data"]["sessions"] == 501
+    assert summary["data"]["bars"] == 194_490
+    assert summary["splits"]["development"]["sessions"] == 250
+    assert summary["splits"]["validation"]["sessions"] == 125
+    assert summary["splits"]["holdout"]["sessions"] == 126
+    assert summary["execution"]["traded_symbol"] == "QQQ"
+    assert not summary["execution"]["rr_convergence_exit"]
+    assert summary["reconciliation"]["all_trade_rows_exact"]
+    assert summary["reconciliation"]["holdout_not_used_for_selection"]
+    assert not summary["reconciliation"]["mock_or_interpolated_bars"]
+    for model in ("convergence", "risk_reward"):
+        for split in ("development", "validation", "holdout", "full"):
+            assert abs(summary[model]["results"][split]["reconciliation_error"]) < 1e-8
+
+
+def test_synthetic_hook_can_confirm_after_reentering_threshold():
+    metric = np.array([np.nan, 2.0, 1.9, 1.7], dtype=float)
+    events = entry_events(metric, np.zeros(len(metric), dtype=np.int8), threshold=2.0, hook=0.2)
+    assert events.tolist() == [0, 0, 0, -1]

@@ -14,7 +14,7 @@
 <body>
 <div class="shell">
   <div class="top">
-    <div class="title"><h1>QQQ → NVDA · внутридневной mean reversion</h1><div class="sub" id="periodLabel">Загрузка точных 1-минутных SIP-баров…</div></div>
+    <div class="title"><h1>QQQ → NVDA · внутридневной mean reversion</h1><div class="sub" id="periodLabel">Загрузка точных 1-минутных SIP-баров…</div><div class="sub"><a href="../tradingview_synthetic/index.html">Открыть отдельное исследование QQQ ↔ синтетическая mega-cap корзина</a></div></div>
     <div class="stats">
       <div class="stat"><b id="statTrades">—</b><span>сделок</span></div>
       <div class="stat"><b id="statNet">—</b><span>net P&amp;L</span></div>
@@ -201,7 +201,9 @@
     const basis=trigger.includes('ABS')?`Абсолютное отклонение ${armedAbs} достигло порога $${Number(currentVariant.abs_threshold_usd).toFixed(2)}${trigger.includes('Z+')?' одновременно с Z-порогом':''}`:`Z достиг порога ${sourceDirection===1?'−':'+'}${strategy.z_entry}σ`;
     const anchor=currentVariant.anchor_filter?` Anchor ${price(t.signal_anchor_price)}: цена ${price(t.signal_target_price)}, направление к anchor разрешено.`:'';
     const inverse=currentVariant.inverse?` Исходный ${sourceDirection===1?'LONG':'SHORT'}-сигнал исполнен наоборот как ${t.side}.`:'';
-    const bracket=currentVariant.rr_only?` После входа схождение игнорируется: stop ${price(t.stop_price)}, target ${price(t.target_price)} (${Number(t.rr).toFixed(2)}R), либо конец RTH.`:'';
+    const riskUsd=currentVariant.rr_only?Math.abs(Number(t.entry_reference_price)-Number(t.stop_price))*Number(t.shares):0;
+    const rewardUsd=currentVariant.rr_only?Math.abs(Number(t.target_price)-Number(t.entry_reference_price))*Number(t.shares):0;
+    const bracket=currentVariant.rr_only?` После входа схождение игнорируется: stop ${price(t.stop_price)}, target ${price(t.target_price)} (${Number(t.rr).toFixed(2)}R); номинально gross риск $${riskUsd.toFixed(2)}, цель $${rewardUsd.toFixed(2)}, либо конец RTH.`:'';
     const overlay=currentVariant.risk_overlay==='time_stop_q95'?` Обычный выход по схождению сохранён; дополнительно позиция закрывается через ${currentVariant.max_holding_bars} мин.`:currentVariant.risk_overlay==='stop_loss_q95'?` Обычный выход по схождению сохранён; дополнительно stop ${(currentVariant.stop_loss_pct*100).toFixed(3)}%.`:'';
     return `${basis}; затем разворот ${direction} на ${Number(t.hook_delta).toFixed(3)}σ за ${t.hook_bars} мин (нужно ≥${strategy.hook_delta}σ, ≤${strategy.hook_timeout} мин).${anchor}${inverse}${bracket}${overlay}`;
   }

@@ -1,0 +1,3 @@
+# QQQ vs fixed mega-cap basket
+
+The basket uses the four largest Nasdaq-100 securities in Nasdaq's 2024-06-28 snapshot: MSFT 8.6%, AAPL 8.4%, NVDA 7.9%, AMZN 5.2% (30.1% combined). Weights are frozen and renormalized within the four-stock reference before the 2024-08-22 sample starts. This is a causal proxy, not an exact NDX replica. Every session starts at zero using each instrument's first synchronized RTH close. Only QQQ is traded. Inputs are exact synchronized raw Alpaca SIP 1-minute bars; no interpolation. Convergence and risk/reward (without convergence) are separate exit models. Development selects candidates, validation tests robustness, and holdout is opened once.
