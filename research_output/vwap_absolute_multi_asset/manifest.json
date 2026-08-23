@@ -12,10 +12,11 @@
     "start": "2025-08-22"
   },
   "symbols_completed": [
-    "NVDA"
+    "NVDA",
+    "MSFT"
   ],
   "symbols_requested_this_run": [
-    "NVDA"
+    "MSFT"
   ],
   "traded_separately": [
     "NVDA",
