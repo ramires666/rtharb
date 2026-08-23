@@ -9,6 +9,7 @@ description = "Intraday statistical arbitrage and lead-lag research platform"
 dependencies = [
     "pandas>=2.0.0",
     "numpy>=1.24.0",
+    "numba>=0.67.0",
     "scipy>=1.10.0",
     "plotly>=5.15.0",
     "streamlit>=1.28.0",

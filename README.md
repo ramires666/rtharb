@@ -16,6 +16,9 @@
 - `tradingview_vwap_absolute/index.html` — подробный самостоятельный raw
   event-driven VWAP-Z fixed-bracket: QQQ как lead, торгуется только NVDA,
   точные VWAP/fair/Z, stop/target-зоны, сделки, equity и drawdown.
+- `tradingview_vwap_absolute_multi_asset/index.html` — поэтапный независимый
+  тест девяти акций против reference QQQ: отдельные VWAP, Z, сделки,
+  фиксированные долларовые stop/target, equity и drawdown для каждого тикера.
 
 Полный пересчёт последнего отчёта одним кликом:
 `launchers/run_vwap_absolute_event_driven.bat`.
@@ -41,6 +44,9 @@
 только как ведущий reference. Raw Alpaca SIP-котировки и их SHA-256/coverage
 проверяются командой `launchers/download_mega_cap_data.bat` и manifest-файлом
 `data_cache/mega_cap_sip_manifest.json`.
+Расчёт запускается через `launchers/run_vwap_absolute_multi_asset.bat`, а
+текущий интерактивный результат — через
+`launchers/open_vwap_absolute_multi_asset_report.bat`.
 
 ## Что считается
 
@@ -63,9 +69,12 @@
 положительного expectancy. Точные числа находятся в `audit_output/summary.json`
 и `audit_output/REPORT.html`.
 
-Исправленный самостоятельный raw event-driven VWAP-Z bracket-тест выбрал
-стоп `$3.00/акция`, цель `$1.25/акция` (`0.417R`): holdout `+$3,033.45`,
-полный год `+$6,597.51`, минутный mark-to-market MDD `$2,481.73 / 2.45%`.
+Расширенный multi-asset raw event-driven VWAP-Z bracket-тест для NVDA выбрал
+внутренний, не упирающийся в границу сетки стоп `$5.25/акция` и цель
+`$1.25/акция` (`0.238R`): holdout `+$2,199.54`, полный год `+$6,691.89`,
+минутный mark-to-market MDD `$1,929.83 / 1.81%`.
+Ранний одиночный тест выбрал граничный стоп `$3.00`, поэтому его результат
+`+$6,597.51` нельзя считать окончательным оптимумом.
 Старый frozen-cohort результат `$2.00/$1.25` не регенерировал сигналы после
 раннего bracket-выхода и оставлен только как аудиторское сравнение. Новый тест
 генерирует entry-события напрямую из каждой raw минуты, когда позиция закрыта.

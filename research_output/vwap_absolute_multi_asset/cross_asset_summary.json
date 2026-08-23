@@ -1,0 +1,29 @@
+{
+  "rows": [
+    {
+      "audit_status": "PASS",
+      "development_net_pnl": 2018.785961020174,
+      "full_commissions": 329.6650000000002,
+      "full_costs": 3960.2681554395904,
+      "full_max_drawdown_pct_mtm": 1.8095380375258923,
+      "full_max_drawdown_usd_mtm": 1929.8266248399887,
+      "full_net_pnl": 6691.888444560394,
+      "full_net_sharpe": 1.937309136847612,
+      "full_profit_factor": 1.2763902990877192,
+      "full_slippage": 3630.60315543959,
+      "full_trades": 456,
+      "full_win_rate_pct": 65.35087719298247,
+      "holdout_net_pnl": 2199.5402666400987,
+      "holdout_net_sharpe": 2.666478483607919,
+      "holdout_trades": 128,
+      "reference": "QQQ",
+      "reward_to_risk": 0.23809523809523808,
+      "robust_score": 1.156294717452775,
+      "stop_usd": 5.25,
+      "symbol": "NVDA",
+      "target_usd": 1.25,
+      "validation_net_pnl": 2473.562216900122
+    }
+  ],
+  "schema_version": 1
+}

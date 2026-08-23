@@ -1,0 +1,31 @@
+{
+  "all_completed_symbol_audits_pass": true,
+  "data_policy": "raw synchronized Alpaca SIP 1-minute RTH only; no synthetic, mock, resampled, filled or interpolated quotes",
+  "raw_input_manifest": "data_cache/mega_cap_sip_manifest.json",
+  "raw_input_manifest_sha256": "cd5e52edf2d7a40e405914f9740a3664c2c521cab5118ed1c012b727f571d222",
+  "reference_only": "QQQ",
+  "schema_version": 1,
+  "selection_policy": "development grid and boundary expansion; top 10 to validation; holdout once",
+  "status": "PARTIAL",
+  "study_period": {
+    "end": "2026-08-21",
+    "start": "2025-08-22"
+  },
+  "symbols_completed": [
+    "NVDA"
+  ],
+  "symbols_requested_this_run": [
+    "NVDA"
+  ],
+  "traded_separately": [
+    "NVDA",
+    "MSFT",
+    "AAPL",
+    "AMZN",
+    "GOOGL",
+    "META",
+    "AVGO",
+    "TSLA",
+    "AMD"
+  ]
+}
