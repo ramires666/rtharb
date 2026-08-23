@@ -4,7 +4,7 @@ from pathlib import Path
 import pandas as pd
 import numpy as np
 
-from research_synthetic_index import entry_events
+from rtharb.research.synthetic_index import entry_events
 
 
 ROOT = Path(__file__).resolve().parents[1]

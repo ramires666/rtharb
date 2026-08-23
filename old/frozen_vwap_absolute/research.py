@@ -22,7 +22,7 @@ if str(ROOT) not in sys.path:
 
 from rtharb.config import AppConfig
 from rtharb.data.loader import DataLoader
-from research_risk_reward import CAPITAL, COMMISSION, SIZE, SLIP, _raw_target
+from rtharb.research.risk_reward import CAPITAL, COMMISSION, SIZE, SLIP, _raw_target
 
 
 OUT = ROOT / "old" / "frozen_vwap_absolute" / "output" / "results"

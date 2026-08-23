@@ -10,7 +10,7 @@
 ## 2. Deliverable Verification & Pre-Flight Gatekeeper
 - Always verify file content and size using `view_file` or direct inspection before informing the user of completion.
 - Ensure HTML one-pagers and dashboards have fully rendered data, charts, and scripts.
-- Run `audit_integrity.py` to assert data integrity before finishing.
+- Run `python -m rtharb.audit.integrity` to assert data integrity before finishing.
 
 ## 3. Encoding & Compatibility
 - Enforce UTF-8 console output in all Python scripts on Windows.

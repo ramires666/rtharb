@@ -2,10 +2,10 @@
 
 ## TradingView Lite — последние два месяца
 
-Откройте `open_tradingview_lite_report.bat`. Отчёт использует настоящие
+Откройте `launchers/open_tradingview_lite_report.bat`. Отчёт использует настоящие
 синхронизированные 1-минутные Alpaca SIP-бары QQQ/NVDA, показывает Z-score,
 точные входы/выходы, trade-box'ы и переключаемые EMA. Для пересборки из
-локального кэша запустите `rebuild_tradingview_lite_report.bat`.
+локального кэша запустите `launchers/rebuild_tradingview_lite_report.bat`.
 
 Готовые интерактивные отчёты:
 
@@ -17,17 +17,23 @@
   event-driven VWAP-Z fixed-bracket: QQQ как lead, торгуется только NVDA,
   точные VWAP/fair/Z, stop/target-зоны, сделки, equity и drawdown.
 
+Полный пересчёт последнего отчёта одним кликом:
+`launchers/run_vwap_absolute_event_driven.bat`.
+
 Рабочая копия и независимый аудит проекта статистического арбитража. Оригинал
 Джона находится в соседней папке `rtharb` и не изменён.
 
 ## Структура проекта
 
-- `rtharb/` — рабочая библиотека расчётов и данных;
+- `rtharb/research/` — рабочие исследования стратегий;
+- `rtharb/reporting/` — сборщики интерактивных отчётов;
+- `rtharb/audit/` — независимые проверки и пересчёты;
 - `configs/` — конфигурация Alpaca SIP и стратегии;
 - `data_cache/` — локальные raw 1-minute Parquet;
 - `tests/` — автоматические проверки;
 - `research_output/`, `audit_output/`, `equity_output/` — воспроизводимые результаты;
 - `tradingview_*` — актуальные интерактивные отчёты с equity;
+- `launchers/` — однокнопочные Windows-запускатели;
 - `old/` — опровергнутые проверки и ранние прототипы, не рабочий пайплайн.
 
 ## Что считается
@@ -73,11 +79,11 @@ live-edge. Обычное схождение, процентные VWAP-RR ва�
 ## Запуск
 
 ```powershell
-..\rtharb\.venv\Scripts\python.exe recalculate_audit.py
-..\rtharb\.venv\Scripts\python.exe audit_integrity.py
+..\rtharb\.venv\Scripts\python.exe -m rtharb.audit.recalculate
+..\rtharb\.venv\Scripts\python.exe -m rtharb.audit.integrity
 ```
 
-Для просмотра готового отчёта дважды щёлкните `open_audit_report.bat`.
+Для просмотра готового отчёта дважды щёлкните `launchers/open_audit_report.bat`.
 
 Артефакты нового расчёта:
 
@@ -91,12 +97,12 @@ live-edge. Обычное схождение, процентные VWAP-RR ва�
 
 ## Широкое исследование базового edge
 
-`research_base_strategy.py` отдельно исследует саму стратегию без stop-loss и
+`rtharb/research/base_strategy.py` отдельно исследует саму стратегию без stop-loss и
 time-stop. Перебираются Z-entry, hook/no-hook, hook timeout, beta, rolling
 window, exit band и 4σ-lockout. Development/validation/holdout разделены
 хронологически. Готовый отчёт: `research_output/BASE_STRATEGY_REPORT.html`.
 
-Запуск одним кликом: `run_base_research.bat`.
+Запуск одним кликом: `launchers/run_base_research.bat`.
 
 Это исследовательский бэктест, не инвестиционная рекомендация. Borrow fee,
 налоги, влияние ордера на рынок и задержка данных не моделируются.
