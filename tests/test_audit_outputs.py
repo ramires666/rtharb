@@ -97,3 +97,15 @@ def test_synthetic_hook_can_confirm_after_reentering_threshold():
     metric = np.array([np.nan, 2.0, 1.9, 1.7], dtype=float)
     events = entry_events(metric, np.zeros(len(metric), dtype=np.int8), threshold=2.0, hook=0.2)
     assert events.tolist() == [0, 0, 0, -1]
+
+
+def test_absolute_vwap_brackets_are_honest_and_reconciled():
+    summary = json.loads(
+        (ROOT / "research_output" / "vwap_absolute_brackets" / "summary.json").read_text(encoding="utf-8")
+    )
+    assert summary["grid"]["combinations"] == 144
+    assert summary["selected"] == {"stop_usd": 2.0, "target_usd": 1.25}
+    assert summary["selection"]["holdout_opened_after_selection"]
+    assert not summary["selection"]["no_confirmed_edge"]
+    assert summary["mark_to_market"]["bars"] > 90_000
+    assert all(summary["reconciliation"].values())

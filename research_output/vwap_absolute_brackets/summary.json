@@ -1,0 +1,184 @@
+{
+  "study": "Frozen causal VWAP-Z entries with independent absolute NVDA brackets",
+  "period": {
+    "start": "2025-08-22",
+    "end": "2026-08-21",
+    "sessions": 251
+  },
+  "splits": {
+    "development": {
+      "sessions": 125,
+      "start": "2025-08-22",
+      "end": "2026-02-20"
+    },
+    "validation": {
+      "sessions": 63,
+      "start": "2026-02-23",
+      "end": "2026-05-21"
+    },
+    "holdout": {
+      "sessions": 63,
+      "start": "2026-05-22",
+      "end": "2026-08-21"
+    }
+  },
+  "frozen_entry_cohort": {
+    "path": "research_output\\risk_reward\\vwap_z_entry_cohort.csv",
+    "sha256": "2f8ee9a847819f7b95c34423955be68e0e9964ab07f65adaedd5dc273411fc39",
+    "one_year_candidates": 833,
+    "period_candidate_counts": {
+      "development": 410,
+      "validation": 221,
+      "holdout": 202,
+      "full": 833
+    }
+  },
+  "grid": {
+    "stop_usd": [
+      0.25,
+      0.5,
+      0.75,
+      1.0,
+      1.25,
+      1.5,
+      1.75,
+      2.0,
+      2.25,
+      2.5,
+      2.75,
+      3.0
+    ],
+    "target_usd": [
+      0.25,
+      0.5,
+      0.75,
+      1.0,
+      1.25,
+      1.5,
+      1.75,
+      2.0,
+      2.25,
+      2.5,
+      2.75,
+      3.0
+    ],
+    "combinations": 144,
+    "top_development": 10
+  },
+  "selection": {
+    "method": "top 10 development by net Sharpe/net P&L, then max min(development, validation Sharpe), validation net P&L tie-break; holdout once",
+    "dev_net_sharpe": 1.240161756898309,
+    "validation_net_sharpe": 1.6542031596630358,
+    "robust_score": 1.240161756898309,
+    "holdout_opened_after_selection": true,
+    "no_confirmed_edge": false
+  },
+  "selected": {
+    "stop_usd": 2.0,
+    "target_usd": 1.25
+  },
+  "selected_results": {
+    "development": {
+      "candidate_entries": 410,
+      "skipped_overlaps": 180,
+      "trades": 230,
+      "gross_pnl": 3931.342799999984,
+      "costs": 2005.9929213198004,
+      "net_pnl": 1925.3498786801842,
+      "win_rate_pct": 61.30434782608696,
+      "profit_factor": 1.1452153644854133,
+      "net_sharpe": 1.240161756898309,
+      "max_drawdown_usd": 1858.4910333799635,
+      "max_drawdown_pct": 1.8172755331312507,
+      "stops": 46,
+      "targets": 109,
+      "forced_eod": 75,
+      "avg_net_trade": 8.37108642904428,
+      "avg_gross_risk_usd": 216.3304347826087,
+      "avg_gross_reward_usd": 135.20652173913044
+    },
+    "validation": {
+      "candidate_entries": 221,
+      "skipped_overlaps": 94,
+      "trades": 127,
+      "gross_pnl": 2421.6238999999937,
+      "costs": 1100.940608339883,
+      "net_pnl": 1320.683291660111,
+      "win_rate_pct": 61.417322834645674,
+      "profit_factor": 1.2014335308078292,
+      "net_sharpe": 1.6542031596630358,
+      "max_drawdown_usd": 1191.395385839991,
+      "max_drawdown_pct": 1.1653698336426017,
+      "stops": 24,
+      "targets": 60,
+      "forced_eod": 43,
+      "avg_net_trade": 10.399081036693788,
+      "avg_gross_risk_usd": 203.63779527559055,
+      "avg_gross_reward_usd": 127.27362204724409
+    },
+    "holdout": {
+      "candidate_entries": 202,
+      "skipped_overlaps": 69,
+      "trades": 133,
+      "gross_pnl": 3377.3042999999925,
+      "costs": 1147.6456062998914,
+      "net_pnl": 2229.658693700101,
+      "win_rate_pct": 66.9172932330827,
+      "profit_factor": 1.3509975142086565,
+      "net_sharpe": 3.1256482544191404,
+      "max_drawdown_usd": 1086.8085156399757,
+      "max_drawdown_pct": 1.068758289379192,
+      "stops": 24,
+      "targets": 71,
+      "forced_eod": 38,
+      "avg_net_trade": 16.76435108045189,
+      "avg_gross_risk_usd": 191.02255639097746,
+      "avg_gross_reward_usd": 119.3890977443609
+    },
+    "full": {
+      "candidate_entries": 833,
+      "skipped_overlaps": 343,
+      "trades": 490,
+      "gross_pnl": 9730.270999999972,
+      "costs": 4254.579135959575,
+      "net_pnl": 5475.6918640403965,
+      "win_rate_pct": 62.857142857142854,
+      "profit_factor": 1.2092566154434075,
+      "net_sharpe": 1.7773840387009758,
+      "max_drawdown_usd": 1858.4910333799635,
+      "max_drawdown_pct": 1.8172755331312507,
+      "stops": 94,
+      "targets": 240,
+      "forced_eod": 156,
+      "avg_net_trade": 11.174881355184482,
+      "avg_gross_risk_usd": 206.17142857142858,
+      "avg_gross_reward_usd": 128.85714285714286
+    }
+  },
+  "execution": {
+    "raw_data": "Alpaca SIP raw 1-minute OHLC, exact synchronized QQQ/NVDA RTH sessions",
+    "entry": "frozen causal VWAP-Z signal, next bar open",
+    "exit": "absolute NVDA stop/target; same-bar stop-first; gap-through stop at adverse open; otherwise final RTH close",
+    "convergence_exit": false,
+    "position_notional_usd": 20000.0,
+    "starting_capital_usd": 100000.0,
+    "commission_usd_per_share_per_side": 0.0035,
+    "slippage_fraction_per_execution": 0.0002
+  },
+  "mark_to_market": {
+    "basis": "exact raw SIP 1-minute close mark-to-market",
+    "bars": 97530,
+    "max_drawdown_usd": 1926.3492253800068,
+    "max_drawdown_pct": 1.8828244821988576,
+    "max_drawdown_time": "2025-12-24T10:26:00-05:00",
+    "final_equity": 105475.69186404035
+  },
+  "reconciliation": {
+    "each_selected_period_candidates_accounted": true,
+    "selected_split_rows_equal_full": true,
+    "selected_split_net_equal_full": true,
+    "equity_final_equal_capital_plus_net": true,
+    "trade_costs_equal_metrics": true,
+    "trade_net_equal_metrics": true
+  }
+}
