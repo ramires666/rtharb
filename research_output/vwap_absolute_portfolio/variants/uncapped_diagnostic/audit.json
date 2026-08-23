@@ -1,0 +1,91 @@
+{
+  "checks": {
+    "all_traded_symbols_are_frozen_targets": true,
+    "commission_plus_slippage_equals_costs": true,
+    "equal_allocation_entry_exposure_within_100k": true,
+    "final_equity_equals_capital_plus_net": true,
+    "gross_minus_costs_equals_net": true,
+    "no_live_positions_at_end": true,
+    "qqq_is_never_traded": true,
+    "raw_minute_equity_rows": true,
+    "shared_cap_entry_exposure_within_100k": true,
+    "split_net_equals_full": true,
+    "split_trades_equal_full": true
+  },
+  "standalone_pairwise_comparison": {
+    "AAPL": {
+      "difference_usd": 2.360138751100749e-10,
+      "exact_equality_not_required": true,
+      "global_common_calendar_net_pnl": -3421.548820159764,
+      "global_common_calendar_trades": 287,
+      "standalone_pairwise_net_pnl": -3421.54882016,
+      "standalone_pairwise_trades": 287
+    },
+    "AMD": {
+      "difference_usd": 6.020854925736785e-10,
+      "exact_equality_not_required": true,
+      "global_common_calendar_net_pnl": 2053.442916700603,
+      "global_common_calendar_trades": 675,
+      "standalone_pairwise_net_pnl": 2053.4429167000008,
+      "standalone_pairwise_trades": 675
+    },
+    "AMZN": {
+      "difference_usd": 4.3291947804391384e-10,
+      "exact_equality_not_required": true,
+      "global_common_calendar_net_pnl": 446.1617430204327,
+      "global_common_calendar_trades": 535,
+      "standalone_pairwise_net_pnl": 446.1617430199998,
+      "standalone_pairwise_trades": 535
+    },
+    "AVGO": {
+      "difference_usd": 3.296918293926865e-10,
+      "exact_equality_not_required": true,
+      "global_common_calendar_net_pnl": 1708.66788560033,
+      "global_common_calendar_trades": 329,
+      "standalone_pairwise_net_pnl": 1708.6678856000003,
+      "standalone_pairwise_trades": 329
+    },
+    "GOOGL": {
+      "difference_usd": 4.6475179260596633e-10,
+      "exact_equality_not_required": true,
+      "global_common_calendar_net_pnl": -4427.832401539535,
+      "global_common_calendar_trades": 598,
+      "standalone_pairwise_net_pnl": -4427.832401539999,
+      "standalone_pairwise_trades": 598
+    },
+    "META": {
+      "difference_usd": 5.253468771115877e-10,
+      "exact_equality_not_required": true,
+      "global_common_calendar_net_pnl": -594.7439485194745,
+      "global_common_calendar_trades": 563,
+      "standalone_pairwise_net_pnl": -594.7439485199999,
+      "standalone_pairwise_trades": 563
+    },
+    "MSFT": {
+      "difference_usd": 2.7557689463719726e-10,
+      "exact_equality_not_required": true,
+      "global_common_calendar_net_pnl": 323.75709706027556,
+      "global_common_calendar_trades": 254,
+      "standalone_pairwise_net_pnl": 323.75709706,
+      "standalone_pairwise_trades": 254
+    },
+    "NVDA": {
+      "difference_usd": 3.9472070056945086e-10,
+      "exact_equality_not_required": true,
+      "global_common_calendar_net_pnl": 6691.888444560394,
+      "global_common_calendar_trades": 456,
+      "standalone_pairwise_net_pnl": 6691.88844456,
+      "standalone_pairwise_trades": 456
+    },
+    "TSLA": {
+      "difference_usd": 1.9326762412674725e-10,
+      "exact_equality_not_required": true,
+      "global_common_calendar_net_pnl": 1167.8554262001926,
+      "global_common_calendar_trades": 298,
+      "standalone_pairwise_net_pnl": 1167.8554261999993,
+      "standalone_pairwise_trades": 298
+    }
+  },
+  "status": "PASS",
+  "variant": "uncapped_diagnostic"
+}

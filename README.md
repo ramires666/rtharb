@@ -19,6 +19,9 @@
 - `tradingview_vwap_absolute_multi_asset/index.html` — поэтапный независимый
   тест девяти акций против reference QQQ: отдельные VWAP, Z, сделки,
   фиксированные долларовые stop/target, equity и drawdown для каждого тикера.
+- `tradingview_vwap_absolute_portfolio/index.html` — объединение девяти
+  стратегий на общем капитале `$100,000`: combined minute-MTM equity/DD,
+  корреляции, constituent-вклады и concurrent exposure для трёх моделей.
 
 Полный пересчёт последнего отчёта одним кликом:
 `launchers/run_vwap_absolute_event_driven.bat`.
@@ -57,6 +60,16 @@
 Только NVDA положительна на holdout; это exploratory multiple testing, а не
 доказанный live-edge. Точные equity, drawdown, gross/costs и каждая сделка
 доступны в интерактивном отчёте.
+
+Портфельная проверка запускается через
+`launchers/run_vwap_absolute_portfolio.bat`, отчёт — через
+`launchers/open_vwap_absolute_portfolio_report.bat`. Средняя pairwise Pearson
+корреляция дневного net P&L низкая (`0.024` full; `0.032` holdout), однако
+отрицательное expectancy большинства компонентов сильнее диверсификации:
+equal allocation дал full `+$2,206.83` при MDD `$9,503.15 / 8.59%`, но
+holdout `-$6,016.03`; shared `$100k` cap — full `+$855.94`, holdout
+`-$7,503.75`; uncapped leverage-диагностика — full `+$3,947.65`, holdout
+`-$10,966.83`. Ни один объединённый вариант edge на holdout не подтвердил.
 
 ## Что считается
 

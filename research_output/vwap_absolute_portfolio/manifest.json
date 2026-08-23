@@ -1,0 +1,141 @@
+{
+  "audit": {
+    "checks": {
+      "all_correlations_valid": true,
+      "all_pairwise_market_audits_valid": true,
+      "all_source_audits_pass": true,
+      "all_variant_audits_pass": true,
+      "frozen_parameters_only": true,
+      "global_calendar_is_raw_inner_intersection": true,
+      "holdout_not_used_for_portfolio_tuning": true,
+      "source_complete_9_of_9": true
+    },
+    "correlation_checks": {
+      "pearson_development_symmetric": true,
+      "pearson_development_unit_diagonal": true,
+      "pearson_full_symmetric": true,
+      "pearson_full_unit_diagonal": true,
+      "pearson_holdout_symmetric": true,
+      "pearson_holdout_unit_diagonal": true,
+      "pearson_validation_symmetric": true,
+      "pearson_validation_unit_diagonal": true,
+      "spearman_development_symmetric": true,
+      "spearman_development_unit_diagonal": true,
+      "spearman_full_symmetric": true,
+      "spearman_full_unit_diagonal": true,
+      "spearman_holdout_symmetric": true,
+      "spearman_holdout_unit_diagonal": true,
+      "spearman_validation_symmetric": true,
+      "spearman_validation_unit_diagonal": true
+    },
+    "status": "PASS"
+  },
+  "correlations": {
+    "methods": [
+      "pearson",
+      "spearman"
+    ],
+    "splits": [
+      "development",
+      "validation",
+      "holdout",
+      "full"
+    ]
+  },
+  "frozen_stop_target": {
+    "AAPL": {
+      "stop_usd": 3.0,
+      "target_usd": 7.5
+    },
+    "AMD": {
+      "stop_usd": 1.75,
+      "target_usd": 4.0
+    },
+    "AMZN": {
+      "stop_usd": 2.0,
+      "target_usd": 1.25
+    },
+    "AVGO": {
+      "stop_usd": 10.5,
+      "target_usd": 5.0
+    },
+    "GOOGL": {
+      "stop_usd": 1.25,
+      "target_usd": 3.25
+    },
+    "META": {
+      "stop_usd": 8.0,
+      "target_usd": 2.75
+    },
+    "MSFT": {
+      "stop_usd": 11.75,
+      "target_usd": 9.0
+    },
+    "NVDA": {
+      "stop_usd": 5.25,
+      "target_usd": 1.25
+    },
+    "TSLA": {
+      "stop_usd": 19.75,
+      "target_usd": 7.0
+    }
+  },
+  "global_calendar": {
+    "global_minutes_dropped_from_largest_pairwise_calendar": 1,
+    "global_raw_minutes": 97529,
+    "no_fill_resample_or_interpolation": true,
+    "per_symbol_minutes_dropped_by_global_intersection": {
+      "AAPL": 1,
+      "AMD": 1,
+      "AMZN": 1,
+      "AVGO": 1,
+      "GOOGL": 1,
+      "META": 0,
+      "MSFT": 1,
+      "NVDA": 1,
+      "TSLA": 1
+    },
+    "per_symbol_pairwise_raw_minutes": {
+      "AAPL": 97530,
+      "AMD": 97530,
+      "AMZN": 97530,
+      "AVGO": 97530,
+      "GOOGL": 97530,
+      "META": 97529,
+      "MSFT": 97530,
+      "NVDA": 97530,
+      "TSLA": 97530
+    },
+    "policy": "deterministic inner intersection of all nine pairwise raw timestamp sets; no fill",
+    "sessions": 251
+  },
+  "period": {
+    "end": "2026-08-21",
+    "raw_minutes": 97529,
+    "sessions": 251,
+    "start": "2025-08-22"
+  },
+  "reference_only": "QQQ",
+  "schema_version": 1,
+  "source": "research_output/vwap_absolute_multi_asset",
+  "source_status": "COMPLETE",
+  "status": "COMPLETE",
+  "study": "Nine frozen VWAP-Z bracket strategies under one $100k capital base",
+  "traded_symbols": [
+    "NVDA",
+    "MSFT",
+    "AAPL",
+    "AMZN",
+    "GOOGL",
+    "META",
+    "AVGO",
+    "TSLA",
+    "AMD"
+  ],
+  "variants": [
+    "equal_allocation",
+    "shared_cap",
+    "uncapped_diagnostic"
+  ],
+  "warning": "Exploratory portfolio of separately optimized strategies; primary verdict is holdout and does not establish a live edge"
+}

@@ -1,0 +1,142 @@
+{
+  "admission_statistics": {
+    "entry_events": 3995,
+    "filled": 3995,
+    "generated_signals": 3995,
+    "ignored_signals_while_open": 25639
+  },
+  "audit": {
+    "file": "variants/equal_allocation/audit.json",
+    "status": "PASS"
+  },
+  "capital_model": {
+    "cross_sleeve_borrowing": false,
+    "per_symbol_sleeve_usd": 11111.11,
+    "starting_capital_usd": 100000.0
+  },
+  "execution": {
+    "commission_usd_per_share_per_side": 0.0035,
+    "convergence_exit": false,
+    "entry": "close-t signal, next raw open",
+    "frozen_traded_symbols": [
+      "NVDA",
+      "MSFT",
+      "AAPL",
+      "AMZN",
+      "GOOGL",
+      "META",
+      "AVGO",
+      "TSLA",
+      "AMD"
+    ],
+    "new_optimization_or_holdout_tuning": false,
+    "raw_data": "exact synchronized Alpaca SIP 1-minute RTH",
+    "reference_only": "QQQ",
+    "same_bar_ambiguity": "stop first",
+    "slippage_fraction_per_execution": 0.0002,
+    "stop_gap": "adverse raw open"
+  },
+  "exposure_statistics": {
+    "active_position_histogram_minutes": {
+      "0": 13599,
+      "1": 5556,
+      "2": 5554,
+      "3": 6308,
+      "4": 7240,
+      "5": 8480,
+      "6": 11762,
+      "7": 14201,
+      "8": 15010,
+      "9": 9819
+    },
+    "active_positions_max": 9,
+    "active_positions_mean": 4.976755631658276,
+    "gross_entry_exposure_max": 99526.15657299999,
+    "gross_entry_exposure_mean": 54418.89355238203,
+    "gross_entry_exposure_p95": 98468.75154999999,
+    "gross_entry_exposure_p99": 98984.78171234,
+    "gross_mtm_exposure_max": 99848.41,
+    "minutes_entry_exposure_at_or_above_99pct_cap": 948,
+    "minutes_mtm_above_100k": 0
+  },
+  "periods": {
+    "development": {
+      "commissions": 483.973,
+      "costs": 8355.618174859137,
+      "end": "2026-02-20",
+      "final_equity_rebased": 107208.21652514086,
+      "gross_pnl": 15563.834699999996,
+      "max_drawdown_pct_mtm": 2.8534082775007628,
+      "max_drawdown_usd_mtm": 2988.073255159834,
+      "net_pnl": 7208.2165251408605,
+      "net_sharpe": 2.5942068236886615,
+      "net_sortino": 4.168438702720534,
+      "profit_factor": 1.1244374857586654,
+      "return_pct": 7.208216525140861,
+      "sessions": 125,
+      "slippage": 7871.645174859135,
+      "start": "2025-08-22",
+      "trades": 1800,
+      "win_rate_pct": 52.888888888888886
+    },
+    "full": {
+      "commissions": 992.817,
+      "costs": 18456.167896398125,
+      "end": "2026-08-21",
+      "final_equity_rebased": 102206.8317036019,
+      "gross_pnl": 20662.999600000025,
+      "max_drawdown_pct_mtm": 8.589393552108845,
+      "max_drawdown_usd_mtm": 9503.150993939576,
+      "net_pnl": 2206.8317036019052,
+      "net_sharpe": 0.4264873797373418,
+      "net_sortino": 0.5841367104777494,
+      "profit_factor": 1.016918661290843,
+      "return_pct": 2.2068317036019054,
+      "sessions": 251,
+      "slippage": 17463.350896398122,
+      "start": "2025-08-22",
+      "trades": 3995,
+      "win_rate_pct": 51.088861076345424
+    },
+    "holdout": {
+      "commissions": 258.496,
+      "costs": 5495.714111879435,
+      "end": "2026-08-21",
+      "final_equity_rebased": 93983.97448812056,
+      "gross_pnl": -520.3114000000039,
+      "max_drawdown_pct_mtm": 7.673123801989997,
+      "max_drawdown_usd_mtm": 7721.76890655965,
+      "net_pnl": -6016.025511879439,
+      "net_sharpe": -3.7168096590147677,
+      "net_sortino": -4.023529893901158,
+      "profit_factor": 0.8514188874476983,
+      "return_pct": -6.016025511879439,
+      "sessions": 63,
+      "slippage": 5237.218111879436,
+      "start": "2026-05-22",
+      "trades": 1200,
+      "win_rate_pct": 47.5
+    },
+    "validation": {
+      "commissions": 250.348,
+      "costs": 4604.835609659551,
+      "end": "2026-05-21",
+      "final_equity_rebased": 101014.64069034049,
+      "gross_pnl": 5619.476300000035,
+      "max_drawdown_pct_mtm": 2.547072924271767,
+      "max_drawdown_usd_mtm": 2634.437275759934,
+      "net_pnl": 1014.6406903404845,
+      "net_sharpe": 0.8480089324575266,
+      "net_sortino": 1.272094306422353,
+      "profit_factor": 1.031686254169995,
+      "return_pct": 1.0146406903404845,
+      "sessions": 63,
+      "slippage": 4354.487609659552,
+      "start": "2026-02-23",
+      "trades": 995,
+      "win_rate_pct": 52.16080402010051
+    }
+  },
+  "schema_version": 1,
+  "variant": "equal_allocation"
+}

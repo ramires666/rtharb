@@ -1,0 +1,257 @@
+{
+  "frozen_parameters": {
+    "AAPL": {
+      "stop_usd": 3.0,
+      "target_usd": 7.5
+    },
+    "AMD": {
+      "stop_usd": 1.75,
+      "target_usd": 4.0
+    },
+    "AMZN": {
+      "stop_usd": 2.0,
+      "target_usd": 1.25
+    },
+    "AVGO": {
+      "stop_usd": 10.5,
+      "target_usd": 5.0
+    },
+    "GOOGL": {
+      "stop_usd": 1.25,
+      "target_usd": 3.25
+    },
+    "META": {
+      "stop_usd": 8.0,
+      "target_usd": 2.75
+    },
+    "MSFT": {
+      "stop_usd": 11.75,
+      "target_usd": 9.0
+    },
+    "NVDA": {
+      "stop_usd": 5.25,
+      "target_usd": 1.25
+    },
+    "TSLA": {
+      "stop_usd": 19.75,
+      "target_usd": 7.0
+    }
+  },
+  "interpretation_policy": "Primary diversification verdict uses holdout; full period is descriptive and subject to multiple testing",
+  "portfolio_variants": {
+    "equal_allocation": {
+      "full": {
+        "commissions": 992.817,
+        "costs": 18456.167896398125,
+        "end": "2026-08-21",
+        "final_equity_rebased": 102206.8317036019,
+        "gross_pnl": 20662.999600000025,
+        "max_drawdown_pct_mtm": 8.589393552108845,
+        "max_drawdown_usd_mtm": 9503.150993939576,
+        "net_pnl": 2206.8317036019052,
+        "net_sharpe": 0.4264873797373418,
+        "net_sortino": 0.5841367104777494,
+        "profit_factor": 1.016918661290843,
+        "return_pct": 2.2068317036019054,
+        "sessions": 251,
+        "slippage": 17463.350896398122,
+        "start": "2025-08-22",
+        "trades": 3995,
+        "win_rate_pct": 51.088861076345424
+      },
+      "holdout": {
+        "commissions": 258.496,
+        "costs": 5495.714111879435,
+        "end": "2026-08-21",
+        "final_equity_rebased": 93983.97448812056,
+        "gross_pnl": -520.3114000000039,
+        "max_drawdown_pct_mtm": 7.673123801989997,
+        "max_drawdown_usd_mtm": 7721.76890655965,
+        "net_pnl": -6016.025511879439,
+        "net_sharpe": -3.7168096590147677,
+        "net_sortino": -4.023529893901158,
+        "profit_factor": 0.8514188874476983,
+        "return_pct": -6.016025511879439,
+        "sessions": 63,
+        "slippage": 5237.218111879436,
+        "start": "2026-05-22",
+        "trades": 1200,
+        "win_rate_pct": 47.5
+      }
+    },
+    "shared_cap": {
+      "full": {
+        "commissions": 1158.262,
+        "costs": 21548.889649812627,
+        "end": "2026-08-21",
+        "final_equity_rebased": 100855.93967618744,
+        "gross_pnl": 22404.829326000065,
+        "max_drawdown_pct_mtm": 14.437956707151143,
+        "max_drawdown_usd_mtm": 16561.469175234088,
+        "net_pnl": 855.9396761874414,
+        "net_sharpe": 0.14342949784012343,
+        "net_sortino": 0.18940284364932455,
+        "profit_factor": 1.0051679325141178,
+        "return_pct": 0.8559396761874413,
+        "sessions": 251,
+        "slippage": 20390.62764981262,
+        "start": "2025-08-22",
+        "trades": 3304,
+        "win_rate_pct": 51.72518159806295
+      },
+      "holdout": {
+        "commissions": 307.19500000000005,
+        "costs": 6490.841837074111,
+        "end": "2026-08-21",
+        "final_equity_rebased": 92496.25418892587,
+        "gross_pnl": -1012.903974000012,
+        "max_drawdown_pct_mtm": 11.171101083166288,
+        "max_drawdown_usd_mtm": 11291.552855094313,
+        "net_pnl": -7503.7458110741245,
+        "net_sharpe": -2.933277578708324,
+        "net_sortino": -3.281430423259534,
+        "profit_factor": 0.8553367074093278,
+        "return_pct": -7.5037458110741255,
+        "sessions": 63,
+        "slippage": 6183.646837074111,
+        "start": "2026-05-22",
+        "trades": 999,
+        "win_rate_pct": 50.25025025025025
+      }
+    },
+    "uncapped_diagnostic": {
+      "full": {
+        "commissions": 1798.5729999999999,
+        "costs": 33470.5594570766,
+        "end": "2026-08-21",
+        "final_equity_rebased": 103947.64834292345,
+        "gross_pnl": 37418.20780000005,
+        "max_drawdown_pct_mtm": 14.521927116605484,
+        "max_drawdown_usd_mtm": 17331.238368118822,
+        "net_pnl": 3947.648342923454,
+        "net_sharpe": 0.4513629071182032,
+        "net_sortino": 0.6202456459317728,
+        "profit_factor": 1.0166908579611542,
+        "return_pct": 3.947648342923454,
+        "sessions": 251,
+        "slippage": 31671.986457076593,
+        "start": "2025-08-22",
+        "trades": 3995,
+        "win_rate_pct": 51.088861076345424
+      },
+      "holdout": {
+        "commissions": 468.713,
+        "costs": 9973.902958958977,
+        "end": "2026-08-21",
+        "final_equity_rebased": 89033.17324104102,
+        "gross_pnl": -992.9238000000063,
+        "max_drawdown_pct_mtm": 13.890216990046714,
+        "max_drawdown_usd_mtm": 14049.881430519454,
+        "net_pnl": -10966.826758958983,
+        "net_sharpe": -3.702061601830598,
+        "net_sortino": -4.017301598235837,
+        "profit_factor": 0.8507834379122677,
+        "return_pct": -10.966826758958984,
+        "sessions": 63,
+        "slippage": 9505.189958958976,
+        "start": "2026-05-22",
+        "trades": 1200,
+        "win_rate_pct": 47.5
+      }
+    }
+  },
+  "reference_only": "QQQ",
+  "schema_version": 1,
+  "standalone": [
+    {
+      "full_net_pnl": 6691.888444560394,
+      "holdout_max_drawdown_pct_mtm": 1.8891138274501118,
+      "holdout_net_pnl": 2199.5402666400987,
+      "holdout_net_sharpe": 2.666478483607919,
+      "mean_full_pearson_correlation_to_other_targets": 0.049273428625846834,
+      "stop_usd": 5.25,
+      "symbol": "NVDA",
+      "target_usd": 1.25
+    },
+    {
+      "full_net_pnl": 323.75709706027556,
+      "holdout_max_drawdown_pct_mtm": 2.561205186595506,
+      "holdout_net_pnl": -1664.1076873199208,
+      "holdout_net_sharpe": -2.3858099049199963,
+      "mean_full_pearson_correlation_to_other_targets": 0.033327277748635434,
+      "stop_usd": 11.75,
+      "symbol": "MSFT",
+      "target_usd": 9.0
+    },
+    {
+      "full_net_pnl": -3421.548820159764,
+      "holdout_max_drawdown_pct_mtm": 2.517535785755496,
+      "holdout_net_pnl": -1898.545725939906,
+      "holdout_net_sharpe": -3.4408635181748695,
+      "mean_full_pearson_correlation_to_other_targets": 0.009467719131436559,
+      "stop_usd": 3.0,
+      "symbol": "AAPL",
+      "target_usd": 7.5
+    },
+    {
+      "full_net_pnl": 446.1617430204327,
+      "holdout_max_drawdown_pct_mtm": 1.3572138986200128,
+      "holdout_net_pnl": -102.05660265987191,
+      "holdout_net_sharpe": -0.14049136043067012,
+      "mean_full_pearson_correlation_to_other_targets": 0.03249928921423375,
+      "stop_usd": 2.0,
+      "symbol": "AMZN",
+      "target_usd": 1.25
+    },
+    {
+      "full_net_pnl": -4427.832401539535,
+      "holdout_max_drawdown_pct_mtm": 3.793298138074599,
+      "holdout_net_pnl": -3080.4220782798716,
+      "holdout_net_sharpe": -4.726802785112247,
+      "mean_full_pearson_correlation_to_other_targets": 0.045852084717984215,
+      "stop_usd": 1.25,
+      "symbol": "GOOGL",
+      "target_usd": 3.25
+    },
+    {
+      "full_net_pnl": -594.7439485194745,
+      "holdout_max_drawdown_pct_mtm": 2.8766138312316833,
+      "holdout_net_pnl": -1748.4231262998617,
+      "holdout_net_sharpe": -2.0875934962403915,
+      "mean_full_pearson_correlation_to_other_targets": 0.03754681976048846,
+      "stop_usd": 8.0,
+      "symbol": "META",
+      "target_usd": 2.75
+    },
+    {
+      "full_net_pnl": 1708.66788560033,
+      "holdout_max_drawdown_pct_mtm": 3.124825614707637,
+      "holdout_net_pnl": -909.2743655999105,
+      "holdout_net_sharpe": -0.7865866251317328,
+      "mean_full_pearson_correlation_to_other_targets": 0.033300539088985184,
+      "stop_usd": 10.5,
+      "symbol": "AVGO",
+      "target_usd": 5.0
+    },
+    {
+      "full_net_pnl": 1167.8554262001926,
+      "holdout_max_drawdown_pct_mtm": 2.803580413570871,
+      "holdout_net_pnl": -948.7428908599488,
+      "holdout_net_sharpe": -0.7774659040450218,
+      "mean_full_pearson_correlation_to_other_targets": 0.01171738466972148,
+      "stop_usd": 19.75,
+      "symbol": "TSLA",
+      "target_usd": 7.0
+    },
+    {
+      "full_net_pnl": 2053.442916700603,
+      "holdout_max_drawdown_pct_mtm": 3.366219861788635,
+      "holdout_net_pnl": -2814.79454863979,
+      "holdout_net_sharpe": -3.3786332119885043,
+      "mean_full_pearson_correlation_to_other_targets": -0.03501919155176096,
+      "stop_usd": 1.75,
+      "symbol": "AMD",
+      "target_usd": 4.0
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "checks": {
+    "all_traded_symbols_are_frozen_targets": true,
+    "commission_plus_slippage_equals_costs": true,
+    "equal_allocation_entry_exposure_within_100k": true,
+    "final_equity_equals_capital_plus_net": true,
+    "gross_minus_costs_equals_net": true,
+    "no_live_positions_at_end": true,
+    "qqq_is_never_traded": true,
+    "raw_minute_equity_rows": true,
+    "shared_cap_entry_exposure_within_100k": true,
+    "split_net_equals_full": true,
+    "split_trades_equal_full": true
+  },
+  "status": "PASS",
+  "variant": "shared_cap"
+}
