@@ -6,7 +6,7 @@
   "reference_only": "QQQ",
   "schema_version": 1,
   "selection_policy": "development grid and boundary expansion; top 10 to validation; holdout once",
-  "status": "PARTIAL",
+  "status": "COMPLETE",
   "study_period": {
     "end": "2026-08-21",
     "start": "2025-08-22"
@@ -19,10 +19,11 @@
     "GOOGL",
     "META",
     "AVGO",
-    "TSLA"
+    "TSLA",
+    "AMD"
   ],
   "symbols_requested_this_run": [
-    "TSLA"
+    "AMD"
   ],
   "traded_separately": [
     "NVDA",
