@@ -51,3 +51,18 @@ def test_verified_q95_overlays_preserve_winners_and_splits():
         for quantile in ("0.9", "0.95", "0.975", "0.99"):
             for split in ("development", "validation", "holdout", "full"):
                 assert abs(summary[family][quantile][split]["reconciliation_error"]) < 1e-6
+
+
+def test_vwap_rr_ratio_variants_reconcile_to_frozen_cohort():
+    summary = json.loads(
+        (ROOT / "research_output" / "risk_reward" / "vwap_rr_ratios_summary.json").read_text(encoding="utf-8")
+    )
+    assert summary["rr_ratios"] == [0.5, 0.75, 1.0, 1.5, 2.0, 3.0]
+    assert summary["fixed_stop_pct"] == 0.01
+    for variant in summary["variants"].values():
+        reconciliation = variant["reconciliation"]
+        assert reconciliation["candidate_entries"] == 1656
+        assert reconciliation["candidate_entries_accounted"]
+        assert reconciliation["split_trade_rows_equal_full"]
+        assert reconciliation["split_net_pnl_equal_full"]
+        assert reconciliation["csv_net_pnl_equal_metrics"]

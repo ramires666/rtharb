@@ -144,57 +144,66 @@ def publish_vwap_z(payload: dict) -> None:
 
 def publish_vwap_rr(payload: dict) -> None:
     folder = ROOT / "research_output" / "risk_reward"
-    all_summary = json.loads((folder / "summary.json").read_text(encoding="utf-8"))
-    family = all_summary["vwap_z"]
-    trades = pd.read_csv(folder / "vwap_z_selected_full_trades.csv")
+    ratios = json.loads((folder / "vwap_rr_ratios_summary.json").read_text(encoding="utf-8"))
     actual_start = int(payload["bars"]["t"][0])
     base_by_entry = {int(t["entry_time"]): t for t in payload["variants"]["vwap_z"]["trades"]}
     z_by_time = dict(zip(payload["bars"]["t"], payload["bars"]["vz"]))
-    items = []
-    for row in trades.itertuples(index=False):
-        entry_time, exit_time = epoch(row.entry_time), epoch(row.exit_time)
-        if entry_time < actual_start:
-            continue
-        if entry_time not in base_by_entry:
-            raise ValueError(f"VWAP RR entry is absent from VWAP-Z report: {row.entry_time}")
-        item = deepcopy(base_by_entry[entry_time])
-        item.update({
-            "entry_reason": f"{item['entry_reason']}_RR_ONLY",
-            "exit_time": exit_time, "exit_signal_time": exit_time,
-            "exit_price": finite(row.exit_price),
-            "exit_reference_price": finite(
-                float(row.exit_price) / (1 - payload["meta"]["slippage_bps_per_execution"] / 10_000)
-                if item["direction"] == 1 else
-                float(row.exit_price) / (1 + payload["meta"]["slippage_bps_per_execution"] / 10_000)
-            ),
-            "exit_reason": str(row.exit_reason),
-            "exit_signal_z": finite(z_by_time.get(exit_time, float("nan"))),
-            "exit_execution_z": finite(z_by_time.get(exit_time, float("nan"))),
-            "shares": int(row.shares), "duration_minutes": int(row.duration_bars),
-            "gross_pnl": finite(row.gross_pnl, 4), "commission": finite(row.commissions, 4),
-            "slippage": finite(row.slippage, 4), "net_pnl": finite(row.net_pnl, 4),
-            "return_pct": finite(float(row.net_pnl) / (float(row.entry_reference) * int(row.shares)) * 100),
-            "stop_pct": finite(row.stop_pct, 6), "rr": finite(row.rr, 3),
-            "stop_price": finite(row.stop_price), "target_price": finite(row.target_price),
-        })
-        items.append(item)
-    net, gross = sum(t["net_pnl"] for t in items), sum(t["gross_pnl"] for t in items)
-    wins, selected = sum(t["net_pnl"] > 0 for t in items), family["selected"]
-    payload["variants"]["rr_vwap"] = {
-        "label": f"VWAP-Z · stop {selected['stop_pct'] * 100:g}% · target {selected['rr']:g}R",
-        "entry_mode": "z_only", "abs_threshold_usd": None,
-        "anchor_filter": False, "inverse": False, "rr_only": True,
-        "z_basis": "vwap", "strategy": payload["variants"]["vwap_z"]["strategy"],
-        "stop_pct": selected["stop_pct"], "rr": selected["rr"],
-        "trades_count": len(items), "gross_pnl": round(gross, 4), "net_pnl": round(net, 4),
-        "win_rate_pct": round(100 * wins / len(items), 3) if items else 0, "trades": items,
-    }
+    variant_keys = {0.5: "rr_vwap", 0.75: "rr_vwap_075", 1.0: "rr_vwap_1",
+                    1.5: "rr_vwap_15", 2.0: "rr_vwap_2", 3.0: "rr_vwap_3"}
+    for ratio in ratios["rr_ratios"]:
+        ratio = float(ratio)
+        ratio_slug = f"{ratio:g}".replace(".", "p")
+        family = ratios["variants"][f"rr_{ratio_slug}"]
+        trades = pd.read_csv(folder / family["full_trades_csv"])
+        items = []
+        for row in trades.itertuples(index=False):
+            entry_time, exit_time = epoch(row.entry_time), epoch(row.exit_time)
+            if entry_time < actual_start:
+                continue
+            if entry_time not in base_by_entry:
+                raise ValueError(f"VWAP RR entry is absent from VWAP-Z report: {row.entry_time}")
+            item = deepcopy(base_by_entry[entry_time])
+            item.update({
+                "entry_reason": f"{item['entry_reason']}_RR_ONLY",
+                "exit_time": exit_time, "exit_signal_time": exit_time,
+                "exit_price": finite(row.exit_price),
+                "exit_reference_price": finite(
+                    float(row.exit_price) / (1 - payload["meta"]["slippage_bps_per_execution"] / 10_000)
+                    if item["direction"] == 1 else
+                    float(row.exit_price) / (1 + payload["meta"]["slippage_bps_per_execution"] / 10_000)
+                ),
+                "exit_reason": str(row.exit_reason),
+                "exit_signal_z": finite(z_by_time.get(exit_time, float("nan"))),
+                "exit_execution_z": finite(z_by_time.get(exit_time, float("nan"))),
+                "shares": int(row.shares), "duration_minutes": int(row.duration_bars),
+                "gross_pnl": finite(row.gross_pnl, 4), "commission": finite(row.commissions, 4),
+                "slippage": finite(row.slippage, 4), "net_pnl": finite(row.net_pnl, 4),
+                "return_pct": finite(float(row.net_pnl) / (float(row.entry_reference) * int(row.shares)) * 100),
+                "stop_pct": finite(row.stop_pct, 6), "rr": finite(row.rr, 3),
+                "stop_price": finite(row.stop_price), "target_price": finite(row.target_price),
+            })
+            items.append(item)
+        net, gross = sum(t["net_pnl"] for t in items), sum(t["gross_pnl"] for t in items)
+        wins = sum(t["net_pnl"] > 0 for t in items)
+        payload["variants"][variant_keys[ratio]] = {
+            "label": f"VWAP-Z · stop {ratios['fixed_stop_pct'] * 100:g}% · target {ratio:g}R",
+            "entry_mode": "z_only", "abs_threshold_usd": None,
+            "anchor_filter": False, "inverse": False, "rr_only": True,
+            "z_basis": "vwap", "strategy": payload["variants"]["vwap_z"]["strategy"],
+            "stop_pct": ratios["fixed_stop_pct"], "rr": ratio,
+            "trades_count": len(items), "gross_pnl": round(gross, 4), "net_pnl": round(net, 4),
+            "win_rate_pct": round(100 * wins / len(items), 3) if items else 0, "trades": items,
+        }
+    payload["meta"]["vwap_rr_ratio_research"] = ratios
 
 
 def publish_duration_stoploss(payload: dict) -> None:
     """Publish the independently evaluated q95 time and price-risk overlays."""
     folder = ROOT / "research_output" / "duration_stoploss_verified"
     summary = json.loads((folder / "summary.json").read_text(encoding="utf-8"))
+    if {"time_stop_q95", "stop_loss_q95"}.issubset(payload.get("variants", {})):
+        payload["meta"]["duration_stoploss_research"] = summary
+        return
     selected = summary["frozen_parameters"]
     cfg = AppConfig.load(str(ROOT / "configs" / "default_config.yaml"))
     lead, target = DataLoader(cfg.cache_dir, "alpaca", "sip").get_synchronized_pair("QQQ", "NVDA")
@@ -273,7 +282,8 @@ def main() -> None:
     print(json.dumps({
         "published": {
             name: {"trades": payload["variants"][name]["trades_count"], "net_pnl": payload["variants"][name]["net_pnl"]}
-            for name in ("rr_classic", "vwap_z", "rr_vwap", "time_stop_q95", "stop_loss_q95")
+            for name in ("rr_classic", "vwap_z", "rr_vwap", "rr_vwap_075", "rr_vwap_1",
+                         "rr_vwap_15", "rr_vwap_2", "rr_vwap_3", "time_stop_q95", "stop_loss_q95")
         }
     }, ensure_ascii=False))
 

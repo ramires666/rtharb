@@ -37,6 +37,7 @@
     <label class="ema-check" title="Classic Z-входы; выход только stop, take-profit или конец RTH"><input id="toggleRr" type="checkbox"> RR без схождения</label>
     <label class="ema-check" title="Использовать fair value и Z-score на cumulative session VWAP"><input id="toggleVwapZ" type="checkbox"> VWAP-Z стратегия</label>
     <label class="ema-check" title="VWAP-Z входы; выход только stop, take-profit или конец RTH"><input id="toggleVwapRr" type="checkbox"> VWAP-Z RR</label>
+    <div class="group" title="Reward/stop для VWAP-Z RR; схождение при этом режиме не используется"><label for="vwapRrRatio">VWAP RR ставка</label><select id="vwapRrRatio"><option value="0.5">0.5R</option><option value="0.75">0.75R</option><option value="1">1R</option><option value="1.5">1.5R</option><option value="2">2R</option><option value="3">3R</option></select></div>
     <label class="ema-check" title="Отдельный 95%-ный лимит времени; обычное схождение и конец RTH сохранены"><input id="toggleTimeStop" type="checkbox"> Time-stop 95%</label>
     <label class="ema-check" title="Отдельный 95%-ный ценовой stop; обычное схождение и конец RTH сохранены"><input id="toggleStopLoss" type="checkbox"> Stop-loss 95%</label>
     <div class="spacer"></div>
@@ -247,11 +248,15 @@
     zPriceLines[3].applyOptions({price:lockout??entry+1,title:lockout==null?'LOCKOUT OFF':`LOCKOUT +${lockout}σ`,lineVisible:lockout!=null,axisLabelVisible:lockout!=null});
     zPriceLines[4].applyOptions({price:-(lockout??entry+1),title:lockout==null?'LOCKOUT OFF':`LOCKOUT −${lockout}σ`,lineVisible:lockout!=null,axisLabelVisible:lockout!=null});
     document.getElementById('zTitle').textContent=`${currentVariant.z_basis==='vwap'?'VWAP-Z':'Классический Z-score'} · вход ±${entry}σ · ${lockout==null?'lockout выключен':`lockout ±${lockout}σ`} · выход ${exit}σ`;
+    const usesVwap=currentVariant.z_basis==='vwap';
+    nvdaVwapToggle.checked=usesVwap;qqqVwapToggle.checked=usesVwap;
+    nvdaVwapSeries.applyOptions({visible:usesVwap});qqqVwapSeries.applyOptions({visible:usesVwap});
   }
 
   function applyVariant(){
     const useAbs=document.getElementById('toggleAbsFilter').checked,useAnchor=document.getElementById('toggleAnchorFilter').checked,useInverse=document.getElementById('toggleInverse').checked,useRr=document.getElementById('toggleRr').checked,useVwap=document.getElementById('toggleVwapZ').checked,useVwapRr=document.getElementById('toggleVwapRr').checked,useTimeStop=document.getElementById('toggleTimeStop').checked,useStopLoss=document.getElementById('toggleStopLoss').checked;
-    const key=useStopLoss?'stop_loss_q95':useTimeStop?'time_stop_q95':useVwapRr?'rr_vwap':useVwap?'vwap_z':useRr?'rr_classic':useInverse?'base_inverse':useAbs?(useAnchor?'hybrid_abs_anchor':'hybrid_abs'):(useAnchor?'base_anchor':'base');
+    const rrRatio=document.getElementById('vwapRrRatio').value,rrKeys={'0.5':'rr_vwap','0.75':'rr_vwap_075','1':'rr_vwap_1','1.5':'rr_vwap_15','2':'rr_vwap_2','3':'rr_vwap_3'};
+    const key=useStopLoss?'stop_loss_q95':useTimeStop?'time_stop_q95':useVwapRr?rrKeys[rrRatio]:useVwap?'vwap_z':useRr?'rr_classic':useInverse?'base_inverse':useAbs?(useAnchor?'hybrid_abs_anchor':'hybrid_abs'):(useAnchor?'base_anchor':'base');
     currentVariant=D.variants[key];currentTrades=currentVariant.trades;tradesById=new Map(currentTrades.map(t=>[t.id,t]));selectedTrade=currentTrades.length?currentTrades[currentTrades.length-1]:null;
     updateStats();updateZBasis();updateEquity();nvdaMarkersApi.setMarkers(nvdaMarkers(currentTrades));zMarkersApi.setMarkers(scoreMarkers(currentTrades));rebuildTradeSelect();
     const r=D.meta.absolute_filter_research,b=r.baseline_holdout,c=r.chosen_holdout,rev=D.meta.reverse_research,rr=D.meta.risk_reward_research,vw=D.meta.vwap_z_research,ds=D.meta.duration_stoploss_research,ts=ds.selected_q95_overlays.time_stop.results,ss=ds.selected_q95_overlays.stop_loss,sl=ss.results,sv=ds.development_q95_survival;
@@ -266,6 +271,7 @@
   document.getElementById('toggleRr').addEventListener('change',e=>{if(e.target.checked)clearExclusive('toggleRr');applyVariant();});
   document.getElementById('toggleVwapZ').addEventListener('change',e=>{if(e.target.checked)clearExclusive('toggleVwapZ');applyVariant();});
   document.getElementById('toggleVwapRr').addEventListener('change',e=>{if(e.target.checked)clearExclusive('toggleVwapRr');applyVariant();});
+  document.getElementById('vwapRrRatio').addEventListener('change',()=>{document.getElementById('toggleVwapRr').checked=true;clearExclusive('toggleVwapRr');applyVariant();});
   document.getElementById('toggleTimeStop').addEventListener('change',e=>{if(e.target.checked)clearExclusive('toggleTimeStop');applyVariant();});
   document.getElementById('toggleStopLoss').addEventListener('change',e=>{if(e.target.checked)clearExclusive('toggleStopLoss');applyVariant();});
 
