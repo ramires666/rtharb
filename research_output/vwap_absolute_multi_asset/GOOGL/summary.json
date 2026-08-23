@@ -1,0 +1,239 @@
+{
+  "audit": {
+    "file": "GOOGL/audit.json",
+    "status": "PASS"
+  },
+  "entry_parameters": {
+    "beta_days": 5,
+    "entry": "signal at raw close t; traded target fills raw next-minute open t+1",
+    "hook_delta": 0.0,
+    "warmup_bars": 30,
+    "window": 60,
+    "z_entry": 2.5
+  },
+  "execution": {
+    "after_exit": "fresh raw close signal allowed",
+    "commission_usd_per_share_per_side": 0.0035,
+    "convergence_exit": false,
+    "position_notional_usd": 20000.0,
+    "raw_data": "exact synchronized Alpaca SIP 1-minute QQQ/GOOGL RTH; no resampling/interpolation",
+    "reference_not_traded": "QQQ",
+    "same_bar_ambiguity": "stop first",
+    "slippage_fraction_per_execution": 0.0002,
+    "starting_capital_usd": 100000.0,
+    "stop_gap": "adverse raw open",
+    "traded_instrument": "GOOGL",
+    "while_position_open": "signals ignored"
+  },
+  "grid": {
+    "boundary_rule": "expand an axis by 50% when the development winner is in its top two values; development only",
+    "development_median_price": 291.3395,
+    "expansion_log": [
+      {
+        "combinations_evaluated_total": 1225,
+        "development_winner": {
+          "net_pnl": -1255.8093437796915,
+          "net_sharpe": -1.0464146745340894,
+          "stop_usd": 0.75,
+          "target_usd": 3.5
+        },
+        "eligible_combinations": 1225,
+        "expanded_stop_axis": false,
+        "expanded_target_axis": false,
+        "round": 1,
+        "stop_max_usd": 8.75,
+        "target_max_usd": 8.75,
+        "winner_in_top_two_stop_values": false,
+        "winner_in_top_two_target_values": false
+      }
+    ],
+    "hard_cap_usd": 20.0,
+    "initial_max_usd": 8.75,
+    "minimum_sample": {
+      "active_trade_days": 30,
+      "trades": 50
+    },
+    "step_usd": 0.25,
+    "unique_combinations": 1225
+  },
+  "period": {
+    "end": "2026-08-21",
+    "raw_bars": 97530,
+    "sessions": 251,
+    "start": "2025-08-22"
+  },
+  "schema_version": 1,
+  "selected": {
+    "stop_usd": 1.25,
+    "target_usd": 3.25
+  },
+  "selected_results": {
+    "development": {
+      "active_trade_days": 124,
+      "avg_duration_bars": 89.97014925373135,
+      "avg_gross_reward_usd": 231.2957089552239,
+      "avg_gross_risk_usd": 88.9598880597015,
+      "avg_net_trade": -5.08369511447683,
+      "commissions": 133.51100000000002,
+      "costs": 2262.146290679779,
+      "final_equity": 98637.5697093203,
+      "forced_eod": 102,
+      "generated_flat_signals": 268,
+      "gross_pnl": 899.7159999999883,
+      "ignored_signals_while_open": 1335,
+      "max_drawdown_pct_daily": 2.8589696767738837,
+      "max_drawdown_pct_mtm": 3.1448769888727823,
+      "max_drawdown_usd_daily": 2862.95104815987,
+      "max_drawdown_usd_mtm": 3156.8736771597614,
+      "net_pnl": -1362.4302906797905,
+      "net_return_pct": -1.3624302906797905,
+      "net_sharpe": -1.0825628275663524,
+      "net_sortino": -1.4271660476172363,
+      "profit_factor": 0.8999979754350425,
+      "raw_bars": 48390,
+      "sessions": 125,
+      "slippage": 2128.6352906797792,
+      "stop_usd": 1.25,
+      "stops": 130,
+      "target_usd": 3.25,
+      "targets": 36,
+      "trades": 268,
+      "win_rate_pct": 39.92537313432835
+    },
+    "full": {
+      "active_trade_days": 250,
+      "avg_duration_bars": 80.55183946488295,
+      "avg_gross_reward_usd": 206.625,
+      "avg_gross_risk_usd": 79.47115384615384,
+      "avg_net_trade": -7.4044020092634355,
+      "commissions": 266.13299999999964,
+      "costs": 5012.5415015395165,
+      "final_equity": 95572.16759846048,
+      "forced_eod": 196,
+      "generated_flat_signals": 598,
+      "gross_pnl": 584.7090999999796,
+      "ignored_signals_while_open": 2683,
+      "max_drawdown_pct_daily": 4.940480172483251,
+      "max_drawdown_pct_mtm": 5.209242329498251,
+      "max_drawdown_usd_daily": 4947.360233699554,
+      "max_drawdown_usd_mtm": 5229.113903699545,
+      "net_pnl": -4427.832401539535,
+      "net_return_pct": -4.4278324015395345,
+      "net_sharpe": -1.7167637880757318,
+      "net_sortino": -2.2410880590138236,
+      "profit_factor": 0.848756397248215,
+      "raw_bars": 97530,
+      "sessions": 251,
+      "slippage": 4746.408501539517,
+      "stop_usd": 1.25,
+      "stops": 319,
+      "target_usd": 3.25,
+      "targets": 83,
+      "trades": 598,
+      "win_rate_pct": 36.95652173913043
+    },
+    "holdout": {
+      "active_trade_days": 63,
+      "avg_duration_bars": 64.85792349726776,
+      "avg_gross_reward_usd": 180.72131147540983,
+      "avg_gross_risk_usd": 69.50819672131148,
+      "avg_net_trade": -16.832907531584,
+      "commissions": 71.2320000000001,
+      "costs": 1522.053478279864,
+      "final_equity": 96919.57792172002,
+      "forced_eod": 43,
+      "generated_flat_signals": 183,
+      "gross_pnl": -1558.3686000000084,
+      "ignored_signals_while_open": 631,
+      "max_drawdown_pct_daily": 3.71467297536152,
+      "max_drawdown_pct_mtm": 3.793298138074599,
+      "max_drawdown_usd_daily": 3724.4715623998927,
+      "max_drawdown_usd_mtm": 3804.8531783999206,
+      "net_pnl": -3080.4220782798716,
+      "net_return_pct": -3.0804220782798715,
+      "net_sharpe": -4.726802785112247,
+      "net_sortino": -5.584171556117317,
+      "profit_factor": 0.6669230658439474,
+      "raw_bars": 24570,
+      "sessions": 63,
+      "slippage": 1450.8214782798639,
+      "stop_usd": 1.25,
+      "stops": 115,
+      "target_usd": 3.25,
+      "targets": 25,
+      "trades": 183,
+      "win_rate_pct": 30.601092896174865
+    },
+    "validation": {
+      "active_trade_days": 63,
+      "avg_duration_bars": 82.91836734693878,
+      "avg_gross_reward_usd": 193.89455782312925,
+      "avg_gross_risk_usd": 74.57482993197279,
+      "avg_net_trade": 0.1021766491165051,
+      "commissions": 61.389999999999986,
+      "costs": 1228.3417325798728,
+      "final_equity": 100015.01996742016,
+      "forced_eod": 51,
+      "generated_flat_signals": 147,
+      "gross_pnl": 1243.3617,
+      "ignored_signals_while_open": 717,
+      "max_drawdown_pct_daily": 0.9610913142773658,
+      "max_drawdown_pct_mtm": 1.0575720934712405,
+      "max_drawdown_usd_daily": 970.2509232999291,
+      "max_drawdown_usd_mtm": 1068.4049893599731,
+      "net_pnl": 15.01996742012625,
+      "net_return_pct": 0.01501996742012625,
+      "net_sharpe": 0.03549682510431035,
+      "net_sortino": 0.050480447060617994,
+      "profit_factor": 1.0023454933672782,
+      "raw_bars": 24570,
+      "sessions": 63,
+      "slippage": 1166.951732579873,
+      "stop_usd": 1.25,
+      "stops": 74,
+      "target_usd": 3.25,
+      "targets": 22,
+      "trades": 147,
+      "win_rate_pct": 39.455782312925166
+    }
+  },
+  "selection": {
+    "development_net_sharpe": -1.0825628275663535,
+    "holdout_opened_after_selection": true,
+    "method": "top 10 eligible development by daily net Sharpe/net P&L; max min(dev,val Sharpe), validation net P&L tie-break; holdout once",
+    "no_confirmed_edge": true,
+    "robust_score": -1.0825628275663535,
+    "validation_net_sharpe": 0.03549682510431086
+  },
+  "splits": {
+    "development": {
+      "end": "2026-02-20",
+      "session_indices": [
+        0,
+        125
+      ],
+      "start": "2025-08-22"
+    },
+    "holdout": {
+      "end": "2026-08-21",
+      "session_indices": [
+        188,
+        251
+      ],
+      "start": "2026-05-22"
+    },
+    "validation": {
+      "end": "2026-05-21",
+      "session_indices": [
+        125,
+        188
+      ],
+      "start": "2026-02-23"
+    }
+  },
+  "study": "Independent raw event-driven QQQ-referenced VWAP-Z fixed dollar brackets",
+  "symbols": {
+    "reference_only": "QQQ",
+    "traded": "GOOGL"
+  }
+}
