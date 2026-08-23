@@ -18,10 +18,11 @@
     "AMZN",
     "GOOGL",
     "META",
-    "AVGO"
+    "AVGO",
+    "TSLA"
   ],
   "symbols_requested_this_run": [
-    "AVGO"
+    "TSLA"
   ],
   "traded_separately": [
     "NVDA",
