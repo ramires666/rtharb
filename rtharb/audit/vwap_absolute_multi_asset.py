@@ -7,6 +7,7 @@ then proves every published fill, bracket exit, cost, P&L and MTM equity row.
 """
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 import math
@@ -242,7 +243,7 @@ def _market(loader: DataLoader, lead_all: pd.DataFrame, symbol: str, start: obje
     )
 
 
-def _audit_manifest(manifest: dict[str, Any], summary: dict[str, Any], completed: list[str]) -> list[str]:
+def _audit_manifest(manifest: dict[str, Any], summary: dict[str, Any], raw_symbols: list[str]) -> list[str]:
     universe = list(manifest.get("frozen_universe", []))
     if len(universe) != 9 or len(set(universe)) != 9 or "QQQ" in universe:
         raise AssertionError(f"Manifest frozen universe must contain nine distinct traded stocks: {universe}")
@@ -270,7 +271,7 @@ def _audit_manifest(manifest: dict[str, Any], summary: dict[str, Any], completed
         # Hash raw inputs participating in this completed stage.  Merely
         # predownloaded future targets are size-checked now and hash-checked
         # once their own research stage is audited.
-        if symbol in {"QQQ", *completed} and _sha256(path) != entry["sha256"]:
+        if symbol in {"QQQ", *raw_symbols} and _sha256(path) != entry["sha256"]:
             raise AssertionError(f"{symbol}: parquet SHA-256 differs from frozen manifest")
     return universe
 
@@ -534,11 +535,32 @@ def _audit_report(summary: dict[str, Any], universe: list[str]) -> None:
         raise AssertionError("Lazy report provenance does not identify multi-asset research")
 
 
-def audit() -> dict[str, Any]:
+def _select_completed(completed: list[str], requested: list[str] | tuple[str, ...] | None) -> list[str]:
+    """Validate a requested subset and retain frozen-universe stage order."""
+    if not requested:
+        return list(completed)
+    normalized = [str(symbol).strip().upper() for symbol in requested if str(symbol).strip()]
+    if not normalized:
+        return list(completed)
+    duplicates = sorted({symbol for symbol in normalized if normalized.count(symbol) > 1})
+    if duplicates:
+        raise ValueError(f"Duplicate --symbols values: {duplicates}")
+    unavailable = [symbol for symbol in normalized if symbol not in completed]
+    if unavailable:
+        raise ValueError(
+            f"Requested symbols are not completed in the current stage: {unavailable}; "
+            f"completed={completed}"
+        )
+    requested_set = set(normalized)
+    return [symbol for symbol in completed if symbol in requested_set]
+
+
+def audit(symbols: list[str] | tuple[str, ...] | None = None) -> dict[str, Any]:
     summary = _require_source()
     manifest = _read_json(MANIFEST)
     completed = list(summary.get("symbols_completed", []))
-    universe = _audit_manifest(manifest, summary, completed)
+    selected_stage = _select_completed(completed, symbols)
+    universe = _audit_manifest(manifest, summary, selected_stage)
     if not completed or completed != [symbol for symbol in universe if symbol in completed]:
         raise ArtifactsNotReady(
             "No ordered completed symbol stage is available; run multi-asset research first"
@@ -548,7 +570,7 @@ def audit() -> dict[str, Any]:
     if lead_all is None or lead_all.empty:
         raise AssertionError("QQQ raw parquet is absent/empty")
     audited: dict[str, Any] = {}
-    for symbol in completed:
+    for symbol in selected_stage:
         item = _symbol_summary(summary, symbol)
         start, end = _period(summary, item)
         entry = _entry_parameters(summary, item)
@@ -587,10 +609,15 @@ def audit() -> dict[str, Any]:
     if cross.symbol.tolist() != completed or [row.get("symbol") for row in cross_payload] != completed:
         raise AssertionError("Cross-asset summaries do not preserve the completed frozen-universe order")
     for row in cross.itertuples(index=False):
-        value = audited[row.symbol]
-        if int(row.full_trades) != value["trades"]:
-            raise AssertionError(f"{row.symbol}: cross/full trade counts differ")
-        _close(row.full_net_pnl, value["net_pnl"], f"{row.symbol} cross/full net P&L")
+        source_full = _read_json(SOURCE / row.symbol / "summary.json")["selected_results"]["full"]
+        if int(row.full_trades) != int(source_full["trades"]):
+            raise AssertionError(f"{row.symbol}: cross/source full trade counts differ")
+        _close(row.full_net_pnl, source_full["net_pnl"], f"{row.symbol} cross/source full net P&L")
+        if row.symbol in audited:
+            value = audited[row.symbol]
+            if int(row.full_trades) != value["trades"]:
+                raise AssertionError(f"{row.symbol}: cross/audited full trade counts differ")
+            _close(row.full_net_pnl, value["net_pnl"], f"{row.symbol} cross/audited full net P&L")
     _audit_report(summary, completed)
     return audited
 
@@ -600,11 +627,19 @@ def main() -> None:
         sys.stdout.reconfigure(encoding="utf-8")
     if hasattr(sys.stderr, "reconfigure"):
         sys.stderr.reconfigure(encoding="utf-8")
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--symbols", nargs="+", metavar="SYMBOL",
+        help="Raw event replay only for these already-completed symbols; global manifest/report still audited",
+    )
+    args = parser.parse_args()
     try:
-        results = audit()
+        results = audit(args.symbols)
     except ArtifactsNotReady as exc:
         print(f"NOT READY: {exc}", file=sys.stderr)
         raise SystemExit(2) from exc
+    except ValueError as exc:
+        parser.error(str(exc))
     print(f"PASS multi-asset VWAP audit: {len(results)} frozen symbols")
     for symbol, item in results.items():
         print(f"{symbol}: {item['bars']:,} exact pairwise SIP bars, {item['trades']:,} trades, net ${item['net_pnl']:,.2f}")

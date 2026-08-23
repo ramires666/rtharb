@@ -13,10 +13,11 @@
   },
   "symbols_completed": [
     "NVDA",
-    "MSFT"
+    "MSFT",
+    "AAPL"
   ],
   "symbols_requested_this_run": [
-    "MSFT"
+    "AAPL"
   ],
   "traded_separately": [
     "NVDA",
