@@ -109,3 +109,23 @@ def test_absolute_vwap_brackets_are_honest_and_reconciled():
     assert not summary["selection"]["no_confirmed_edge"]
     assert summary["mark_to_market"]["bars"] > 90_000
     assert all(summary["reconciliation"].values())
+
+
+def test_event_driven_absolute_vwap_report_reconciles_and_supersedes_frozen_cohort():
+    summary = json.loads(
+        (ROOT / "research_output" / "vwap_absolute_event_driven" / "summary.json").read_text(encoding="utf-8")
+    )
+    payload = json.loads(
+        (ROOT / "tradingview_vwap_absolute" / "report_data.json").read_text(encoding="utf-8")
+    )
+    assert summary["selected"] == {"stop_usd": 3.0, "target_usd": 1.25}
+    assert summary["selection"]["holdout_opened_after_selection"]
+    assert summary["selected_results"]["full"]["trades"] == 492
+    assert summary["selected_results"]["full"]["generated_flat_signals"] == 492
+    assert summary["selected_results"]["full"]["stops"] + summary["selected_results"]["full"]["targets"] + summary["selected_results"]["full"]["forced_eod"] == 492
+    assert all(summary["reconciliation"].values())
+    assert len(payload["bars"]["t"]) == 97_530
+    assert len(payload["trades"]) == 492
+    assert payload["meta"]["selected"] == summary["selected"]
+    assert abs(payload["results"]["full"]["net_pnl"] - summary["selected_results"]["full"]["net_pnl"]) < 1e-8
+    assert all(payload["meta"]["reconciliation"].values())
