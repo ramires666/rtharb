@@ -1,0 +1,18 @@
+{
+  "checks": {
+    "baseline_exact_all_splits": true,
+    "baseline_full_exact_6691_888444560394": true,
+    "baseline_holdout_exact_2199_540266640099": true,
+    "baseline_split_net_additivity": true,
+    "exact_raw_bars": true,
+    "exact_sessions": true,
+    "holdout_not_used_in_selection": true,
+    "no_op_exact_base_parameters": true,
+    "no_op_selected_outputs_byte_identical_to_base": true,
+    "overlay_selected_row_is_top_eligible": true,
+    "raw_no_fill_resample_interpolation": true,
+    "selected_is_baseline_or_validation_non_degrading": true,
+    "selected_split_net_additivity": true
+  },
+  "status": "PASS"
+}

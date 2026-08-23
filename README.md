@@ -25,10 +25,12 @@
 - `tradingview_vwap_absolute_portfolio/index.html` — объединение девяти
   стратегий на общем капитале `$100,000`: combined minute-MTM equity/DD,
   корреляции, constituent-вклады и concurrent exposure для трёх моделей.
-- `tradingview_duration_stoploss_combined/index.html` — совместная проверка
-  q95 time-stop и процентного stop-loss для frozen QQQ→NVDA: raw q95/q95
-  diagnostic против прошедшего 95%-gate варианта, точные сделки, stop/time
-  зоны, minute-MTM equity и отдельный drawdown.
+- `tradingview_duration_stoploss_combined/index.html` — архивный diagnostic
+  защитных фильтров для старой classic-convergence QQQ→NVDA; это не текущая
+  лучшая NVDA-стратегия и не рабочий default.
+- `tradingview_vwap_nvda_tail_risk/index.html` — актуальное сравнение tail-risk
+  фильтров с прибыльным NVDA VWAP-bracket baseline: 378 комбинаций, Pareto,
+  точное `$3.00` против `$5.25`, сделки, equity и drawdown.
 
 Полный пересчёт одиночного VWAP-Z отчёта NVDA одним кликом:
 `launchers/run_vwap_absolute_event_driven.bat`.
@@ -97,6 +99,21 @@ holdout пара — `61` минута и stop `0.7398%` — сохраняет 
 edge не подтверждают. Отчёт запускается через
 `launchers/open_duration_stoploss_combined_report.bat`, полный пересчёт —
 через `launchers/run_duration_stoploss_combined.bat`.
+
+Важно: этот q95-эксперимент относится к старой classic-convergence базе
+`+$2,494.06`, поэтому не должен сравниваться или подменять актуальный
+NVDA VWAP-bracket. Повторный tail-risk пересчёт выполнен уже на правильной
+стратегии `$5.25/$1.25`: среди 378 сочетаний stop `$1.50–8.00` с шагом `$0.25`
+и time-stop `30–330` минут/выкл. ни один overlay не сохранил net P&L отдельно
+на development и validation и одновременно не улучшил хвост устойчиво.
+Вердикт — `NO_OP_BASELINE`: оставить stop `$5.25`, target `$1.25`, time-stop
+выключенным; full `+$6,691.89`, holdout `+$2,199.54`, minute-MTM MDD
+`$1,929.83 / 1.81%`. Вариант `$3.00/$1.25` дал full `+$6,597.51` при MDD
+`$2,481.73 / 2.45%` (profit/DD `2.66` против `3.47` у baseline): он лучше на
+validation и уже просмотренном holdout, но значительно хуже на development,
+поэтому выбирать его задним числом нельзя. Новый отчёт запускается через
+`launchers/open_vwap_nvda_tail_risk_report.bat`, пересчёт — через
+`launchers/run_vwap_nvda_tail_risk.bat`.
 
 ## Что считается
 

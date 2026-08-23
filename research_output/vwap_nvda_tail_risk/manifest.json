@@ -1,0 +1,87 @@
+{
+  "files": {
+    "audit.json": {
+      "bytes": 648,
+      "sha256": "f81f8969d83939176e8e8efecc7fb8063328869465c0e18629fb9f10da7f85b7"
+    },
+    "baseline_development_equity.csv": {
+      "bytes": 4791482,
+      "sha256": "a88dab682641467c47a211981aeef624e477a7c8e6c75858ca429eecc90d07a6"
+    },
+    "baseline_development_trades.csv": {
+      "bytes": 63367,
+      "sha256": "efec74cceaa5c6ab18699b52cf5558ec1b53c03845d1be017161a33f8e7eb470"
+    },
+    "baseline_full_equity.csv": {
+      "bytes": 9650032,
+      "sha256": "0317e0bbc4df6c4702fb1ea82c3d767cb8783aa28a71fc33e0909a481ac6a131"
+    },
+    "baseline_full_trades.csv": {
+      "bytes": 137279,
+      "sha256": "e79fe1a579a23454a58c15a39f577a7fcbbc4e2df5c411434bab8f75efcc3dd3"
+    },
+    "baseline_holdout_equity.csv": {
+      "bytes": 2431150,
+      "sha256": "235740d18733745fa25cfe4fc70b41c203c104a3e912e18e825797bf6fc9aea0"
+    },
+    "baseline_holdout_trades.csv": {
+      "bytes": 38684,
+      "sha256": "80dc8b63c220947f400a586176208ebd30a97ece131f485e969e4cbcca787888"
+    },
+    "baseline_validation_equity.csv": {
+      "bytes": 2423614,
+      "sha256": "b7a9c6c03d3aa5e17f0f533081872c9126200ee64ad9a0d277c4a4624ec20ad1"
+    },
+    "baseline_validation_trades.csv": {
+      "bytes": 35710,
+      "sha256": "53da8bd3657b846fe5c0bf68ee2cbecb6c633e32c09fda13e8b9887338dcf16e"
+    },
+    "development_grid.csv": {
+      "bytes": 335399,
+      "sha256": "78cfc493e2a66557b62cfa5271762ad1e617e18c875a6c6330b98801128676ac"
+    },
+    "selected_development_equity.csv": {
+      "bytes": 4791482,
+      "sha256": "a88dab682641467c47a211981aeef624e477a7c8e6c75858ca429eecc90d07a6"
+    },
+    "selected_development_trades.csv": {
+      "bytes": 63367,
+      "sha256": "efec74cceaa5c6ab18699b52cf5558ec1b53c03845d1be017161a33f8e7eb470"
+    },
+    "selected_full_equity.csv": {
+      "bytes": 9650032,
+      "sha256": "0317e0bbc4df6c4702fb1ea82c3d767cb8783aa28a71fc33e0909a481ac6a131"
+    },
+    "selected_full_trades.csv": {
+      "bytes": 137279,
+      "sha256": "e79fe1a579a23454a58c15a39f577a7fcbbc4e2df5c411434bab8f75efcc3dd3"
+    },
+    "selected_holdout_equity.csv": {
+      "bytes": 2431150,
+      "sha256": "235740d18733745fa25cfe4fc70b41c203c104a3e912e18e825797bf6fc9aea0"
+    },
+    "selected_holdout_trades.csv": {
+      "bytes": 38684,
+      "sha256": "80dc8b63c220947f400a586176208ebd30a97ece131f485e969e4cbcca787888"
+    },
+    "selected_validation_equity.csv": {
+      "bytes": 2423614,
+      "sha256": "b7a9c6c03d3aa5e17f0f533081872c9126200ee64ad9a0d277c4a4624ec20ad1"
+    },
+    "selected_validation_trades.csv": {
+      "bytes": 35710,
+      "sha256": "53da8bd3657b846fe5c0bf68ee2cbecb6c633e32c09fda13e8b9887338dcf16e"
+    },
+    "summary.json": {
+      "bytes": 18563,
+      "sha256": "18e19ff190e7cfdbe454ac126a89b78c6778cba8f91133e67a307578903745dc"
+    },
+    "validation_finalists.csv": {
+      "bytes": 5768,
+      "sha256": "c92d0d9f15a604d40e4f20fcecf07354a64bb078cc2bc31ad570b1c7389d5c14"
+    }
+  },
+  "module": "rtharb.research.vwap_nvda_tail_risk",
+  "status": "COMPLETE",
+  "verdict": "NO_OP_BASELINE"
+}
