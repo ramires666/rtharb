@@ -300,9 +300,132 @@ def _split_meta(summary: dict, common: pd.DatetimeIndex) -> dict:
     return result
 
 
-def _build_symbol(loader: DataLoader, global_summary: dict, symbol: str, coverage: dict) -> tuple[dict, dict]:
+def _file_source(path: Path) -> dict[str, Any]:
+    return {
+        "path": path.relative_to(ROOT).as_posix(),
+        "sha256": _sha256(path),
+        "bytes": int(path.stat().st_size),
+    }
+
+
+def _period_fingerprint(summary: dict) -> dict[str, Any]:
+    period = summary.get("period", {})
+    if not isinstance(period, dict) or not period.get("start") or not period.get("end"):
+        raise KeyError("Per-symbol summary обязан публиковать period.start/end")
+    return {
+        "start": str(pd.Timestamp(period["start"]).date()),
+        "end": str(pd.Timestamp(period["end"]).date()),
+        "sessions": int(period["sessions"]) if period.get("sessions") is not None else None,
+        "raw_bars": int(period["raw_bars"]) if period.get("raw_bars") is not None else None,
+    }
+
+
+def _expected_provenance(global_summary: dict, symbol: str, coverage_manifest: dict) -> tuple[dict, dict]:
+    """Fingerprint every small/declared input needed to trust a cached payload.
+
+    The raw parquet hashes come from the frozen download manifest, whose own
+    hash is frozen by the research manifest and independently audited.  This
+    avoids re-hashing the same large QQQ parquet for every completed symbol.
+    """
     summary, summary_path = _load_symbol_summary(global_summary, symbol)
+    if summary_path is None:
+        raise AssertionError(f"{symbol}: reuse требует отдельный immutable summary.json")
     trades_path, equity_path = _symbol_file(symbol, "trades"), _symbol_file(symbol, "equity")
+    frozen_symbols = coverage_manifest.get("symbols", {})
+    lead_raw, target_raw = frozen_symbols.get("QQQ", {}), frozen_symbols.get(symbol, {})
+    raw_manifest_path = ROOT / str(global_summary.get("raw_input_manifest", "data_cache/mega_cap_sip_manifest.json"))
+    frozen_hash = global_summary.get("raw_input_manifest_sha256")
+    if not raw_manifest_path.is_file() or not frozen_hash or _sha256(raw_manifest_path) != frozen_hash:
+        raise AssertionError("Frozen raw input manifest отсутствует или его SHA-256 изменился")
+    if not lead_raw.get("sha256") or not target_raw.get("sha256"):
+        raise AssertionError(f"{symbol}: frozen raw manifest не содержит QQQ/target hashes")
+    provenance = {
+        "schema_version": 2,
+        "summary": _file_source(summary_path),
+        "trades": _file_source(trades_path),
+        "equity": _file_source(equity_path),
+        "period": _period_fingerprint(summary),
+        "raw_input_manifest": {"path": raw_manifest_path.relative_to(ROOT).as_posix(), "sha256": frozen_hash},
+        "lead_raw": {"path": lead_raw.get("file"), "sha256": lead_raw["sha256"], "bytes": int(lead_raw.get("bytes", 0))},
+        "target_raw": {"path": target_raw.get("file"), "sha256": target_raw["sha256"], "bytes": int(target_raw.get("bytes", 0))},
+    }
+    inputs = {"summary": summary, "summary_path": summary_path,
+              "trades_path": trades_path, "equity_path": equity_path}
+    return provenance, inputs
+
+
+def _comparison(payload: dict, coverage: dict) -> dict:
+    meta, results = payload["meta"], payload["results"]
+    symbol, selected, full = meta["target"], meta["selected"], results["full"]
+    holdout = results.get("holdout", {})
+    return {
+        "symbol": symbol, "data": f"data/{symbol}.json",
+        "stop_usd": float(selected["stop_usd"]), "target_usd": float(selected["target_usd"]),
+        "reward_risk_ratio": float(selected["target_usd"]) / float(selected["stop_usd"]),
+        "trades": int(full["trades"]), "net_pnl": float(full["net_pnl"]),
+        "net_sharpe": float(full["net_sharpe"]), "win_rate_pct": float(full["win_rate_pct"]),
+        "profit_factor": float(full["profit_factor"]),
+        "max_drawdown_usd": float(full["max_drawdown_usd_mtm"]),
+        "max_drawdown_pct": float(full["max_drawdown_pct_mtm"]),
+        "holdout_net_pnl": float(holdout.get("net_pnl", 0.0)),
+        "holdout_sharpe": float(holdout.get("net_sharpe", 0.0)),
+        "raw_bars": int(meta["period"]["raw_bars"]), "sessions": int(meta["period"]["sessions"]),
+        "coverage_pct": _get(coverage, "pairwise_coverage_pct", "study_rth_coverage_pct", default=None),
+    }
+
+
+def _validate_reusable(destination: Path, symbol: str, expected: dict,
+                       inputs: dict, coverage: dict) -> tuple[dict | None, str]:
+    """Return a cached payload only after provenance and content reconciliation."""
+    if not destination.is_file():
+        return None, "payload отсутствует"
+    try:
+        payload = json.loads(destination.read_text(encoding="utf-8"))
+        meta, bars, trades, results = payload["meta"], payload["bars"], payload["trades"], payload["results"]
+        if meta.get("target") != symbol or meta.get("lead") != "QQQ":
+            return None, "роли/символы не совпали"
+        # New payloads carry one canonical provenance object.  Payloads emitted
+        # just before schema v2 are accepted only after equivalent field-by-field
+        # checks; they are upgraded on the next necessary rebuild.
+        embedded = meta.get("provenance")
+        if embedded is not None:
+            if embedded != expected:
+                return None, "provenance v2 изменился"
+        else:
+            sources = meta.get("sources", {})
+            for key in ("summary", "trades", "equity"):
+                old = sources.get(key) or {}
+                current = expected[key]
+                if old.get("path") != current["path"] or old.get("sha256") != current["sha256"]:
+                    return None, f"legacy {key} hash/path изменился"
+            if meta.get("coverage") != coverage:
+                return None, "legacy frozen coverage изменился"
+        actual_period = {key: meta.get("period", {}).get(key) for key in ("start", "end", "sessions", "raw_bars")}
+        if actual_period != expected["period"]:
+            return None, "period изменился"
+        lengths = {len(value) for value in bars.values() if isinstance(value, list)}
+        if lengths != {expected["period"]["raw_bars"]}:
+            return None, "minute arrays повреждены/неполны"
+        source_results = _results(inputs["summary"])
+        full = results.get("full", {})
+        expected_full = source_results["full"]
+        if int(full.get("trades", -1)) != int(expected_full["trades"]) or len(trades) != int(expected_full["trades"]):
+            return None, "trade count не совпал с summary"
+        if not math.isclose(float(full.get("net_pnl", math.nan)), float(expected_full["net_pnl"]), abs_tol=1e-6):
+            return None, "net P&L не совпал с summary"
+        return payload, "provenance/period/content совпали"
+    except (KeyError, TypeError, ValueError, json.JSONDecodeError) as exc:
+        return None, f"невалидный payload: {type(exc).__name__}: {exc}"
+
+
+def _build_symbol(loader: DataLoader, global_summary: dict, symbol: str, coverage: dict,
+                  provenance: dict | None = None, inputs: dict | None = None) -> tuple[dict, dict]:
+    if inputs is None:
+        summary, summary_path = _load_symbol_summary(global_summary, symbol)
+        trades_path, equity_path = _symbol_file(symbol, "trades"), _symbol_file(symbol, "equity")
+    else:
+        summary, summary_path = inputs["summary"], inputs["summary_path"]
+        trades_path, equity_path = inputs["trades_path"], inputs["equity_path"]
     trades_frame, equity = _read_csv_times(trades_path), _read_csv_times(equity_path)
     if "timestamp" not in equity or "equity" not in equity:
         raise KeyError(f"{symbol}: equity CSV обязан иметь timestamp/equity")
@@ -376,31 +499,18 @@ def _build_symbol(loader: DataLoader, global_summary: dict, symbol: str, coverag
                           "convergence_exit": False},
             "splits": _split_meta(summary, common), "coverage": coverage,
             "selection": _get(summary, "selection", default={}),
+            "provenance": provenance,
             "warning": "Exploratory per-symbol optimization with multiple testing and current-universe survivorship bias; historical holdout is not proof of a live edge.",
             "sources": {
-                "summary": None if summary_path is None else {"path": summary_path.relative_to(ROOT).as_posix(), "sha256": _sha256(summary_path)},
-                "trades": {"path": trades_path.relative_to(ROOT).as_posix(), "sha256": _sha256(trades_path)},
-                "equity": {"path": equity_path.relative_to(ROOT).as_posix(), "sha256": _sha256(equity_path)},
-                "lead_raw": "data_cache/QQQ_1m.parquet", "target_raw": f"data_cache/{symbol}_1m.parquet",
+                "summary": None if summary_path is None else _file_source(summary_path),
+                "trades": _file_source(trades_path), "equity": _file_source(equity_path),
+                "lead_raw": None if provenance is None else provenance["lead_raw"],
+                "target_raw": None if provenance is None else provenance["target_raw"],
             },
         },
         "bars": bars, "trades": items, "results": results,
     }
-    comparison = {
-        "symbol": symbol, "data": f"data/{symbol}.json",
-        "stop_usd": selected["stop_usd"], "target_usd": selected["target_usd"],
-        "reward_risk_ratio": selected["target_usd"] / selected["stop_usd"],
-        "trades": results["full"]["trades"], "net_pnl": results["full"]["net_pnl"],
-        "net_sharpe": results["full"]["net_sharpe"], "win_rate_pct": results["full"]["win_rate_pct"],
-        "profit_factor": results["full"]["profit_factor"],
-        "max_drawdown_usd": results["full"]["max_drawdown_usd_mtm"],
-        "max_drawdown_pct": results["full"]["max_drawdown_pct_mtm"],
-        "holdout_net_pnl": results.get("holdout", {}).get("net_pnl", 0.0),
-        "holdout_sharpe": results.get("holdout", {}).get("net_sharpe", 0.0),
-        "raw_bars": len(common), "sessions": int(len(pd.unique(common.date))),
-        "coverage_pct": _get(coverage, "pairwise_coverage_pct", "study_rth_coverage_pct", default=None),
-    }
-    return payload, comparison
+    return payload, _comparison(payload, coverage)
 
 
 def main() -> None:
@@ -436,18 +546,28 @@ def main() -> None:
     DATA_OUT.mkdir(parents=True, exist_ok=True)
     comparisons = []
     for symbol in targets:
-        payload, comparison = _build_symbol(loader, global_summary, symbol,
-                                            coverage_manifest.get("symbols", {}).get(symbol, {}))
         destination = DATA_OUT / f"{symbol}.json"
-        destination.write_text(json.dumps(payload, ensure_ascii=False, separators=(",", ":"), allow_nan=False), encoding="utf-8")
-        # Readback is cheap insurance against a truncated multi-megabyte file.
-        check = json.loads(destination.read_text(encoding="utf-8"))
-        if len(check["bars"]["t"]) != comparison["raw_bars"] or len(check["trades"]) != comparison["trades"]:
-            raise AssertionError(f"{symbol}: JSON readback failed")
+        coverage = coverage_manifest.get("symbols", {}).get(symbol, {})
+        provenance, inputs = _expected_provenance(global_summary, symbol, coverage_manifest)
+        payload, reason = _validate_reusable(destination, symbol, provenance, inputs, coverage)
+        if payload is None:
+            print(f"BUILT {symbol}: {reason}; пересчитываю report payload", flush=True)
+            payload, comparison = _build_symbol(loader, global_summary, symbol, coverage,
+                                                provenance=provenance, inputs=inputs)
+            destination.write_text(json.dumps(payload, ensure_ascii=False, separators=(",", ":"), allow_nan=False), encoding="utf-8")
+            # Readback is cheap insurance against a truncated multi-megabyte file.
+            check = json.loads(destination.read_text(encoding="utf-8"))
+            if check.get("meta", {}).get("provenance") != provenance:
+                raise AssertionError(f"{symbol}: written provenance readback failed")
+            if len(check["bars"]["t"]) != comparison["raw_bars"] or len(check["trades"]) != comparison["trades"]:
+                raise AssertionError(f"{symbol}: JSON readback failed")
+        else:
+            comparison = _comparison(payload, coverage)
+            print(f"REUSED {symbol}: {reason}; raw-minute rebuild не нужен", flush=True)
         comparison["bytes"] = destination.stat().st_size
         comparison["sha256"] = _sha256(destination)
         comparisons.append(comparison)
-        print(f"{symbol}: {comparison['raw_bars']:,} bars, {comparison['trades']} trades, net {comparison['net_pnl']:+.2f}", flush=True)
+        print(f"RESULT {symbol}: {comparison['raw_bars']:,} bars, {comparison['trades']} trades, net {comparison['net_pnl']:+.2f}", flush=True)
     manifest = {
         "schema_version": 1, "research_status": research_status,
         "generated_from": global_path.relative_to(ROOT).as_posix(),

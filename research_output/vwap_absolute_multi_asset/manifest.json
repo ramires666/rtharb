@@ -14,10 +14,11 @@
   "symbols_completed": [
     "NVDA",
     "MSFT",
-    "AAPL"
+    "AAPL",
+    "AMZN"
   ],
   "symbols_requested_this_run": [
-    "AAPL"
+    "AMZN"
   ],
   "traded_separately": [
     "NVDA",

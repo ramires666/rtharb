@@ -1,0 +1,52 @@
+{
+  "checks": {
+    "data_all_ohlc_positive": true,
+    "data_has_251_sessions": true,
+    "data_timestamps_unique": true,
+    "full_commission_plus_slippage_equal_costs": true,
+    "full_exit_reasons_equal_trades": true,
+    "full_final_equity_equal_capital_plus_net": true,
+    "full_generated_signals_equal_trades": true,
+    "grid_pairs_unique": true,
+    "grid_uses_exact_quarter_dollar_step": true,
+    "holdout_evaluated_after_selection": true,
+    "selected_development_kernel_equals_replay": true,
+    "selected_meets_minimum_development_sample": true,
+    "selected_validation_kernel_equals_replay": true,
+    "split_net_equal_full": true,
+    "split_trades_equal_full": true
+  },
+  "data": {
+    "all_ohlc_positive": true,
+    "first_timestamp": "2025-08-22T09:30:00-04:00",
+    "last_timestamp": "2026-08-21T15:59:00-04:00",
+    "lead": "QQQ",
+    "no_resampling_fill_or_interpolation": true,
+    "raw_bars": 97530,
+    "raw_pairwise_intersection_only": true,
+    "sessions": 251,
+    "symbol": "AMZN",
+    "timestamps_unique": true
+  },
+  "raw_input": {
+    "bytes": 12183454,
+    "duplicate_timestamps": 0,
+    "file": "data_cache/AMZN_1m.parquet",
+    "first_timestamp": "2024-08-22T04:00:00-04:00",
+    "invalid_ohlc_rows": 0,
+    "last_timestamp": "2026-08-21T19:59:00-04:00",
+    "missing_official_minutes": 0,
+    "nonpositive_ohlc_rows": 0,
+    "pairwise_coverage_pct": 100.0,
+    "pairwise_rows_with_qqq": 97530,
+    "rows": 383645,
+    "sha256": "612507fd87ae80679d03a66e1ae47449b73fe63b4ce3942fb1830e9966c4c6b7",
+    "study_expected_rth_rows": 97530,
+    "study_rth_coverage_pct": 100.0,
+    "study_rth_rows": 97530,
+    "study_sessions_expected": 251,
+    "study_sessions_present": 251
+  },
+  "status": "PASS",
+  "symbol": "AMZN"
+}
