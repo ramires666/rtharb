@@ -1,0 +1,22 @@
+{
+  "commissions": 329.66499999999996,
+  "costs": 3960.2681554399996,
+  "final_equity": 106691.8884445604,
+  "max_drawdown_pct_mtm": 1.8095380375258916,
+  "max_drawdown_usd_mtm": 1929.8266248399887,
+  "max_gross_entry_event_exposure_usd": 19999.7412516,
+  "max_gross_entry_event_leverage": 0.199997412516,
+  "max_gross_minute_close_exposure_usd": 19999.7412516,
+  "net_pnl": 6691.888444560405,
+  "net_return_pct": 6.691888444560405,
+  "net_sharpe": 1.9373091368476354,
+  "pnl_over_dd": 3.4676112135800086,
+  "post_seen_diagnostic": true,
+  "profit_factor": 1.2763902990877012,
+  "sleeves": [
+    "NVDA"
+  ],
+  "slippage": 3630.6031554399997,
+  "starting_capital_usd": 100000.0,
+  "trades": 456
+}

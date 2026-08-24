@@ -1,0 +1,52 @@
+{
+  "candidate": null,
+  "candidate_fold_counts": {
+    "anchored": 0,
+    "rolling": 0
+  },
+  "candidate_robust": false,
+  "current": {
+    "stop_usd": 19.75,
+    "target_usd": 7.0
+  },
+  "current_fold_counts": {
+    "anchored": 0,
+    "rolling": 0
+  },
+  "current_robust": false,
+  "dominates_current": false,
+  "grid": {
+    "cap_usd": 26.0,
+    "median_first63": 430.12,
+    "pairs": 10816,
+    "step_usd": 0.25
+  },
+  "metric_semantics": {
+    "block_cvar5": "exact worst ceil(5%) closed trades inside each 21-session block",
+    "block_mtm_dd": "exact minute-close MTM drawdown inside block from $100k reset",
+    "fold_risk": "exact pooled CVaR5 and continuous minute-MTM drawdown from a dedicated raw replay of that fold's train interval; no test/seen sessions",
+    "pre_seen_cvar5": "exact pooled worst ceil(5%) trades from one continuous raw 0:188 replay",
+    "pre_seen_mtm_dd": "exact minute-close MTM drawdown from one continuous raw 0:188 replay"
+  },
+  "seen_label": "SEEN_HISTORICAL_DIAGNOSTIC",
+  "seen_sessions_excluded": [
+    188,
+    251
+  ],
+  "selected": null,
+  "selection_artifact_hashes": {
+    "block_metrics_sha256": "b9af697b54cbf6b915db9e8f5508c8a770dd3614c02e5b5366059bda917587e3",
+    "development_grid_sha256": "d216e8acbe4aeeb61f8a017b2f90c4aa256615d4fbf223de773a47e8976445fe",
+    "engine_sha256": "b94c3294341c4dcf17270bfffb10ff119831c8f90827eeafe6af598ff4b3591f",
+    "folds_sha256": "8a2f3def4dad70e22fa0b1ac3bb18e3bcd49d99d2153f87aae777789e6c78cd5"
+  },
+  "selection_meta": {
+    "reason": "NO_STABLE_PARETO"
+  },
+  "selection_sessions": [
+    0,
+    188
+  ],
+  "symbol": "TSLA",
+  "verdict": "NO_TRADE_NO_CONFIRMED_EDGE"
+}

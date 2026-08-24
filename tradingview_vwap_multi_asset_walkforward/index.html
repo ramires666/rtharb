@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>VWAP Walk-Forward — 9 акций</title>
+  <style>
+    :root{--bg:#080d18;--panel:#111a2b;--line:#26334a;--text:#eef4ff;--muted:#90a2bd;--green:#35d49a;--red:#ff647c;--amber:#ffc857;--blue:#5da9ff;--purple:#b492ff}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 Inter,Segoe UI,Arial,sans-serif}.wrap{max-width:1580px;margin:auto;padding:14px}.top{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:12px}h1{font-size:21px;margin:0 auto 0 0}.pill,.control{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:8px 11px;color:var(--text)}select,button{background:#0d1525;color:var(--text);border:1px solid var(--line);border-radius:7px;padding:7px 10px}button.active{border-color:var(--blue);color:#fff}.verdict{font-size:18px;font-weight:900;letter-spacing:.4px}.CHANGE{color:var(--green)}.KEEP_CURRENT,.BOUNDARY_UNRESOLVED_KEEP_CURRENT{color:var(--amber)}.NO_TRADE_NO_CONFIRMED_EDGE{color:var(--red)}.roles{padding:10px 12px;border:1px solid #2a4770;background:#0e1b31;border-radius:9px;margin-bottom:12px}.grid{display:grid;grid-template-columns:repeat(6,minmax(130px,1fr));gap:9px;margin-bottom:12px}.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px}.card b{display:block;color:var(--muted);font-size:11px;text-transform:uppercase}.card strong{font-size:18px}.charts{display:grid;grid-template-columns:1fr;gap:9px}.chartbox{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden}.charttitle{padding:7px 10px;color:var(--muted);border-bottom:1px solid var(--line)}#price{height:410px}#z{height:150px}#equity{height:220px}#dd{height:165px}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.toolbar label{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:7px 9px}.sections{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}.section{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;overflow:auto}.section h2{font-size:15px;margin:0 0 9px}.gate{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}.gate div{padding:7px;border-radius:7px;background:#0d1525}.ok{color:var(--green)}.bad{color:var(--red)}table{border-collapse:collapse;width:100%;font-size:12px}th,td{border-bottom:1px solid var(--line);padding:6px;text-align:right;white-space:nowrap}th:first-child,td:first-child{text-align:left}.warning{border-left:4px solid var(--amber);background:#211c10;padding:10px;margin-top:10px}.seen{border-left-color:var(--red);background:#24131a}.muted{color:var(--muted)}.positive{color:var(--green)}.negative{color:var(--red)}@media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}.sections{grid-template-columns:1fr}#price{height:340px}}
+  </style>
+</head>
+<body><div class="wrap">
+  <div class="top">
+    <h1>VWAP walk-forward: честный перевыбор stop/target</h1>
+    <select id="symbol"></select>
+    <span id="verdict" class="pill verdict">Загрузка…</span><span id="seenBadge" class="pill verdict">ПОСЛЕДНИЙ ПЕРИОД: …</span>
+    <select id="period"><option value="full">FULL: 251 сессия</option><option value="pre_seen">PRE-SEEN: 188 сессий</option><option value="seen">SEEN diagnostic: 63</option></select>
+  </div>
+  <div class="roles"><b id="role"></b><br><span class="muted">QQQ создаёт reference/fair value и никогда не торгуется. Сигнал на закрытии минуты при Z ≤ −2.5 / Z ≥ +2.5, исполнение — следующий реальный open выбранной акции.</span></div>
+  <div id="cards" class="grid"></div>
+  <div class="toolbar">
+    <label><input id="showQQQ" type="checkbox"> QQQ reference</label>
+    <label><input id="showTVWAP" type="checkbox" checked> VWAP акции</label>
+    <label><input id="showQVWAP" type="checkbox"> VWAP QQQ</label>
+    <label><input id="showFair" type="checkbox" checked> Fair value</label>
+    <label><input id="showCurrent" type="checkbox" checked> Equity CURRENT</label>
+    <label><input id="showSelected" type="checkbox" checked> Equity SELECTED</label>
+    <label><input id="showCash" type="checkbox" checked> CASH $100k</label>
+    <label><input id="tradeVariant" type="checkbox" checked> Входы SELECTED (off=CURRENT)</label>
+  </div>
+  <div class="charts">
+    <div class="chartbox"><div class="charttitle">Торгующаяся акция, VWAP/fair, точные входы и выходы</div><div id="price"></div></div>
+    <div class="chartbox"><div class="charttitle">Z-score — пороги входа ±2.5</div><div id="z"></div></div>
+    <div class="chartbox"><div class="charttitle">Equity: CURRENT vs SELECTED vs CASH</div><div id="equity"></div></div>
+    <div class="chartbox"><div class="charttitle">Minute MTM drawdown</div><div id="dd"></div></div>
+  </div>
+  <div class="sections">
+    <div class="section"><h2>Почему этот verdict</h2><div id="gates" class="gate"></div><div id="selectionText"></div></div>
+    <div class="section"><h2>CURRENT / CANDIDATE / SELECTED — pre-seen grid</h2><table id="compare"></table></div>
+    <div class="section"><h2>Walk-forward folds: 4 из 6 для CHANGE</h2><table id="folds"></table></div>
+    <div class="section"><h2>Соседняя устойчивость Pareto-кандидата</h2><table id="neighbors"></table></div>
+    <div class="section"><h2>9 независимых временных блоков</h2><table id="blocks"></table></div>
+    <div class="section"><h2>Сделки выбранной линии</h2><table id="trades"></table></div>
+  </div>
+  <div class="warning"><b>Почему старый selection недостаточен.</b> <span id="oldWarning"></span></div>
+  <div class="warning seen"><b>SEEN не является holdout.</b> <span id="seenWarning"></span></div>
+</div>
+<script src="../tradingview_lite/lightweight-charts.standalone.production.js"></script>
+<script src="manifest.js"></script>
+<script>
+const M=window.VWAP_MULTI_ASSET_WALKFORWARD_MANIFEST;let P=null,charts=[],series={};
+const $=id=>document.getElementById(id), money=v=>(v==null?'—':(v<0?'−':'')+'$'+Math.abs(v).toLocaleString('en-US',{maximumFractionDigits:0}));
+const exactMoney=v=>(v==null?'—':(v<0?'−':'')+'$'+Math.abs(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));
+const num=(v,d=2)=>v==null?'—':Number(v).toFixed(d), cls=v=>v>0?'positive':v<0?'negative':'';
+function mkChart(id,opt={}){let c=LightweightCharts.createChart($(id),{layout:{background:{color:'#111a2b'},textColor:'#90a2bd'},grid:{vertLines:{color:'#1b273a'},horzLines:{color:'#1b273a'}},rightPriceScale:{borderColor:'#26334a'},timeScale:{borderColor:'#26334a',timeVisible:true,secondsVisible:false},crosshair:{mode:0},...opt});charts.push(c);return c}
+function addChartSeries(c,type,options,legacy){return typeof c.addSeries==='function'?c.addSeries(LightweightCharts[type],options):c[legacy](options)}
+function line(c,color,w=2,scale='right'){return addChartSeries(c,'LineSeries',{color,lineWidth:w,priceScaleId:scale,lastValueVisible:true,priceLineVisible:false},'addLineSeries')}
+function markers(s,data){if(typeof s.setMarkers==='function'){s.setMarkers(data);return}if(series.markerPlugin){series.markerPlugin.setMarkers(data)}else{series.markerPlugin=LightweightCharts.createSeriesMarkers(s,data)}}
+function point(t,v){return{time:t,value:v}}
+function range(){let seen=P.meta.period.seen_start_epoch, mode=$('period').value;return mode==='pre_seen'?[-Infinity,seen-1]:mode==='seen'?[seen,Infinity]:[-Infinity,Infinity]}
+function filt(arr){let [a,b]=range();return arr.filter(x=>x.time>=a&&x.time<=b)}
+function resultPeriod(){return $('period').value}
+function setupCharts(){charts.forEach(c=>c.remove());charts=[];series={};let pc=mkChart('price'),zc=mkChart('z'),ec=mkChart('equity'),dc=mkChart('dd');
+ series.candle=addChartSeries(pc,'CandlestickSeries',{upColor:'#35d49a',downColor:'#ff647c',wickUpColor:'#35d49a',wickDownColor:'#ff647c',borderVisible:false},'addCandlestickSeries');
+ series.qqq=line(pc,'#73849e',1,'qqq');pc.priceScale('qqq').applyOptions({scaleMargins:{top:.05,bottom:.65}});
+ series.tvwap=line(pc,'#5da9ff');series.qvwap=line(pc,'#73849e',1,'qqq');series.fair=line(pc,'#b492ff');
+ series.z=line(zc,'#e9eef8');series.zp=line(zc,'#ff647c',1);series.zm=line(zc,'#35d49a',1);
+ series.ce=line(ec,'#ffc857');series.se=line(ec,'#35d49a');series.cash=line(ec,'#90a2bd',1);
+ series.cd=line(dc,'#ffc857');series.sd=line(dc,'#ff647c');series.cashdd=line(dc,'#90a2bd',1);
+ charts.forEach((c,i)=>{if(i)charts[0].timeScale().subscribeVisibleLogicalRangeChange(r=>{if(r)c.timeScale().setVisibleLogicalRange(r)})});}
+function setData(){let b=P.bars,t=b.t,cand=t.map((x,i)=>({time:x,open:b.no[i],high:b.nh[i],low:b.nl[i],close:b.nc[i]}));series.candle.setData(filt(cand));
+ series.qqq.setData($('showQQQ').checked?filt(t.map((x,i)=>point(x,b.qc[i]))):[]);series.tvwap.setData($('showTVWAP').checked?filt(t.map((x,i)=>point(x,b.target_vwap[i]))):[]);
+ series.qvwap.setData($('showQVWAP').checked?filt(t.map((x,i)=>point(x,b.qqq_vwap[i]))):[]);series.fair.setData($('showFair').checked?filt(t.map((x,i)=>point(x,b.fair[i]))):[]);
+ series.z.setData(filt(t.map((x,i)=>point(x,b.z[i])).filter(x=>x.value!=null)));series.zp.setData(filt(t.map(x=>point(x,2.5))));series.zm.setData(filt(t.map(x=>point(x,-2.5))));
+ series.ce.setData($('showCurrent').checked?filt(t.map((x,i)=>point(x,b.current_equity[i]))):[]);series.se.setData($('showSelected').checked?filt(t.map((x,i)=>point(x,b.selected_equity[i]))):[]);series.cash.setData($('showCash').checked?filt(t.map((x,i)=>point(x,b.cash_equity[i]))):[]);
+ series.cd.setData($('showCurrent').checked?filt(t.map((x,i)=>point(x,-b.current_drawdown[i]))):[]);series.sd.setData($('showSelected').checked?filt(t.map((x,i)=>point(x,-b.selected_drawdown[i]))):[]);series.cashdd.setData($('showCash').checked?filt(t.map((x,i)=>point(x,0))):[]);
+ let v=$('tradeVariant').checked?'selected':'current',marks=[];P.trades[v].forEach(x=>{let [a,bnd]=range();if(x.entry_time<a||x.entry_time>bnd)return;marks.push({time:x.entry_time,position:x.direction>0?'belowBar':'aboveBar',color:x.direction>0?'#35d49a':'#ff647c',shape:x.direction>0?'arrowUp':'arrowDown',text:`${x.side} Z ${num(x.entry_z,2)}`});marks.push({time:x.exit_time,position:x.direction>0?'aboveBar':'belowBar',color:x.net_pnl>=0?'#35d49a':'#ff647c',shape:'circle',text:`${x.exit_reason} ${money(x.net_pnl)}`})});markers(series.candle,marks.sort((a,b)=>a.time-b.time));charts.forEach(c=>c.timeScale().fitContent());}
+function paramMoney(x){return '$'+Number(x).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function params(x){return x?`stop ${paramMoney(x.stop_usd)} / target ${paramMoney(x.target_usd)}`:'CASH / NO TRADE'}
+function cards(){let k=resultPeriod(),cur=P.results.current[k],sel=P.results.selected[k];$('cards').innerHTML=[['Период',k==='seen'?'SEEN diagnostic':k.toUpperCase()],['CURRENT',params(P.meta.current)],['SELECTED',params(P.meta.selected)],['CURRENT P&L',exactMoney(cur.net_pnl),cls(cur.net_pnl)],['SELECTED P&L',exactMoney(sel.net_pnl),cls(sel.net_pnl)],['CURRENT / SELECTED DD',exactMoney(cur.max_drawdown_usd_mtm)+' / '+exactMoney(sel.max_drawdown_usd_mtm)]].map(x=>`<div class="card"><b>${x[0]}</b><strong class="${x[2]||''}">${x[1]}</strong></div>`).join('')}
+function gate(name,value,detail=''){return`<div><b>${name}</b><br><span class="${value?'ok':'bad'}">${value?'PASS':'FAIL'}</span> <span class="muted">${detail}</span></div>`}
+function diag(){let s=P.meta.selection,c=s.candidate_robust,d=s.dominates_current,b=s.selection_meta.plateau_touches_top2,cc=s.candidate_fold_counts||{},cur=s.current_robust;
+ $('gates').innerHTML=gate('6/9 positive blocks',P.diagnostics.candidate_grid?.positive_blocks>=6,num(P.diagnostics.candidate_grid?.positive_blocks,0)+'/9')+gate('Anchored folds ≥4/6',cc.anchored>=4,(cc.anchored||0)+'/6')+gate('Rolling folds ≥4/6',cc.rolling>=4,(cc.rolling||0)+'/6')+gate('Candidate robust',c)+gate('Dominates CURRENT',d)+gate('Boundary clean',!b)+gate('CURRENT viable',cur)+gate('Pareto + neighbor cluster',!!P.diagnostics.candidate_grid?.stable_pareto);
+ $('selectionText').innerHTML=`<p><b>Кандидат:</b> ${params(P.meta.candidate)}. <b>Выбран:</b> ${params(P.meta.selected)}.</p><p>${P.meta.verdict.startsWith('CHANGE')?'CHANGE разрешён только когда кандидат проходит оба 4/6 fold-gейта, dominance и не упирается в границу.':P.meta.verdict.startsWith('NO_TRADE')?'CURRENT не подтверждён, поэтому выбран честный CASH $100k вместо отрицательного best-of-bad.':'Новый кандидат не прошёл все строгие CHANGE-гейты; сохраняется подтверждённый CURRENT.'}</p>`}
+function table(id,heads,rows){$(id).innerHTML='<tr>'+heads.map(x=>`<th>${x[0]}</th>`).join('')+'</tr>'+rows.map(r=>'<tr>'+heads.map(x=>`<td>${x[1](r)}</td>`).join('')+'</tr>').join('')}
+function tables(){let D=P.diagnostics,gr=[['CURRENT',D.current_grid],['CANDIDATE',D.candidate_grid],['SELECTED',D.selected_grid]].filter(x=>x[1]);table('compare',[['Роль',r=>r[0]],['Stop',r=>paramMoney(r[1].stop_usd)],['Target',r=>paramMoney(r[1].target_usd)],['PnL 0:188',r=>money(r[1].total_pnl)],['PnL/DD',r=>num(r[1].pnl_over_dd)],['CVaR5',r=>money(r[1].cvar5_loss_usd)],['Worst',r=>money(r[1].worst_loss_usd)],['Blocks+',r=>num(r[1].positive_blocks,0)+'/9']],gr);
+ table('folds',[['Тип',r=>r.kind],['Fold',r=>r.fold],['Train blocks',r=>r.train_blocks],['Chosen',r=>r.chosen_stop_usd==null?'CASH':paramMoney(r.chosen_stop_usd)+' / '+paramMoney(r.chosen_target_usd)],['Test PnL',r=>money(r.test_net_pnl)],['Причина',r=>r.reason]],D.folds);
+ table('neighbors',[['Stop',r=>paramMoney(r.stop_usd)],['Target',r=>paramMoney(r.target_usd)],['Viable',r=>r.viable?'YES':'NO'],['PnL',r=>money(r.total_pnl)],['PnL/DD',r=>num(r.pnl_over_dd)],['CVaR5',r=>money(r.cvar5_loss_usd)]],D.neighbors);
+ table('blocks',[['Линия',r=>r.variant],['Block',r=>r.block+1],['Trades',r=>r.trades],['PnL',r=>money(r.net_pnl)],['PnL/DD',r=>num(r.pnl_over_dd)],['CVaR5',r=>money(r.cvar5_loss_usd)]],D.blocks);
+ renderTrades();}
+function renderTrades(){let v=$('tradeVariant').checked?'selected':'current',[a,b]=range(),rows=P.trades[v].filter(x=>x.entry_time>=a&&x.entry_time<=b).slice(-200).reverse();table('trades',[['Вход',r=>new Date(r.entry_time*1000).toLocaleString('ru-RU')],['Side',r=>r.side],['Z',r=>num(r.entry_z)],['Выход',r=>r.exit_reason],['Bars',r=>r.duration_bars],['Net',r=>money(r.net_pnl)]],rows)}
+function verdictFamily(v){return v.startsWith('CHANGE')?'CHANGE':v.includes('KEEP_CURRENT')?'KEEP_CURRENT':'NO_TRADE'}
+async function load(symbol){let asset=M.assets.find(x=>x.symbol===symbol);P=await fetch(asset.data,{cache:'no-store'}).then(r=>{if(!r.ok)throw Error(r.status);return r.json()});$('verdict').textContent=verdictFamily(P.meta.verdict);$('verdict').className='pill verdict '+P.meta.verdict;let seen=P.results.selected.seen,pass=seen.net_pnl>0&&(seen.pnl_over_dd||0)>0;$('seenBadge').textContent='ПОСЛЕДНИЙ ПЕРИОД: '+(pass?'PASS':'VETO-DIAGNOSTIC');$('seenBadge').className='pill verdict '+(pass?'CHANGE':'NO_TRADE_NO_CONFIRMED_EDGE');$('role').textContent=`ТОРГУЕТСЯ: ${symbol}. REFERENCE-ONLY: QQQ. Frozen verdict: ${verdictFamily(P.meta.verdict)} (${P.meta.verdict}). Последний период — отдельная post-SEEN диагностика и frozen verdict не меняет.`;$('oldWarning').textContent=P.meta.old_selection_warning;$('seenWarning').textContent=P.meta.warning+' Красный VETO-DIAGNOSTIC использует уже виденный период только как консервативный deployment-фильтр; это не новый holdout и не изменение frozen verdict.';setupCharts();setData();cards();diag();tables()}
+M.targets.forEach(x=>$('symbol').add(new Option(x,x)));$('symbol').value=M.default_symbol;$('symbol').onchange=()=>load($('symbol').value);$('period').onchange=()=>{setData();cards();renderTrades()};['showQQQ','showTVWAP','showQVWAP','showFair','showCurrent','showSelected','showCash'].forEach(id=>$(id).onchange=setData);$('tradeVariant').onchange=()=>{setData();renderTrades()};window.addEventListener('resize',()=>['price','z','equity','dd'].forEach((id,i)=>charts[i]?.applyOptions({width:$(id).clientWidth})));load(M.default_symbol).catch(e=>{$('verdict').textContent='ОШИБКА: '+e.message;console.error(e)});
+</script></body></html>

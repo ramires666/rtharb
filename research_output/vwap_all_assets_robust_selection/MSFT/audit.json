@@ -1,0 +1,14 @@
+{
+  "checks": {
+    "current_additivity": true,
+    "current_in_grid": true,
+    "freeze_hash": true,
+    "grid_pairs": true,
+    "raw_sessions": true,
+    "seen_after_freeze": true,
+    "selected_additivity": true,
+    "selected_flat_if_cash": true,
+    "selection_ends_188": true
+  },
+  "status": "PASS"
+}

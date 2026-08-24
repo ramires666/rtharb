@@ -1,0 +1,257 @@
+{
+  "cross_asset_summary": {
+    "bytes": 24331,
+    "path": "research_output/vwap_all_assets_robust_selection/cross_asset_summary.json",
+    "sha256": "76fce6636b4d0373d984916f122f42f84eccf1152c3520542dfe763a553fef50"
+  },
+  "progress": {
+    "bytes": 25443,
+    "path": "research_output/vwap_all_assets_robust_selection/progress.json",
+    "sha256": "46dea1c20c5540999a78e5166a34d5fc436a5169a5024b56aa43c7ddf93987f0"
+  },
+  "symbols": {
+    "AAPL": {
+      "audit.json": {
+        "bytes": 322,
+        "path": "research_output/vwap_all_assets_robust_selection/AAPL/audit.json",
+        "sha256": "2115dcc8d1a62810e6d546994e31786aa34a12a63b56c14ffc46f446c0b51517"
+      },
+      "pre_seen_freeze.json": {
+        "bytes": 1715,
+        "path": "research_output/vwap_all_assets_robust_selection/AAPL/pre_seen_freeze.json",
+        "sha256": "f8537324b2a969f5b0dd51019920cea79dd3e240d5837c77f9891005125c8fc5"
+      },
+      "selected_full_equity.csv": {
+        "bytes": 8680227,
+        "path": "research_output/vwap_all_assets_robust_selection/AAPL/selected_full_equity.csv",
+        "sha256": "83ccdb76c05cb443f83ca2483b8f79aa0b817d109d38f97047c3a4af9f323f98"
+      },
+      "selected_full_trades.csv": {
+        "bytes": 418,
+        "path": "research_output/vwap_all_assets_robust_selection/AAPL/selected_full_trades.csv",
+        "sha256": "b4b851444f9066e777cc37888a5d626c148a96cda115b31bc6fc0044f6108cb3"
+      },
+      "summary.json": {
+        "bytes": 7820,
+        "path": "research_output/vwap_all_assets_robust_selection/AAPL/summary.json",
+        "sha256": "3385af86122fe76fc67d4eee636a341aec98951d0a235afda9a861474256da66"
+      }
+    },
+    "AMD": {
+      "audit.json": {
+        "bytes": 322,
+        "path": "research_output/vwap_all_assets_robust_selection/AMD/audit.json",
+        "sha256": "2115dcc8d1a62810e6d546994e31786aa34a12a63b56c14ffc46f446c0b51517"
+      },
+      "pre_seen_freeze.json": {
+        "bytes": 1894,
+        "path": "research_output/vwap_all_assets_robust_selection/AMD/pre_seen_freeze.json",
+        "sha256": "36345818709124ebda7042767b7b44a2fe087fbd0a9db42194c62a83233fdaec"
+      },
+      "selected_full_equity.csv": {
+        "bytes": 8900909,
+        "path": "research_output/vwap_all_assets_robust_selection/AMD/selected_full_equity.csv",
+        "sha256": "ccff4d68242cd1f4e32696f3ee357a5f00581db8b06ac273f5afbb838e2dff5b"
+      },
+      "selected_full_trades.csv": {
+        "bytes": 298302,
+        "path": "research_output/vwap_all_assets_robust_selection/AMD/selected_full_trades.csv",
+        "sha256": "2e49b16aff93121dc0f1e339389564c89493891f3fd8e83358615f1d7b641889"
+      },
+      "summary.json": {
+        "bytes": 10661,
+        "path": "research_output/vwap_all_assets_robust_selection/AMD/summary.json",
+        "sha256": "928a3f5b2c775ab50bdc3592afc7bcca7454d197c3e7c19b4d0a640ce12c6789"
+      }
+    },
+    "AMZN": {
+      "audit.json": {
+        "bytes": 322,
+        "path": "research_output/vwap_all_assets_robust_selection/AMZN/audit.json",
+        "sha256": "2115dcc8d1a62810e6d546994e31786aa34a12a63b56c14ffc46f446c0b51517"
+      },
+      "pre_seen_freeze.json": {
+        "bytes": 1715,
+        "path": "research_output/vwap_all_assets_robust_selection/AMZN/pre_seen_freeze.json",
+        "sha256": "af1542f2eb60afb8d12f4ba4570c4489bc9ad632e9fe96c469e1798404b6bfb9"
+      },
+      "selected_full_equity.csv": {
+        "bytes": 8680227,
+        "path": "research_output/vwap_all_assets_robust_selection/AMZN/selected_full_equity.csv",
+        "sha256": "83ccdb76c05cb443f83ca2483b8f79aa0b817d109d38f97047c3a4af9f323f98"
+      },
+      "selected_full_trades.csv": {
+        "bytes": 418,
+        "path": "research_output/vwap_all_assets_robust_selection/AMZN/selected_full_trades.csv",
+        "sha256": "b4b851444f9066e777cc37888a5d626c148a96cda115b31bc6fc0044f6108cb3"
+      },
+      "summary.json": {
+        "bytes": 7868,
+        "path": "research_output/vwap_all_assets_robust_selection/AMZN/summary.json",
+        "sha256": "ea3313295009b1cbf0013f52d25f36e3bb10a71248738733350581ad2a70ce10"
+      }
+    },
+    "AVGO": {
+      "audit.json": {
+        "bytes": 322,
+        "path": "research_output/vwap_all_assets_robust_selection/AVGO/audit.json",
+        "sha256": "2115dcc8d1a62810e6d546994e31786aa34a12a63b56c14ffc46f446c0b51517"
+      },
+      "pre_seen_freeze.json": {
+        "bytes": 1917,
+        "path": "research_output/vwap_all_assets_robust_selection/AVGO/pre_seen_freeze.json",
+        "sha256": "3605192ea46c1008f5db71451e837be78224b8c030335f936bdc3bfbbd6e813a"
+      },
+      "selected_full_equity.csv": {
+        "bytes": 8924370,
+        "path": "research_output/vwap_all_assets_robust_selection/AVGO/selected_full_equity.csv",
+        "sha256": "a7ba6ffdd7a6e76e7e1dda1335f2356a4226a4393b33cc90596f9f689ce4a568"
+      },
+      "selected_full_trades.csv": {
+        "bytes": 147793,
+        "path": "research_output/vwap_all_assets_robust_selection/AVGO/selected_full_trades.csv",
+        "sha256": "fa5cfd80bf6b2c7b168006d5a7b4f4f4d10d0f03f9d56bb1b47a64167145c7c0"
+      },
+      "summary.json": {
+        "bytes": 10688,
+        "path": "research_output/vwap_all_assets_robust_selection/AVGO/summary.json",
+        "sha256": "4bdb5f7074cee6f90e00d49eec385cd14e41071f4be204c460fc006aae4b2fd0"
+      }
+    },
+    "GOOGL": {
+      "audit.json": {
+        "bytes": 322,
+        "path": "research_output/vwap_all_assets_robust_selection/GOOGL/audit.json",
+        "sha256": "2115dcc8d1a62810e6d546994e31786aa34a12a63b56c14ffc46f446c0b51517"
+      },
+      "pre_seen_freeze.json": {
+        "bytes": 1716,
+        "path": "research_output/vwap_all_assets_robust_selection/GOOGL/pre_seen_freeze.json",
+        "sha256": "3fe07ebc44c4b6f03dae20cfd7792452ea7a33efd0a2b0ce7960893b4fa958ed"
+      },
+      "selected_full_equity.csv": {
+        "bytes": 8680227,
+        "path": "research_output/vwap_all_assets_robust_selection/GOOGL/selected_full_equity.csv",
+        "sha256": "83ccdb76c05cb443f83ca2483b8f79aa0b817d109d38f97047c3a4af9f323f98"
+      },
+      "selected_full_trades.csv": {
+        "bytes": 418,
+        "path": "research_output/vwap_all_assets_robust_selection/GOOGL/selected_full_trades.csv",
+        "sha256": "b4b851444f9066e777cc37888a5d626c148a96cda115b31bc6fc0044f6108cb3"
+      },
+      "summary.json": {
+        "bytes": 7856,
+        "path": "research_output/vwap_all_assets_robust_selection/GOOGL/summary.json",
+        "sha256": "f2388dc8abf21e55f9fe4f63d29ad165a06be9ae6641baca388bb7cc7037c847"
+      }
+    },
+    "META": {
+      "audit.json": {
+        "bytes": 322,
+        "path": "research_output/vwap_all_assets_robust_selection/META/audit.json",
+        "sha256": "2115dcc8d1a62810e6d546994e31786aa34a12a63b56c14ffc46f446c0b51517"
+      },
+      "pre_seen_freeze.json": {
+        "bytes": 1860,
+        "path": "research_output/vwap_all_assets_robust_selection/META/pre_seen_freeze.json",
+        "sha256": "59cfb436f3ebd9f82f4ff03000ce7b6f96adc94ea085dc118edb5b1cf00f1672"
+      },
+      "selected_full_equity.csv": {
+        "bytes": 8680138,
+        "path": "research_output/vwap_all_assets_robust_selection/META/selected_full_equity.csv",
+        "sha256": "78f6061ce06bc1e326d89d67c6d7f141abb0ad79c5e3dc8885cff94467afad2c"
+      },
+      "selected_full_trades.csv": {
+        "bytes": 418,
+        "path": "research_output/vwap_all_assets_robust_selection/META/selected_full_trades.csv",
+        "sha256": "b4b851444f9066e777cc37888a5d626c148a96cda115b31bc6fc0044f6108cb3"
+      },
+      "summary.json": {
+        "bytes": 8025,
+        "path": "research_output/vwap_all_assets_robust_selection/META/summary.json",
+        "sha256": "0b105716c0d4e2aa708d00585e67f2dd793625ccb83721c625884b974775dd30"
+      }
+    },
+    "MSFT": {
+      "audit.json": {
+        "bytes": 322,
+        "path": "research_output/vwap_all_assets_robust_selection/MSFT/audit.json",
+        "sha256": "2115dcc8d1a62810e6d546994e31786aa34a12a63b56c14ffc46f446c0b51517"
+      },
+      "pre_seen_freeze.json": {
+        "bytes": 1920,
+        "path": "research_output/vwap_all_assets_robust_selection/MSFT/pre_seen_freeze.json",
+        "sha256": "c497b81db97ebaed9514a6461b68663d9083329a140b794765615be5effb9c5c"
+      },
+      "selected_full_equity.csv": {
+        "bytes": 8879987,
+        "path": "research_output/vwap_all_assets_robust_selection/MSFT/selected_full_equity.csv",
+        "sha256": "ee254d2ef3b216763fe8edd26bcb741bf54920dd073e6340adfab1c81e3637fc"
+      },
+      "selected_full_trades.csv": {
+        "bytes": 113614,
+        "path": "research_output/vwap_all_assets_robust_selection/MSFT/selected_full_trades.csv",
+        "sha256": "4aad92ee822f5ad6aaa36a2568a79081f6b9f32dedbd0163ddaa8a1e97c8661f"
+      },
+      "summary.json": {
+        "bytes": 10755,
+        "path": "research_output/vwap_all_assets_robust_selection/MSFT/summary.json",
+        "sha256": "b4011ab36378ed60dcb3c006f140c23369faf0f3996a07afa73584fb39a7aace"
+      }
+    },
+    "NVDA": {
+      "audit.json": {
+        "bytes": 322,
+        "path": "research_output/vwap_all_assets_robust_selection/NVDA/audit.json",
+        "sha256": "2115dcc8d1a62810e6d546994e31786aa34a12a63b56c14ffc46f446c0b51517"
+      },
+      "pre_seen_freeze.json": {
+        "bytes": 1916,
+        "path": "research_output/vwap_all_assets_robust_selection/NVDA/pre_seen_freeze.json",
+        "sha256": "b21d6ae7afcd5ca7e2d27cee55e3d9e5eb1ff08be17e31e5e0d4102f1254d15e"
+      },
+      "selected_full_equity.csv": {
+        "bytes": 8869793,
+        "path": "research_output/vwap_all_assets_robust_selection/NVDA/selected_full_equity.csv",
+        "sha256": "88850c867791454b61170f5e940e6b4ebfdd0e0055d4d19e14addd9e44cddec0"
+      },
+      "selected_full_trades.csv": {
+        "bytes": 205400,
+        "path": "research_output/vwap_all_assets_robust_selection/NVDA/selected_full_trades.csv",
+        "sha256": "0b672785712650a6b5ab19c190677d69fd44650778871445160660313c936601"
+      },
+      "summary.json": {
+        "bytes": 10656,
+        "path": "research_output/vwap_all_assets_robust_selection/NVDA/summary.json",
+        "sha256": "b0a02eaa14abbe282720a45799c1fba473a4e99bbc8b4c31a08c135ca75fd087"
+      }
+    },
+    "TSLA": {
+      "audit.json": {
+        "bytes": 322,
+        "path": "research_output/vwap_all_assets_robust_selection/TSLA/audit.json",
+        "sha256": "2115dcc8d1a62810e6d546994e31786aa34a12a63b56c14ffc46f446c0b51517"
+      },
+      "pre_seen_freeze.json": {
+        "bytes": 1716,
+        "path": "research_output/vwap_all_assets_robust_selection/TSLA/pre_seen_freeze.json",
+        "sha256": "9f30ca0c608115d73119eb331c81e89b396f10695c842bc5b14f5ffed1750238"
+      },
+      "selected_full_equity.csv": {
+        "bytes": 8680227,
+        "path": "research_output/vwap_all_assets_robust_selection/TSLA/selected_full_equity.csv",
+        "sha256": "83ccdb76c05cb443f83ca2483b8f79aa0b817d109d38f97047c3a4af9f323f98"
+      },
+      "selected_full_trades.csv": {
+        "bytes": 418,
+        "path": "research_output/vwap_all_assets_robust_selection/TSLA/selected_full_trades.csv",
+        "sha256": "b4b851444f9066e777cc37888a5d626c148a96cda115b31bc6fc0044f6108cb3"
+      },
+      "summary.json": {
+        "bytes": 7835,
+        "path": "research_output/vwap_all_assets_robust_selection/TSLA/summary.json",
+        "sha256": "f959186e09493bd0e051205a33e8b9cd7321436dc8385599d90ac389eb5a3a0b"
+      }
+    }
+  }
+}

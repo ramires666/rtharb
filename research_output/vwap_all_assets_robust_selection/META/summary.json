@@ -1,0 +1,248 @@
+{
+  "audit": {
+    "checks": {
+      "current_additivity": true,
+      "current_in_grid": true,
+      "freeze_hash": true,
+      "grid_pairs": true,
+      "raw_sessions": true,
+      "seen_after_freeze": true,
+      "selected_additivity": true,
+      "selected_flat_if_cash": true,
+      "selection_ends_188": true
+    },
+    "status": "PASS"
+  },
+  "current": {
+    "stop_usd": 8.0,
+    "target_usd": 2.75
+  },
+  "current_results": {
+    "full": {
+      "active_trade_days": 251,
+      "avg_duration_bars": 84.09946714031972,
+      "avg_gross_reward_usd": 84.77131438721136,
+      "avg_gross_risk_usd": 246.60746003552399,
+      "avg_net_trade": -1.05638356753015,
+      "commissions": 121.48499999999987,
+      "costs": 4552.224748519504,
+      "final_equity": 99405.25605148055,
+      "forced_eod": 208,
+      "generated_flat_signals": 563,
+      "gross_pnl": 3957.4808000000303,
+      "ignored_signals_while_open": 2737,
+      "max_drawdown_pct_daily": 3.1472702834440445,
+      "max_drawdown_pct_mtm": 3.406538318691368,
+      "max_drawdown_usd_daily": 3203.5694818798656,
+      "max_drawdown_usd_mtm": 3470.0501763998327,
+      "net_pnl": -594.7439485194745,
+      "net_return_pct": -0.5947439485194745,
+      "net_sharpe": -0.21746121144962746,
+      "net_sortino": -0.28399672603918674,
+      "pnl_over_dd": -0.17139347222250248,
+      "profit_factor": 0.9763350298160723,
+      "raw_bars": 97529,
+      "sessions": 251,
+      "slippage": 4430.739748519504,
+      "stop_usd": 8.0,
+      "stops": 52,
+      "target_usd": 2.75,
+      "targets": 303,
+      "trades": 563,
+      "win_rate_pct": 64.12078152753108
+    },
+    "pre_seen": {
+      "active_trade_days": 188,
+      "avg_duration_bars": 87.38118811881188,
+      "avg_gross_reward_usd": 82.31621287128714,
+      "avg_gross_risk_usd": 239.46534653465346,
+      "avg_net_trade": 2.8556415291593757,
+      "commissions": 84.65100000000017,
+      "costs": 3261.9033222196304,
+      "final_equity": 101153.6791777804,
+      "forced_eod": 156,
+      "generated_flat_signals": 404,
+      "gross_pnl": 4415.582500000018,
+      "ignored_signals_while_open": 1958,
+      "max_drawdown_pct_daily": 1.485156860443789,
+      "max_drawdown_pct_mtm": 1.584228398987425,
+      "max_drawdown_usd_daily": 1511.7237368999631,
+      "max_drawdown_usd_mtm": 1613.7649194199475,
+      "net_pnl": 1153.6791777803878,
+      "net_return_pct": 1.1536791777803879,
+      "net_sharpe": 0.6782233489042139,
+      "net_sortino": 0.9314884228852461,
+      "pnl_over_dd": 0.7148991553212514,
+      "profit_factor": 1.0731431428015965,
+      "raw_bars": 72959,
+      "sessions": 188,
+      "slippage": 3177.25232221963,
+      "stop_usd": 8.0,
+      "stops": 32,
+      "target_usd": 2.75,
+      "targets": 216,
+      "trades": 404,
+      "win_rate_pct": 64.60396039603961
+    },
+    "seen": {
+      "active_trade_days": 63,
+      "avg_duration_bars": 75.76100628930817,
+      "avg_gross_reward_usd": 91.00943396226415,
+      "avg_gross_risk_usd": 264.75471698113205,
+      "avg_net_trade": -10.996371863521142,
+      "commissions": 36.83400000000006,
+      "costs": 1290.3214262998745,
+      "final_equity": 98251.57687370015,
+      "forced_eod": 52,
+      "generated_flat_signals": 159,
+      "gross_pnl": -458.10169999998755,
+      "ignored_signals_while_open": 779,
+      "max_drawdown_pct_daily": 2.629134235775643,
+      "max_drawdown_pct_mtm": 2.8766138312316833,
+      "max_drawdown_usd_daily": 2630.773531679937,
+      "max_drawdown_usd_mtm": 2880.0878896799113,
+      "net_pnl": -1748.4231262998617,
+      "net_return_pct": -1.7484231262998615,
+      "net_sharpe": -2.0875934962403915,
+      "net_sortino": -2.5488569920067032,
+      "pnl_over_dd": -0.6070728371050437,
+      "profit_factor": 0.8131813328721569,
+      "raw_bars": 24570,
+      "sessions": 63,
+      "slippage": 1253.4874262998744,
+      "stop_usd": 8.0,
+      "stops": 20,
+      "target_usd": 2.75,
+      "targets": 87,
+      "trades": 159,
+      "win_rate_pct": 62.893081761006286
+    }
+  },
+  "data": {
+    "all_ohlc_positive": true,
+    "first_timestamp": "2025-08-22T09:30:00-04:00",
+    "last_timestamp": "2026-08-21T15:59:00-04:00",
+    "lead": "QQQ",
+    "no_resampling_fill_or_interpolation": true,
+    "raw_bars": 97529,
+    "raw_pairwise_intersection_only": true,
+    "sessions": 251,
+    "symbol": "META",
+    "timestamps_unique": true
+  },
+  "grid": {
+    "cap_usd": 44.0,
+    "median_first63": 732.8,
+    "pairs": 30976,
+    "step_usd": 0.25
+  },
+  "pre_seen_freeze_sha256": "59cfb436f3ebd9f82f4ff03000ce7b6f96adc94ea085dc118edb5b1cf00f1672",
+  "schema_version": 1,
+  "seen_warning": "Sessions 188:251 are SEEN_HISTORICAL_DIAGNOSTIC and never rank/gate candidates",
+  "selected": null,
+  "selected_pre_seen_pnl_over_dd": null,
+  "selected_results": {
+    "full": {
+      "costs": 0.0,
+      "final_equity": 100000.0,
+      "gross_pnl": 0.0,
+      "max_drawdown_pct_mtm": 0.0,
+      "max_drawdown_usd_mtm": 0.0,
+      "net_pnl": 0.0,
+      "net_sharpe": 0.0,
+      "pnl_over_dd": null,
+      "profit_factor": 0.0,
+      "raw_bars": 97529,
+      "sessions": 251,
+      "trades": 0
+    },
+    "pre_seen": {
+      "costs": 0.0,
+      "final_equity": 100000.0,
+      "gross_pnl": 0.0,
+      "max_drawdown_pct_mtm": 0.0,
+      "max_drawdown_usd_mtm": 0.0,
+      "net_pnl": 0.0,
+      "net_sharpe": 0.0,
+      "pnl_over_dd": null,
+      "profit_factor": 0.0,
+      "raw_bars": 72959,
+      "sessions": 188,
+      "trades": 0
+    },
+    "seen": {
+      "costs": 0.0,
+      "final_equity": 100000.0,
+      "gross_pnl": 0.0,
+      "max_drawdown_pct_mtm": 0.0,
+      "max_drawdown_usd_mtm": 0.0,
+      "net_pnl": 0.0,
+      "net_sharpe": 0.0,
+      "pnl_over_dd": null,
+      "profit_factor": 0.0,
+      "raw_bars": 24570,
+      "sessions": 63,
+      "trades": 0
+    }
+  },
+  "selection": {
+    "candidate": {
+      "stop_usd": 8.75,
+      "target_usd": 5.75
+    },
+    "candidate_fold_counts": {
+      "anchored": 1,
+      "rolling": 0
+    },
+    "candidate_robust": false,
+    "current": {
+      "stop_usd": 8.0,
+      "target_usd": 2.75
+    },
+    "current_fold_counts": {
+      "anchored": 0,
+      "rolling": 0
+    },
+    "current_robust": false,
+    "dominates_current": false,
+    "grid": {
+      "cap_usd": 44.0,
+      "median_first63": 732.8,
+      "pairs": 30976,
+      "step_usd": 0.25
+    },
+    "metric_semantics": {
+      "block_cvar5": "exact worst ceil(5%) closed trades inside each 21-session block",
+      "block_mtm_dd": "exact minute-close MTM drawdown inside block from $100k reset",
+      "fold_risk": "exact pooled CVaR5 and continuous minute-MTM drawdown from a dedicated raw replay of that fold's train interval; no test/seen sessions",
+      "pre_seen_cvar5": "exact pooled worst ceil(5%) trades from one continuous raw 0:188 replay",
+      "pre_seen_mtm_dd": "exact minute-close MTM drawdown from one continuous raw 0:188 replay"
+    },
+    "seen_label": "SEEN_HISTORICAL_DIAGNOSTIC",
+    "seen_sessions_excluded": [
+      188,
+      251
+    ],
+    "selected": null,
+    "selection_artifact_hashes": {
+      "block_metrics_sha256": "d7001c11a87f42a3806adae192a506853d6a36030f83eb7abbb887293ef80d80",
+      "development_grid_sha256": "1ff0204d2c0dc20d10924903bef7ee5c44b5eae108857449c7b8a05f4afa4aa0",
+      "engine_sha256": "b94c3294341c4dcf17270bfffb10ff119831c8f90827eeafe6af598ff4b3591f",
+      "folds_sha256": "f671b6c411f3555d2ea15e625d81338cf9e238cc4df6a31dbb69ab5227a19dad"
+    },
+    "selection_meta": {
+      "one_se_count": 2,
+      "one_se_threshold": -58.13177444846434,
+      "plateau_touches_top2": false,
+      "reason": "SELECTED"
+    },
+    "selection_sessions": [
+      0,
+      188
+    ],
+    "symbol": "META",
+    "verdict": "NO_TRADE_NO_CONFIRMED_EDGE"
+  },
+  "symbol": "META",
+  "verdict": "NO_TRADE_NO_CONFIRMED_EDGE"
+}

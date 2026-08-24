@@ -1,0 +1,34 @@
+{
+  "audit": {
+    "file": "audit.json",
+    "status": "PASS"
+  },
+  "confirmed": [
+    "NVDA",
+    "MSFT",
+    "AVGO",
+    "AMD"
+  ],
+  "excluded_no_trade": [
+    "AAPL",
+    "AMZN",
+    "GOOGL",
+    "META",
+    "TSLA"
+  ],
+  "outputs": {
+    "daily_correlation": "daily_pnl_correlation.csv",
+    "marginal_dd": "marginal_dd_contributions.csv",
+    "minute_correlation": "concurrent_mtm_correlation.csv",
+    "provenance": "source_provenance.json",
+    "summary": "summary.json",
+    "universe": "universe.csv"
+  },
+  "schema_version": 1,
+  "status": "COMPLETE",
+  "variants": [
+    "factual_sum",
+    "equal_normalized",
+    "seen_veto_diagnostic"
+  ]
+}

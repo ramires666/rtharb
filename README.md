@@ -19,12 +19,22 @@
 - `tradingview_vwap_absolute/index.html` — подробный самостоятельный raw
   event-driven VWAP-Z fixed-bracket: QQQ как lead, торгуется только NVDA,
   точные VWAP/fair/Z, stop/target-зоны, сделки, equity и drawdown.
-- `tradingview_vwap_absolute_multi_asset/index.html` — поэтапный независимый
-  тест девяти акций против reference QQQ: отдельные VWAP, Z, сделки,
-  фиксированные долларовые stop/target, equity и drawdown для каждого тикера.
-- `tradingview_vwap_absolute_portfolio/index.html` — объединение девяти
-  стратегий на общем капитале `$100,000`: combined minute-MTM equity/DD,
-  корреляции, constituent-вклады и concurrent exposure для трёх моделей.
+- `tradingview_vwap_absolute_multi_asset/index.html` — **устаревший
+  exploratory-отчёт** старого single-split выбора. Он принудительно выбирал
+  best-of-bad bracket даже для тикеров без подтверждённого edge и не является
+  источником текущего решения.
+- `tradingview_vwap_absolute_portfolio/index.html` — **устаревшая
+  exploratory-портфельная проверка**: в неё попали все девять старых
+  best-of-bad стратегий, включая no-edge активы. Её equity и корреляции нельзя
+  трактовать как портфель подтверждённых sleeves.
+- `tradingview_vwap_multi_asset_walkforward/index.html` — новый authoritative
+  walk-forward отчёт robust-selection после завершения всех 9 тикеров:
+  frozen verdict, отдельный post-SEEN diagnostic, CURRENT/CANDIDATE/SELECTED,
+  equity/DD/CASH, 9 блоков, folds, Pareto и соседняя устойчивость.
+- `tradingview_vwap_robust_portfolio/index.html` — новый guarded отчёт только
+  для стратегий с verdict не `NO_TRADE`: factual sum исходных `$20k` sleeves,
+  equal-normalized исследовательская кривая и отдельно помеченный
+  `SEEN_VETO_DIAGNOSTIC`.
 - `tradingview_duration_stoploss_combined/index.html` — архивный diagnostic
   защитных фильтров для старой classic-convergence QQQ→NVDA; это не текущая
   лучшая NVDA-стратегия и не рабочий default.
@@ -56,21 +66,28 @@
 только как ведущий reference. Raw Alpaca SIP-котировки и их SHA-256/coverage
 проверяются командой `launchers/download_mega_cap_data.bat` и manifest-файлом
 `data_cache/mega_cap_sip_manifest.json`.
-Расчёт запускается через `launchers/run_vwap_absolute_multi_asset.bat`, а
-текущий интерактивный результат — через
-`launchers/open_vwap_absolute_multi_asset_report.bat`.
+Старый расчёт запускается через `launchers/run_vwap_absolute_multi_asset.bat`,
+а его exploratory-отчёт — через
+`launchers/open_vwap_absolute_multi_asset_report.bat`. Для новых решений
+используется guarded-пайплайн `launchers/run_vwap_all_assets_robust_selection.bat`;
+после статуса `COMPLETE 9/9` новый отчёт собирается через
+`launchers/build_vwap_multi_asset_walkforward_report.bat` и открывается через
+`launchers/open_vwap_multi_asset_walkforward_report.bat`.
 
-Завершённый итог одинакового frozen-сигнала для девяти отдельно торгуемых
-акций (full net P&L / честный holdout net P&L): `NVDA +$6,691.89 / +$2,199.54`,
+Ниже приведён **исторический exploratory-итог старого forced-selection**, а не
+authoritative рекомендация для всех девяти акций (full net P&L / старый
+период, ранее названный holdout): `NVDA +$6,691.89 / +$2,199.54`,
 `MSFT +$323.76 / -$1,664.11`, `AAPL -$3,421.55 / -$1,898.55`,
 `AMZN +$446.16 / -$102.06`, `GOOGL -$4,427.83 / -$3,080.42`,
 `META -$594.74 / -$1,748.42`, `AVGO +$1,708.67 / -$909.27`,
 `TSLA +$1,167.86 / -$948.74`, `AMD +$2,053.44 / -$2,814.79`.
-Только NVDA положительна на holdout; это exploratory multiple testing, а не
-доказанный live-edge. Точные equity, drawdown, gross/costs и каждая сделка
-доступны в интерактивном отчёте.
+Старый алгоритм всегда выбирал bracket, даже когда все варианты были
+отрицательными, поэтому он включил no-edge активы. Эти числа сохраняются для
+аудиторской воспроизводимости, но не должны использоваться как текущий
+selection. Точные старые equity, drawdown, gross/costs и сделки доступны в
+deprecated интерактивном отчёте.
 
-Портфельная проверка запускается через
+Устаревшая портфельная проверка запускается через
 `launchers/run_vwap_absolute_portfolio.bat`, отчёт — через
 `launchers/open_vwap_absolute_portfolio_report.bat`. Средняя pairwise Pearson
 корреляция дневного net P&L низкая (`0.024` full; `0.032` holdout), однако
@@ -78,7 +95,63 @@
 equal allocation дал full `+$2,206.83` при MDD `$9,503.15 / 8.59%`, но
 holdout `-$6,016.03`; shared `$100k` cap — full `+$855.94`, holdout
 `-$7,503.75`; uncapped leverage-диагностика — full `+$3,947.65`, holdout
-`-$10,966.83`. Ни один объединённый вариант edge на holdout не подтвердил.
+`-$10,966.83`. Это ожидаемо смешало NVDA с no-edge sleeves; ни один вариант
+edge на старом последнем периоде не подтвердил. Новый guarded portfolio после
+robust-selection запускается через `launchers/run_vwap_robust_portfolio.bat`,
+собирается через `launchers/build_vwap_robust_portfolio_report.bat` и
+открывается через `launchers/open_vwap_robust_portfolio_report.bat`.
+
+## Authoritative multi-asset robust-selection
+
+Новый `vwap_all_assets_robust_selection` исправляет главный дефект старого
+выбора: `CASH / NO_TRADE` является полноценным результатом, поэтому система
+не обязана брать отрицательный best-of-bad bracket. Grid и правила заранее
+фиксируются на первых 188 сессиях и не меняются после просмотра последних 63.
+
+Selection устроен следующим образом:
+
+- первые 188 сессий разбиваются на 9 последовательных блоков примерно по 21
+  сессии; базовая viability требует положительный результат минимум в 6 из 9
+  блоков, положительные total и median block P&L и достаточное число сделок и
+  активных дней;
+- выполняются 12 walk-forward проверок: 6 anchored и 6 rolling folds;
+- `CHANGE` разрешается только кандидату, который проходит не менее 4 из 6
+  anchored и 4 из 6 rolling folds, остаётся viable, находится на устойчивом
+  Pareto-плато с жизнеспособными соседями, действительно доминирует текущие
+  параметры по P&L/risk и не упирается в неразрешённую верхнюю границу grid;
+- если строгий `CHANGE` не подтверждён, но frozen CURRENT viable, verdict —
+  `KEEP_CURRENT` (или boundary-unresolved keep); если CURRENT тоже не viable,
+  verdict — `NO_TRADE`, equity остаётся ровно `$100,000`, exposure и сделки —
+  нулевые;
+- сессии `188:251` имеют только метку `SEEN_HISTORICAL_DIAGNOSTIC`. Они не
+  ранжируют кандидатов, не участвуют в frozen verdict и не являются новым
+  untouched holdout. Отдельный красный `VETO-DIAGNOSTIC` может консервативно
+  исключить sleeve с `seen net <= 0` или `seen P&L/DD <= 0`, но не меняет
+  параметры и не доказывает out-of-sample edge.
+
+Пока полный расчёт девяти тикеров не завершён, неизвестные итоговые verdict и
+портфельные числа здесь намеренно не публикуются. Корректный authoritative
+tail-result для NVDA при этом не изменился: stop `$5.25`, target `$1.25`, full
+net `+$6,691.89`, minute-MTM drawdown `$1,929.83 / 1.81%`. Это frozen CURRENT;
+последний 63-сессионный отрезок показывается отдельно как уже виденная
+диагностика, а не используется для заднего перевыбора `$3.00` stop.
+
+Новый портфель включает только frozen verdict, отличный от `NO_TRADE`, и
+публикует три явно разные кривые:
+
+- `factual_sum`: общий стартовый капитал `$100,000` плюс сумма P&L исходных
+  исполненных `$20,000`-notional sleeves; concurrent gross exposure и leverage
+  показываются явно и могут превышать 20%;
+- `equal_normalized`: `$100,000` плюс среднее уже исполненных sleeve P&L — это
+  линейная исследовательская нормализация для сравнения диверсификации, а не
+  новый backtest с повторным округлением shares;
+- `SEEN_VETO_DIAGNOSTIC`: factual-сумма frozen sleeves после консервативного
+  post-SEEN исключения; это заведомо уже виденная deployment-диагностика, не
+  untouched/OOS доказательство.
+
+Если подтверждён только один тикер, factual и equal-normalized обязаны быть
+одинаковыми, корреляционная матрица не вычисляется и отчёт прямо пишет, что
+диверсификация не проверена.
 
 Отдельная VWAP-проверка синтетического индекса торгует только QQQ; четыре
 акции MSFT/AAPL/NVDA/AMZN используются исключительно как reference и вместе
@@ -107,7 +180,9 @@ NVDA VWAP-bracket. Повторный tail-risk пересчёт выполне�
 и time-stop `30–330` минут/выкл. ни один overlay не сохранил net P&L отдельно
 на development и validation и одновременно не улучшил хвост устойчиво.
 Вердикт — `NO_OP_BASELINE`: оставить stop `$5.25`, target `$1.25`, time-stop
-выключенным; full `+$6,691.89`, holdout `+$2,199.54`, minute-MTM MDD
+выключенным; full `+$6,691.89`, старый последний 63-сессионный split
+`+$2,199.54` (в новом authoritative пайплайне это `SEEN` diagnostic, не новый
+untouched holdout), minute-MTM MDD
 `$1,929.83 / 1.81%`. Вариант `$3.00/$1.25` дал full `+$6,597.51` при MDD
 `$2,481.73 / 2.45%` (profit/DD `2.66` против `3.47` у baseline): он лучше на
 validation и уже просмотренном holdout, но значительно хуже на development,
@@ -128,6 +203,15 @@ validation и уже просмотренном holdout, но значитель
 - time-stop и stop-loss исследуются по duration/MAE прибыльных сделок на
   development, выбираются на validation и один раз проверяются на holdout.
 
+Для authoritative VWAP multi-asset ветки отдельно зафиксировано: используются
+только exact pairwise-intersection raw Alpaca SIP 1-minute RTH-бары без
+resample, fill или interpolation; QQQ всегда `reference-only`, торгуется только
+выбранная target-акция; causal session VWAP включает текущую завершённую
+минуту; вход возникает на close при `Z <= -2.5` или `Z >= +2.5` и исполняется
+на следующем реальном open. Fixed-dollar bracket проверяет stop первым,
+неблагоприятный gap исполняет по raw open, затем проверяет target и закрывает
+остаток в конце RTH-сессии.
+
 ## Главный результат
 
 Старые `+$53,210`, `71.6% win rate`, `120 min / 1.5%` не воспроизводятся.
@@ -146,13 +230,15 @@ validation и уже просмотренном holdout, но значитель
 раннего bracket-выхода и оставлен только как аудиторское сравнение. Новый тест
 генерирует entry-события напрямую из каждой raw минуты, когда позиция закрыта.
 Архив старой проверки целиком перенесён в `old/frozen_vwap_absolute/`.
-Это один исторический годовой holdout, а не доказательство устойчивого
+Это один уже просмотренный исторический разрез, а не доказательство устойчивого
 live-edge. Обычное схождение, процентные VWAP-RR варианты и QQQ против
 синтетической корзины положительный holdout не подтвердили.
 
 Во всех стандартных исследованиях использованы позиция `$20,000`, стартовый
 капитал `$100,000`, комиссия `$0.0035/акция/сторона` и slippage `2 bps` на
-каждое исполнение. Borrow fee, налоги, задержка и market impact не включены.
+каждое исполнение — отдельно на вход и выход. В отчётах net P&L всегда равен
+gross P&L минус commissions и slippage. Borrow fee, налоги, задержка и market
+impact не включены.
 
 Старые HTML/MD/SVG оставлены только как legacy-материалы и не являются
 результатом нового аудита. В частности, `images/session_*.svg` — схематичные

@@ -1,0 +1,25 @@
+{
+  "commissions": 211.56799999999998,
+  "costs": 3611.6401640199997,
+  "final_equity": 102694.43908598047,
+  "max_drawdown_pct_mtm": 1.868347649135922,
+  "max_drawdown_usd_mtm": 1941.1968838598696,
+  "max_gross_entry_event_exposure_usd": 19981.76464,
+  "max_gross_entry_event_leverage": 0.19981764640000002,
+  "max_gross_minute_close_exposure_usd": 19981.764639999998,
+  "net_pnl": 2694.43908598047,
+  "net_return_pct": 2.69443908598047,
+  "net_sharpe": 1.5122701732393924,
+  "pnl_over_dd": 1.388029781205323,
+  "post_seen_diagnostic": false,
+  "profit_factor": 1.097926796662121,
+  "sleeves": [
+    "NVDA",
+    "MSFT",
+    "AVGO",
+    "AMD"
+  ],
+  "slippage": 3400.07216402,
+  "starting_capital_usd": 100000.0,
+  "trades": 1714
+}

@@ -1,0 +1,61 @@
+{
+  "candidate": {
+    "stop_usd": 1.5,
+    "target_usd": 4.0
+  },
+  "candidate_fold_counts": {
+    "anchored": 1,
+    "rolling": 1
+  },
+  "candidate_robust": false,
+  "current": {
+    "stop_usd": 1.75,
+    "target_usd": 4.0
+  },
+  "current_fold_counts": {
+    "anchored": 1,
+    "rolling": 0
+  },
+  "current_robust": true,
+  "dominates_current": false,
+  "grid": {
+    "cap_usd": 12.75,
+    "median_first63": 212.1924,
+    "pairs": 2601,
+    "step_usd": 0.25
+  },
+  "metric_semantics": {
+    "block_cvar5": "exact worst ceil(5%) closed trades inside each 21-session block",
+    "block_mtm_dd": "exact minute-close MTM drawdown inside block from $100k reset",
+    "fold_risk": "exact pooled CVaR5 and continuous minute-MTM drawdown from a dedicated raw replay of that fold's train interval; no test/seen sessions",
+    "pre_seen_cvar5": "exact pooled worst ceil(5%) trades from one continuous raw 0:188 replay",
+    "pre_seen_mtm_dd": "exact minute-close MTM drawdown from one continuous raw 0:188 replay"
+  },
+  "seen_label": "SEEN_HISTORICAL_DIAGNOSTIC",
+  "seen_sessions_excluded": [
+    188,
+    251
+  ],
+  "selected": {
+    "stop_usd": 1.75,
+    "target_usd": 4.0
+  },
+  "selection_artifact_hashes": {
+    "block_metrics_sha256": "775390f6dfc4c1b360c4ecd033757fdc516ac0501e969e0b1f907e0cca78ebea",
+    "development_grid_sha256": "b92dbf38a2b8b27689b3947481a11d66c26139305e7341aec8fb971b10d5a6c3",
+    "engine_sha256": "b94c3294341c4dcf17270bfffb10ff119831c8f90827eeafe6af598ff4b3591f",
+    "folds_sha256": "01f346e887e4b516ec8fa70f9e08cf527ab85126cfb53f5b71d53a113516fc93"
+  },
+  "selection_meta": {
+    "one_se_count": 12,
+    "one_se_threshold": 52.817539748873116,
+    "plateau_touches_top2": false,
+    "reason": "SELECTED"
+  },
+  "selection_sessions": [
+    0,
+    188
+  ],
+  "symbol": "AMD",
+  "verdict": "KEEP_CURRENT"
+}

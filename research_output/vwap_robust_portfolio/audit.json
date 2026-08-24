@@ -1,0 +1,15 @@
+{
+  "checks": {
+    "confirmed_nonempty": true,
+    "correlations_null_if_single": true,
+    "factual_final_additivity": true,
+    "no_trade_zero_exposure": true,
+    "normalized_final_average": true,
+    "seen_veto_is_frozen_subset": true,
+    "seen_veto_rule_exact": true,
+    "single_portfolios_identical": true,
+    "source_audits_pass": true,
+    "source_complete_9of9": true
+  },
+  "status": "PASS"
+}

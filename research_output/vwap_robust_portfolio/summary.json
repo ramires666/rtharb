@@ -1,0 +1,143 @@
+{
+  "best_single_confirmed": {
+    "costs": 3960.2681554395904,
+    "max_drawdown_usd_mtm": 1929.8266248399887,
+    "net_pnl": 6691.888444560394,
+    "pnl_over_dd": 3.4676112135800032,
+    "portfolio_role": "CONFIRMED_SLEEVE",
+    "seen_net_pnl": 2199.5402666400987,
+    "seen_pnl_over_dd": 1.1397605558595054,
+    "seen_veto_diagnostic": false,
+    "symbol": "NVDA",
+    "trades": 456,
+    "verdict": "BOUNDARY_UNRESOLVED_KEEP_CURRENT"
+  },
+  "confirmed": [
+    "NVDA",
+    "MSFT",
+    "AVGO",
+    "AMD"
+  ],
+  "confirmed_count": 4,
+  "correlations_available": true,
+  "diversification_tested": true,
+  "excluded_no_trade": [
+    "AAPL",
+    "AMZN",
+    "GOOGL",
+    "META",
+    "TSLA"
+  ],
+  "method": {
+    "correlations": "daily session-last PnL changes and concurrent union-clock minute MTM changes",
+    "costs": "already embedded in each source trade/equity and summed or scaled exactly",
+    "equal_normalized": "$100k + arithmetic mean of already executed sleeve PnL; linear research normalization, not a new rounded-share replay",
+    "factual_sum": "$100k shared starting capital + sum of original executed $20k-notional sleeve PnL; gross leverage may exceed 20%",
+    "marginal_dd": "sleeve change from portfolio running-peak timestamp to max-DD trough",
+    "timestamp_alignment": "exact union; last observed sleeve equity held as cash between its RTH timestamps"
+  },
+  "period": {
+    "first_timestamp": "2025-08-22 09:30:00-04:00",
+    "last_timestamp": "2026-08-21 15:59:00-04:00",
+    "sessions": 251,
+    "union_minutes": 97530
+  },
+  "schema_version": 1,
+  "seen_veto_survivors": [
+    "NVDA"
+  ],
+  "seen_veto_warning": "Post-SEEN conservative deployment diagnostic using already-seen sessions 188:251; not untouched/OOS proof and never parameter retuning.",
+  "seen_vetoed": [
+    "MSFT",
+    "AVGO",
+    "AMD"
+  ],
+  "single_asset_warning": null,
+  "status": "COMPLETE",
+  "study": "Robust selected sleeve portfolio combination",
+  "universe": [
+    "NVDA",
+    "MSFT",
+    "AAPL",
+    "AMZN",
+    "GOOGL",
+    "META",
+    "AVGO",
+    "TSLA",
+    "AMD"
+  ],
+  "variants": {
+    "equal_normalized": {
+      "commissions": 211.56799999999998,
+      "costs": 3611.6401640199997,
+      "final_equity": 102694.43908598047,
+      "max_drawdown_pct_mtm": 1.868347649135922,
+      "max_drawdown_usd_mtm": 1941.1968838598696,
+      "max_gross_entry_event_exposure_usd": 19981.76464,
+      "max_gross_entry_event_leverage": 0.19981764640000002,
+      "max_gross_minute_close_exposure_usd": 19981.764639999998,
+      "net_pnl": 2694.43908598047,
+      "net_return_pct": 2.69443908598047,
+      "net_sharpe": 1.5122701732393924,
+      "pnl_over_dd": 1.388029781205323,
+      "post_seen_diagnostic": false,
+      "profit_factor": 1.097926796662121,
+      "sleeves": [
+        "NVDA",
+        "MSFT",
+        "AVGO",
+        "AMD"
+      ],
+      "slippage": 3400.07216402,
+      "starting_capital_usd": 100000.0,
+      "trades": 1714
+    },
+    "factual_sum": {
+      "commissions": 846.2719999999999,
+      "costs": 14446.560656079999,
+      "final_equity": 110777.75634392191,
+      "max_drawdown_pct_mtm": 6.7171473044873045,
+      "max_drawdown_usd_mtm": 7764.787535439478,
+      "max_gross_entry_event_exposure_usd": 79927.05856,
+      "max_gross_entry_event_leverage": 0.7992705856000001,
+      "max_gross_minute_close_exposure_usd": 79927.05855999999,
+      "net_pnl": 10777.756343921908,
+      "net_return_pct": 10.777756343921908,
+      "net_sharpe": 1.588194588131691,
+      "pnl_over_dd": 1.3880297812053268,
+      "post_seen_diagnostic": false,
+      "profit_factor": 1.097926796662121,
+      "sleeves": [
+        "NVDA",
+        "MSFT",
+        "AVGO",
+        "AMD"
+      ],
+      "slippage": 13600.28865608,
+      "starting_capital_usd": 100000.0,
+      "trades": 1714
+    },
+    "seen_veto_diagnostic": {
+      "commissions": 329.66499999999996,
+      "costs": 3960.2681554399996,
+      "final_equity": 106691.8884445604,
+      "max_drawdown_pct_mtm": 1.8095380375258916,
+      "max_drawdown_usd_mtm": 1929.8266248399887,
+      "max_gross_entry_event_exposure_usd": 19999.7412516,
+      "max_gross_entry_event_leverage": 0.199997412516,
+      "max_gross_minute_close_exposure_usd": 19999.7412516,
+      "net_pnl": 6691.888444560405,
+      "net_return_pct": 6.691888444560405,
+      "net_sharpe": 1.9373091368476354,
+      "pnl_over_dd": 3.4676112135800086,
+      "post_seen_diagnostic": true,
+      "profit_factor": 1.2763902990877012,
+      "sleeves": [
+        "NVDA"
+      ],
+      "slippage": 3630.6031554399997,
+      "starting_capital_usd": 100000.0,
+      "trades": 456
+    }
+  }
+}

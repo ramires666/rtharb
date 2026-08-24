@@ -1,0 +1,124 @@
+{
+  "schema_version": 1,
+  "status": "PASS",
+  "engine_sha256": "b94c3294341c4dcf17270bfffb10ff119831c8f90827eeafe6af598ff4b3591f",
+  "selection_sessions": [0, 188],
+  "seen_sessions": [188, 251],
+  "seen_policy": "SEEN_HISTORICAL_DIAGNOSTIC_ONLY_NOT_USED_FOR_SELECTION",
+  "methodology": {
+    "independence": "The auditor does not import the research engine or reporter. It independently reconstructs causal VWAP-Z arrays from raw Alpaca SIP pairwise intersections and implements a separate bracket/grid state machine.",
+    "grid": "Every Cartesian stop/target pair was independently replayed for exact 0:188, all nine 21-session blocks, and every unique anchored/rolling contiguous train interval.",
+    "selection": "Viability, Pareto skyline, eight-neighbor plateau, one-SE choice, 4/6 anchored and rolling consensus for CHANGE, dominance versus CURRENT, boundary handling, KEEP_CURRENT, and NO_TRADE were rebuilt independently.",
+    "exports": "CURRENT and SELECTED pre_seen, seen, and full trades plus minute equity/drawdown were replayed from raw data; costs, split additivity, CASH flatness, and summary/cross-table metrics were checked.",
+    "provenance": "All assets use 251 raw sessions, pairwise QQQ/target SIP intersections only, with unique timestamps and no resampling, fill, or interpolation. The engine hash is identical in every pre-seen freeze and source order freezes selection before seen replay.",
+    "hash_drift_policy": "A differing independent decimal CSV SHA is a warning only after a disposable production-kernel replay exactly reproduces the frozen SHA, every independent fold choice/reason matches, maximum cell delta is at most 5e-11, and no cell exceeds audit tolerance 7e-7. The production kernel was used only for this hash reproducibility diagnosis, never for independent metric or selection verification."
+  },
+  "assets": [
+    {
+      "symbol": "NVDA",
+      "status": "PASS",
+      "pairs": 1936,
+      "verdict": "BOUNDARY_UNRESOLVED_KEEP_CURRENT",
+      "candidate": {"stop_usd": 10.0, "target_usd": 1.25},
+      "selected": {"stop_usd": 5.25, "target_usd": 1.25},
+      "folds": 12,
+      "unique_hash_serialization_drifts": 0
+    },
+    {
+      "symbol": "MSFT",
+      "status": "PASS",
+      "pairs": 15129,
+      "verdict": "BOUNDARY_UNRESOLVED_KEEP_CURRENT",
+      "candidate": {"stop_usd": 20.5, "target_usd": 9.0},
+      "selected": {"stop_usd": 11.75, "target_usd": 9.0},
+      "folds": 12,
+      "unique_hash_serialization_drifts": 0
+    },
+    {
+      "symbol": "AAPL",
+      "status": "PASS",
+      "pairs": 3844,
+      "verdict": "NO_TRADE_NO_CONFIRMED_EDGE",
+      "candidate": null,
+      "selected": null,
+      "folds": 12,
+      "unique_hash_serialization_drifts": 0
+    },
+    {
+      "symbol": "AMZN",
+      "status": "PASS",
+      "pairs": 3025,
+      "verdict": "NO_TRADE_NO_CONFIRMED_EDGE",
+      "candidate": null,
+      "selected": null,
+      "folds": 12,
+      "unique_hash_serialization_drifts": 2
+    },
+    {
+      "symbol": "GOOGL",
+      "status": "PASS",
+      "pairs": 3600,
+      "verdict": "NO_TRADE_NO_CONFIRMED_EDGE",
+      "candidate": null,
+      "selected": null,
+      "folds": 12,
+      "unique_hash_serialization_drifts": 7
+    },
+    {
+      "symbol": "META",
+      "status": "PASS",
+      "pairs": 30976,
+      "verdict": "NO_TRADE_NO_CONFIRMED_EDGE",
+      "candidate": {"stop_usd": 8.75, "target_usd": 5.75},
+      "selected": null,
+      "folds": 12,
+      "unique_hash_serialization_drifts": 0
+    },
+    {
+      "symbol": "AVGO",
+      "status": "PASS",
+      "pairs": 6889,
+      "verdict": "BOUNDARY_UNRESOLVED_KEEP_CURRENT",
+      "candidate": {"stop_usd": 14.25, "target_usd": 5.0},
+      "selected": {"stop_usd": 10.5, "target_usd": 5.0},
+      "folds": 12,
+      "unique_hash_serialization_drifts": 0
+    },
+    {
+      "symbol": "TSLA",
+      "status": "PASS",
+      "pairs": 10816,
+      "verdict": "NO_TRADE_NO_CONFIRMED_EDGE",
+      "candidate": null,
+      "selected": null,
+      "folds": 12,
+      "unique_hash_serialization_drifts": 1
+    },
+    {
+      "symbol": "AMD",
+      "status": "PASS",
+      "pairs": 2601,
+      "verdict": "KEEP_CURRENT",
+      "candidate": {"stop_usd": 1.5, "target_usd": 4.0},
+      "selected": {"stop_usd": 1.75, "target_usd": 4.0},
+      "folds": 12,
+      "unique_hash_serialization_drifts": 6
+    }
+  ],
+  "hash_serialization_drift_proof": {
+    "status": "PASS_WARNING_ONLY",
+    "unique_intervals": 16,
+    "all_production_hashes_exactly_reproduced": true,
+    "global_max_abs_cell_delta": 1.2732925824820995e-11,
+    "total_nonzero_cells": 68969,
+    "total_cells_gt_5e_11": 0,
+    "total_cells_gt_audit_atol_7e_7": 0,
+    "by_symbol": {
+      "AMZN": {"unique_intervals": 2, "global_max_abs_cell_delta": 1.8189894035458565e-12, "nonzero_cells": 156, "cells_gt_5e_11": 0, "cells_gt_atol": 0},
+      "GOOGL": {"unique_intervals": 7, "global_max_abs_cell_delta": 3.637978807091713e-12, "nonzero_cells": 25015, "cells_gt_5e_11": 0, "cells_gt_atol": 0},
+      "TSLA": {"unique_intervals": 1, "global_max_abs_cell_delta": 1.8189894035458565e-12, "nonzero_cells": 12698, "cells_gt_5e_11": 0, "cells_gt_atol": 0},
+      "AMD": {"unique_intervals": 6, "global_max_abs_cell_delta": 1.2732925824820995e-11, "nonzero_cells": 31100, "cells_gt_5e_11": 0, "cells_gt_atol": 0}
+    }
+  },
+  "conclusion": "All nine frozen selections, no-trade decisions, split exports, and cross-asset artifacts pass the independent audit. Hash-only differences are quantified sub-5e-11 serialization drift and do not change any metric gate, fold choice, or verdict."
+}
